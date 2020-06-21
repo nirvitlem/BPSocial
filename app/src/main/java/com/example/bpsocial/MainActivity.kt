@@ -19,13 +19,21 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.util.*
 import kotlin.random.Random
 
 public var bluetoothAdapter : BluetoothAdapter? = null;
 public var adapter:ArrayAdapter<String>?=null;
 public var list=mutableListOf("");
+private var RemText : TextView ?=null;
 private val PERMISSION_REQUEST_CODE = 101;
 private val TAG = "Permission";
+object SVal {
+    @JvmField val M_UUID : UUID ?=  UUID.randomUUID();
+    //...
+}
+
+private var listofbluetoothdevices : ArrayList<BluetoothDevice> = ArrayList();
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,20 +46,22 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, filter);
         filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(receiver, filter);
-
+        RemText = findViewById(com.example.bpsocial.R.id.RemText) as android.widget.TextView;
         val ListBItems = findViewById(R.id.ListItems) as ListView;
         adapter = ArrayAdapter(
             this,
             android.R.layout.simple_dropdown_item_1line,list
         )
-// attach the array adapter with list view
+        // attach the array adapter with list view
         ListBItems.adapter = adapter
-
         // list view item click listener
         ListBItems.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
                 val selectedItem = parent.getItemAtPosition(position)
                // textViewResult.text = "Selected : $selectedItem"
+                bluetoothAdapter?.cancelDiscovery();
+                var ConnetServer : ConnectThread ?= ConnectThread(listofbluetoothdevices[position]);
+                ConnetServer?.run();
             }
 
 
@@ -59,35 +69,38 @@ class MainActivity : AppCompatActivity() {
         val SButton = findViewById(R.id.SButton) as Button
         SwitchB?.isChecked=true;
         SwitchB?.text="Master";
-        SButton?.text="חפש";
+        SButton?.text="הפעל לגילוי";
         SButton.setOnClickListener {
             if (SwitchB.isChecked) {
+                if (GetBAdapter()) {
+                    bluetoothAdapter?.name = "BPS Master " + bluetoothAdapter?.name;
+                    startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
+                    var AT : AcceptThread ?= AcceptThread();
+                    AT?.run();
+                }
+            }
+            else
+            {
+                list.clear();
+                listofbluetoothdevices.clear();
                 if (GetBAdapter()) {
                     if (bluetoothAdapter?.isDiscovering() == true) {
                         bluetoothAdapter?.cancelDiscovery();
                     }
-                    list.add("Start Searcing");
-                    adapter?.notifyDataSetChanged()
+                    RemText?.text ="מתחיל חיפוש מנהל";
                     val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                     pairedDevices?.forEach { device ->
 
                         val deviceName = device.name
                         val deviceHardwareAddress = device.address // MAC address
-                        if (device.name!=null) {
-                            list?.add("pairedDevices " + device.name);
-                            adapter?.notifyDataSetChanged()
-                        }
+                        if (device.name == null) list?.add("UnKown Device " + device.address);
+                        else  list?.add(device.name + " " + device.address);
+                        adapter?.notifyDataSetChanged()
+                        listofbluetoothdevices.add(device);
+
                     }
                     bluetoothAdapter?.startDiscovery();
                 }
-            }
-            else
-            {
-                if (GetBAdapter()) {
-                    bluetoothAdapter?.name = "BPS " + Random.nextInt(0, 100).toString();
-                    startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
-                }
-
             }
         }
 
@@ -95,11 +108,11 @@ class MainActivity : AppCompatActivity() {
             if (SwitchB.isChecked) {
                 // The switch is enabled/checked
                 SwitchB.setText("Master");
-                SButton.setText("חפש");
-            } else {
-                SwitchB.setText("End Point");
                 SButton.setText("הפעל לגילוי");
 
+            } else {
+                SwitchB.setText("End Point");
+                SButton.setText("חפש מנהל");
             }
         }
     }
@@ -146,26 +159,26 @@ class MainActivity : AppCompatActivity() {
                     val device: BluetoothDevice =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     val deviceName = device.name
-                    if (device.name!=null) {
-                        list?.add(device.name);
-                        adapter?.notifyDataSetChanged()
-                    }
+                    if (device.name == null) list?.add("UnKown Device " + device.address);
+                    else  list?.add(device.name + " " + device.address);
+
+                    listofbluetoothdevices.add(device);
+                    adapter?.notifyDataSetChanged()
+
                     val deviceHardwareAddress = device.address // MAC address
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
 
-                    list.add("ACTION_DISCOVERY_STARTED");
-                    adapter?.notifyDataSetChanged()
+                    RemText?.text="התחלת חיפוש מנהל";
 
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
                     bluetoothAdapter?.cancelDiscovery();
-                    list.add("ACTION_DISCOVERY_FINISHED");
-                    adapter?.notifyDataSetChanged()
+                    RemText?.text = "סיום חיפוש מנהל";
                 }
             }
         }
