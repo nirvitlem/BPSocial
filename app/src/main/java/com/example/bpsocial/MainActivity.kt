@@ -68,6 +68,16 @@ class MainActivity : AppCompatActivity() {
                     }
                     list.add("Start Searcing");
                     adapter?.notifyDataSetChanged()
+                    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+                    pairedDevices?.forEach { device ->
+
+                        val deviceName = device.name
+                        val deviceHardwareAddress = device.address // MAC address
+                        if (device.name!=null) {
+                            list?.add("pairedDevices " + device.name);
+                            adapter?.notifyDataSetChanged()
+                        }
+                    }
                     bluetoothAdapter?.startDiscovery();
                 }
             }
