@@ -4,23 +4,20 @@ import android.Manifest
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothHeadset
-import android.bluetooth.BluetoothProfile
+import android.bluetooth.BluetoothDevice.ACTION_PAIRING_REQUEST
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import java.lang.reflect.Method
 import java.util.*
-import kotlin.random.Random
+import kotlin.concurrent.thread
 
 public var bluetoothAdapter : BluetoothAdapter? = null;
 public var adapter:ArrayAdapter<String>?=null;
@@ -60,8 +57,10 @@ class MainActivity : AppCompatActivity() {
                 val selectedItem = parent.getItemAtPosition(position)
                // textViewResult.text = "Selected : $selectedItem"
                 bluetoothAdapter?.cancelDiscovery();
-                var ConnetServer : ConnectThread ?= ConnectThread(listofbluetoothdevices[position]);
-                ConnetServer?.run();
+                Thread({
+                    val ct : ConnectThread?= ConnectThread(listofbluetoothdevices[position]);
+                    ct?.run();
+                }).start();
             }
 
 
@@ -75,8 +74,11 @@ class MainActivity : AppCompatActivity() {
                 if (GetBAdapter()) {
                     bluetoothAdapter?.name = "BPS Master " ;
                     startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
-                    var AT : AcceptThread ?= AcceptThread();
-                    AT?.run();
+                    Thread({
+                        val at : AcceptThread ?= AcceptThread(bluetoothAdapter!!);
+                        at?.run();
+                    }).start();
+
                 }
             }
             else
@@ -197,7 +199,6 @@ class MainActivity : AppCompatActivity() {
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver)
     }
-
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
