@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         SButton.setOnClickListener {
             if (SwitchB.isChecked) {
                 if (GetBAdapter()) {
-                    bluetoothAdapter?.name = "BPS Master " + bluetoothAdapter?.name;
+                    bluetoothAdapter?.name = "BPS Master " ;
                     startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
                     var AT : AcceptThread ?= AcceptThread();
                     AT?.run();

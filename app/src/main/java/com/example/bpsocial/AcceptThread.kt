@@ -26,6 +26,7 @@ class AcceptThread : Thread() {
             }
             socket?.also {
                 //manageMyConnectedSocket(it)
+                Log.e(TAG, "Socket's accept() ");
                 mmServerSocket?.close()
                 shouldLoop = false
             }
