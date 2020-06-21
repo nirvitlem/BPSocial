@@ -4,33 +4,41 @@ import android.Manifest
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothDevice.ACTION_PAIRING_REQUEST
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import java.lang.reflect.Method
+import com.example.bpsocial.Slist.adapter
+import com.example.bpsocial.Slist.list
 import java.util.*
-import kotlin.concurrent.thread
+
 
 public var bluetoothAdapter : BluetoothAdapter? = null;
-public var adapter:ArrayAdapter<String>?=null;
-public var list=mutableListOf("");
+//public var adapter:ArrayAdapter<String>?=null;
+//public var list=mutableListOf("");
 private var RemText : TextView ?=null;
 private val PERMISSION_REQUEST_CODE = 101;
 private val TAG = "Permission";
 object SVal {
-    @JvmField val M_UUID : UUID ?=  UUID.randomUUID();
+    @JvmField val M_UUID : UUID ?=  UUID.fromString("8ce255c0-1508-74e0-ac64-0800200c9a66");
+    //...
+}
+
+object Slist {
+    @JvmStatic public var list=mutableListOf("");
+    @JvmStatic public var adapter:ArrayAdapter<String>?=null;
     //...
 }
 
 private var listofbluetoothdevices : ArrayList<BluetoothDevice> = ArrayList();
+private var listofbluetoothPaireddevices : ArrayList<BluetoothDevice> = ArrayList();
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,17 +63,25 @@ class MainActivity : AppCompatActivity() {
         ListBItems.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
                 val selectedItem = parent.getItemAtPosition(position)
+                if (listofbluetoothdevices[position].bondState == BluetoothDevice.BOND_BONDED)
+                {
+                    listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
+                }else {
+                    if (createBond(listofbluetoothdevices[position])) {
+                        Log.e("createBond ", "true");
+                        listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
+                    }
+                }
                // textViewResult.text = "Selected : $selectedItem"
+               // Log.e()
                 bluetoothAdapter?.cancelDiscovery();
-                Thread({
-                    val ct : ConnectThread?= ConnectThread(listofbluetoothdevices[position]);
-                    ct?.run();
-                }).start();
+
             }
 
 
         val SwitchB = findViewById(R.id.switch1) as Switch
         val SButton = findViewById(R.id.SButton) as Button
+        val ConnectButton = findViewById(R.id.connectb) as Button
         SwitchB?.isChecked=true;
         SwitchB?.text="Master";
         SButton?.text="הפעל לגילוי";
@@ -76,6 +92,7 @@ class MainActivity : AppCompatActivity() {
                     startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
                     Thread({
                         val at : AcceptThread ?= AcceptThread(bluetoothAdapter!!);
+                        at?.getconextintent(this);
                         at?.run();
                     }).start();
 
@@ -85,7 +102,18 @@ class MainActivity : AppCompatActivity() {
             {
                 list.clear();
                 listofbluetoothdevices.clear();
+
                 if (GetBAdapter()) {
+                    val ed : EditText ?= EditText(this);
+                    val builder = AlertDialog.Builder(this@MainActivity)
+                    builder.setTitle("שם")
+                    builder.setMessage("הגדר שם למכשיר לזיהוי ")
+                    builder.setView(ed);
+                    builder.setPositiveButton("OK"){dialog, which ->
+                        bluetoothAdapter?.name=ed?.text.toString()
+                        //finishAffinity();
+                    }
+                    builder.show();
                     if (bluetoothAdapter?.isDiscovering() == true) {
                         bluetoothAdapter?.cancelDiscovery();
                     }
@@ -106,6 +134,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        ConnectButton.setOnClickListener {
+            Thread({
+                Log.e("ConnectThread",listofbluetoothPaireddevices[0].name);
+                val ct: ConnectThread? = ConnectThread(listofbluetoothPaireddevices[0]);
+                ct?.setname(listofbluetoothPaireddevices[0]?.name);
+                ct?.run();
+            }).start();
+        }
+
         SwitchB.setOnClickListener {
             if (SwitchB.isChecked) {
                 // The switch is enabled/checked
@@ -119,6 +156,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Throws(Exception::class)
+    fun removeBond(btDevice: BluetoothDevice?): Boolean {
+        val btClass = Class.forName("android.bluetooth.BluetoothDevice")
+        val removeBondMethod = btClass.getMethod("removeBond")
+        val returnValue = removeBondMethod.invoke(btDevice) as Boolean
+        return returnValue;
+    }
+
+    @Throws(Exception::class)
+    fun createBond(btDevice: BluetoothDevice?): Boolean {
+        val class1 = Class.forName("android.bluetooth.BluetoothDevice")
+        val createBondMethod = class1.getMethod("createBond")
+        val returnValue = createBondMethod.invoke(btDevice) as Boolean
+        return returnValue;
+    }
 
     public fun  GetBAdapter():Boolean
     {
@@ -135,15 +187,9 @@ class MainActivity : AppCompatActivity() {
             else
             {
                 val builder = AlertDialog.Builder(this@MainActivity)
-                // Set the alert dialog title
                 builder.setTitle("Bluetooth Error")
-                // Display a message on alert dialog
                 builder.setMessage("Please Enabled you Bluetooth device ")
-                // Set a positive button and its click listener on alert dialog
-                builder.setPositiveButton("OK"){dialog, which ->
-                    // Do something when user press the positive button
-                   // Toast.makeText(applicationContext,"Ok, we change the app background.",Toast.LENGTH_SHORT).show()
-                    finishAffinity();
+                builder.setPositiveButton("OK"){dialog, which -> finishAffinity();
                 }
                 builder.show();
             }

@@ -5,22 +5,35 @@ import android.bluetooth.BluetoothSocket
 import android.util.Log
 import java.io.IOException
 private const val TAG = "BPSocial Client"
+public var sname : String ?= "";
 
 class ConnectThread(device: BluetoothDevice) : Thread() {
 
     private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
-        device.createRfcommSocketToServiceRecord(SVal.M_UUID)
+        device.createRfcommSocketToServiceRecord(SVal.M_UUID);
     }
 
-    public override fun run() {
+    public fun setname(Sname : String)
+    {
+        sname=Sname;
+    }
+
+    public override fun run()
+    {
+
         // Cancel discovery because it otherwise slows down the connection.
         bluetoothAdapter?.cancelDiscovery()
-
+        Log.e("BPSocial Client SVal.M_UUID" , SVal.M_UUID.toString());
         mmSocket?.use { socket ->
             // Connect to the remote device through the socket. This call blocks
             // until it succeeds or throws an exception.
             socket.connect()
-
+            Thread({
+                val mbs: MyBluetoothService? = MyBluetoothService(socket);
+                mbs?.write(("test test").toByteArray());
+            }).start();
+          //  Slist.list?.add(sname!!);
+          //  Slist.adapter?.notifyDataSetChanged()
             // The connection attempt succeeded. Perform work associated with
             // the connection in a separate thread.
            // manageMyConnectedSocket(socket)
