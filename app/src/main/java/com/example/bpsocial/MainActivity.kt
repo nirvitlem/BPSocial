@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.bpsocial.Slist.adapter
 import com.example.bpsocial.Slist.list
+import java.lang.reflect.Field
+import java.lang.reflect.InvocationTargetException
 import java.util.*
 
 
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                 val selectedItem = parent.getItemAtPosition(position)
                 if (listofbluetoothdevices[position].bondState == BluetoothDevice.BOND_BONDED)
                 {
+                    alertm("התאמה","בוצעה התאמה בהצלחה");
                     listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
                 }else {
                     if (createBond(listofbluetoothdevices[position])) {
@@ -88,6 +91,7 @@ class MainActivity : AppCompatActivity() {
         SButton.setOnClickListener {
             if (SwitchB.isChecked) {
                 if (GetBAdapter()) {
+                    RemText?.text=getBluetoothMacAddress(bluetoothAdapter!!);
                     bluetoothAdapter?.name = "BPS Master " ;
                     startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
                     Thread({
@@ -169,9 +173,43 @@ class MainActivity : AppCompatActivity() {
         val class1 = Class.forName("android.bluetooth.BluetoothDevice")
         val createBondMethod = class1.getMethod("createBond")
         val returnValue = createBondMethod.invoke(btDevice) as Boolean
+        while (btDevice?.bondState != BluetoothDevice.BOND_BONDED)
+        {
+            Thread.sleep(1_000);
+        }
+        alertm("התאמה","התאמה בוצעה בהצלחה");
         return returnValue;
     }
 
+    private fun alertm(t : String , m :String)
+    {
+        val builder = AlertDialog.Builder(this@MainActivity)
+        builder.setTitle(t)
+        builder.setMessage(m)
+
+        builder.setPositiveButton("OK"){dialog, which ->
+
+            //finishAffinity();
+        }
+        builder.show();
+    }
+    private fun getBluetoothMacAddress(bluetoothAdapter:BluetoothAdapter): String? {
+        var bluetoothMacAddress = ""
+        try {
+            val mServiceField: Field = bluetoothAdapter?.javaClass.getDeclaredField("mService")
+            mServiceField.setAccessible(true)
+            val btManagerService: Any = mServiceField.get(bluetoothAdapter!!)
+            if (btManagerService != null) {
+                bluetoothMacAddress = btManagerService?.javaClass.getMethod("getAddress")
+                    .invoke(btManagerService) as String
+            }
+        } catch (ignore: NoSuchFieldException) {
+        } catch (ignore: NoSuchMethodException) {
+        } catch (ignore: IllegalAccessException) {
+        } catch (ignore: InvocationTargetException) {
+        }
+        return bluetoothMacAddress
+    }
     public fun  GetBAdapter():Boolean
     {
         // Get the default adapter

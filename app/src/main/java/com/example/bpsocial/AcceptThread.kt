@@ -48,8 +48,8 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
                     val mbs: MyBluetoothService? = MyBluetoothService(socket);
                     mbs?.run();
                 }).start();
-                mmServerSocket?.close()
-                shouldLoop = false
+                //mmServerSocket?.close()
+                //shouldLoop = false
             }
         }
     }

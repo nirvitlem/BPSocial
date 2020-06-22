@@ -31,7 +31,8 @@ class ConnectThread(device: BluetoothDevice) : Thread() {
             Thread({
                 val mbs: MyBluetoothService? = MyBluetoothService(socket);
                 mbs?.write(("test test").toByteArray());
-            }).start();
+           }).start();
+            Log.e("BPSocial Client send message" , "test test");
           //  Slist.list?.add(sname!!);
           //  Slist.adapter?.notifyDataSetChanged()
             // The connection attempt succeeded. Perform work associated with

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="inherit"
     tools:context=".MainActivity">
 
     <Switch
@@ -45,10 +46,13 @@
         android:id="@+id/connectb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="התחל"
+        android:text="התחבר"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.922"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ListItems"
+        app:layout_constraintVertical_bias="0.728" />
 
     <EditText
         android:id="@+id/RemText"
