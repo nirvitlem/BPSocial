@@ -2,7 +2,10 @@ package com.example.bpsocial
 
 import android.app.Activity
 import android.bluetooth.BluetoothSocket
+import android.content.Context
+import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -23,6 +26,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         private val mmOutStream: OutputStream = mmSocket.outputStream
         private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
         private var A : Activity?= null;
+
 
     public fun setconextintent(a : Activity)
     {
@@ -45,7 +49,13 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 break
             }
             addtesttolist(String( mmBuffer));
-            if (String( mmBuffer)=="150874") write(mmBuffer);
+            if (String( mmBuffer).contains("150874")) write("התקבלה הההודעה - 740815".toByteArray());
+            if (String( mmBuffer).contains("740815")) addtesttolist(mmSocket.remoteDevice.name + " בדיקה עברה בהצלחה ")
+            if (String( mmBuffer).contains("ready"))
+            {
+                var intent = Intent(A, Slave::class.java)
+                A?.startActivity(intent)
+            }
         }
 
     }
@@ -76,5 +86,11 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 Slist.adapter?.notifyDataSetChanged();
             })
         }
+
+    fun addtesttotext(s: String) {
+        A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
+            Slist.RText?.text=s;
+        })
+    }
     }
 //}
