@@ -72,4 +72,9 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
         return listofbluetoothsocket[index] as BluetoothSocket;
     }
 
+    fun getlistsocket():ArrayList<BluetoothSocket>
+    {
+        return listofbluetoothsocket;
+    }
+
 }

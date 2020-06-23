@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main);
         makeRequest();
 
-
         val SwitchB = findViewById(R.id.switch1) as Switch
         val SButton = findViewById(R.id.SButton) as Button
         val ConnectButton = findViewById(R.id.connectb) as Button
@@ -91,8 +90,6 @@ class MainActivity : AppCompatActivity() {
                             listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
                         }
                     }
-                    // textViewResult.text = "Selected : $selectedItem"
-                    // Log.e()
                     bluetoothAdapter?.cancelDiscovery();
                 }else
                 {
@@ -101,9 +98,9 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-
+        sendM.isEnabled=false;
         SwitchB?.isChecked=true;
-        SwitchB?.text="Master";
+        SwitchB?.text="מנהל";
         SButton?.text="הפעל לגילוי";
         SButton.setOnClickListener {
             if (SwitchB.isChecked) {
@@ -156,6 +153,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         ConnectButton.setOnClickListener {
+            val t : Int?=0;
             if (!SwitchB.isChecked) {
                 Thread({
                     Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
@@ -167,12 +165,27 @@ class MainActivity : AppCompatActivity() {
                 while (ct?.getsocket()==null)
                 {
                     Thread.sleep(1000);
+                    +t!!;
+                    if (t==10)
+                    {
+                        break
+                    };
+                    list.clear();
+                    adapter?.notifyDataSetChanged();
                 }
-                Thread({
-                    mbs = MyBluetoothService(ct?.getsocket() as BluetoothSocket);
-                    mbs?.setconextintent(this!!);
-                    mbs?.run();
-                }).start();
+                if (t!!<10) {
+                    Thread({
+                        mbs = MyBluetoothService(ct?.getsocket() as BluetoothSocket);
+                        mbs?.setconextintent(this!!);
+                        mbs?.run();
+                    }).start();
+                    sendM.isEnabled=true;
+                }
+                else
+                {
+                    alertm("שגיאת חיבור","לא מצליח להתחבר למנהל, נסה שנית");
+                    sendM.isEnabled=false;
+                }
             }
         }
 
@@ -180,38 +193,39 @@ class MainActivity : AppCompatActivity() {
             if (!SwitchB.isChecked) {
                 if (ct?.getsocket() != null) {
                     Thread({
-                            mbs?.write(("test").toByteArray());
+                            list.add("נשלחה הודעה למנהל ")
+                            mbs?.write(("150874" + Random(100).toString()).toByteArray());
                     }).start();
                     Log.e("BPSocial Client send message", "test");
                 }
             }
-            else
-            {
-                if(itemckickllistposition!=-1) {
-                    Log.e("itemckickllistpositione", itemckickllistposition.toString());
-                    if (at?.getsocket(itemckickllistposition!!) != null) {
+            else {
+                if (!at?.getlistsocket().isNullOrEmpty()) {
+                    for (element in at?.getlistsocket() as ArrayList<BluetoothSocket>) {
+
                         Thread({
                             val mbs: MyBluetoothService? =
-                                MyBluetoothService(at?.getsocket(itemckickllistposition!!) as BluetoothSocket);
+                                MyBluetoothService(element as BluetoothSocket);
                             mbs?.setconextintent(this!!);
-                            mbs?.write(("test").toByteArray());
+                            mbs?.write(("בדיקנ ממנהל ").toByteArray());
                         }).start();
                         Log.e("BPSocial Server send message", "test");
+
                     }
                 }
-           }
+            }
         }
 
         SwitchB.setOnClickListener {
             if (SwitchB.isChecked) {
                 // The switch is enabled/checked
                 ConnectButton.isEnabled= false;
-                SwitchB.setText("Master");
+                SwitchB.setText("מנהל");
                 SButton.setText("הפעל לגילוי");
 
             } else {
                 ConnectButton.isEnabled= true;
-                SwitchB.setText("End Point");
+                SwitchB.setText("יחידת קצה");
                 SButton.setText("חפש מנהל");
             }
         }
@@ -251,7 +265,7 @@ class MainActivity : AppCompatActivity() {
         builder.show();
     }
     private fun getBluetoothMacAddress(bluetoothAdapter:BluetoothAdapter): String? {
-        return "";
+       return "";
 
     }
 

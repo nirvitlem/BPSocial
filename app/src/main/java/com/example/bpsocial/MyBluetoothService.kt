@@ -45,6 +45,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 break
             }
             addtesttolist(String( mmBuffer));
+            if (String( mmBuffer)=="150874") write(mmBuffer);
         }
 
     }
