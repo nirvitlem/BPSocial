@@ -28,13 +28,11 @@ class ConnectThread(device: BluetoothDevice) : Thread() {
             // Connect to the remote device through the socket. This call blocks
             // until it succeeds or throws an exception.
             socket.connect()
-            Thread({
-                val mbs: MyBluetoothService? = MyBluetoothService(socket);
-                mbs?.write(("test test").toByteArray());
-           }).start();
-            Log.e("BPSocial Client send message" , "test test");
-          //  Slist.list?.add(sname!!);
-          //  Slist.adapter?.notifyDataSetChanged()
+
+            while(mmSocket!!.isConnected)
+            {
+
+            }
             // The connection attempt succeeded. Perform work associated with
             // the connection in a separate thread.
            // manageMyConnectedSocket(socket)
@@ -48,5 +46,11 @@ class ConnectThread(device: BluetoothDevice) : Thread() {
         } catch (e: IOException) {
             Log.e(TAG, "Could not close the client socket", e)
         }
+    }
+
+    fun getsocket() : BluetoothSocket?
+    {
+        if (mmSocket?.isConnected==true) return mmSocket!!;
+       return  null;
     }
 }

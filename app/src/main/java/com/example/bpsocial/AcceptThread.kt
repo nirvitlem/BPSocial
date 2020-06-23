@@ -3,16 +3,20 @@ package com.example.bpsocial
 import android.app.Activity
 import android.app.PendingIntent.getActivity
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import java.io.IOException
+import java.util.ArrayList
 
 
 private const val TAG = "BPSocial Server"
 private var A : Activity ?= null;
+private var Socket: BluetoothSocket ?=null;
+private var listofbluetoothsocket : ArrayList<BluetoothSocket> = ArrayList();
 
 class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
 
@@ -20,7 +24,7 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
         bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord("BPSocial", SVal.M_UUID)
     }
 
-    public fun getconextintent(a : Activity)
+    public fun setconextintent(a : Activity)
     {
         A=a;
     }
@@ -38,16 +42,19 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
                 null
             }
             socket?.also {
+                Socket = socket;
                 A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
                     Slist.list.add(socket.remoteDevice.name);
                     Slist.adapter?.notifyDataSetChanged();
                 })
+                listofbluetoothsocket.add(Socket!!);
                 //manageMyConnectedSocket(it)
                 Log.e(TAG, "Socket's accept() ");
-                Thread({
+               Thread({
                     val mbs: MyBluetoothService? = MyBluetoothService(socket);
+                    mbs?.setconextintent(A!!);
                     mbs?.run();
-                }).start();
+               }).start();
                 //mmServerSocket?.close()
                 //shouldLoop = false
             }
@@ -61,4 +68,8 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
             Log.e(TAG, "Could not close the connect socket", e)
         }
     }
+    fun getsocket(index : Int):BluetoothSocket{
+        return listofbluetoothsocket[index] as BluetoothSocket;
+    }
+
 }

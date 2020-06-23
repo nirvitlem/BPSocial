@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -17,12 +18,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.bpsocial.Slist.adapter
 import com.example.bpsocial.Slist.list
-import java.lang.reflect.Field
-import java.lang.reflect.InvocationTargetException
+import java.net.NetworkInterface
 import java.util.*
+import kotlin.experimental.and
+import kotlin.random.Random
 
 
 public var bluetoothAdapter : BluetoothAdapter? = null;
+public var ct : ConnectThread?=null;
+public var at : AcceptThread? = null;
+public var mbs: MyBluetoothService? = null;
 //public var adapter:ArrayAdapter<String>?=null;
 //public var list=mutableListOf("");
 private var RemText : TextView ?=null;
@@ -41,6 +46,7 @@ object Slist {
 
 private var listofbluetoothdevices : ArrayList<BluetoothDevice> = ArrayList();
 private var listofbluetoothPaireddevices : ArrayList<BluetoothDevice> = ArrayList();
+private var itemckickllistposition : Int ?=-1;
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +54,16 @@ class MainActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
         makeRequest();
+
+
+        val SwitchB = findViewById(R.id.switch1) as Switch
+        val SButton = findViewById(R.id.SButton) as Button
+        val ConnectButton = findViewById(R.id.connectb) as Button
+        val sendM = findViewById(R.id.SendM) as Button
+
+        SwitchB.isChecked=true;
+         SButton.isEnabled = true;
+        ConnectButton.isEnabled= false;
 
         var filter :IntentFilter  =  IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
@@ -64,27 +80,28 @@ class MainActivity : AppCompatActivity() {
         // list view item click listener
         ListBItems.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-                val selectedItem = parent.getItemAtPosition(position)
-                if (listofbluetoothdevices[position].bondState == BluetoothDevice.BOND_BONDED)
-                {
-                    alertm("התאמה","בוצעה התאמה בהצלחה");
-                    listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
-                }else {
-                    if (createBond(listofbluetoothdevices[position])) {
-                        Log.e("createBond ", "true");
+                if (!SwitchB.isChecked) {
+                    val selectedItem = parent.getItemAtPosition(position)
+                    if (listofbluetoothdevices[position].bondState == BluetoothDevice.BOND_BONDED) {
+                        alertm("התאמה", "בוצעה התאמה בהצלחה");
                         listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
+                    } else {
+                        if (createBond(listofbluetoothdevices[position])) {
+                            Log.e("createBond ", "true");
+                            listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
+                        }
                     }
+                    // textViewResult.text = "Selected : $selectedItem"
+                    // Log.e()
+                    bluetoothAdapter?.cancelDiscovery();
+                }else
+                {
+                    itemckickllistposition = (position-1);
                 }
-               // textViewResult.text = "Selected : $selectedItem"
-               // Log.e()
-                bluetoothAdapter?.cancelDiscovery();
 
             }
 
 
-        val SwitchB = findViewById(R.id.switch1) as Switch
-        val SButton = findViewById(R.id.SButton) as Button
-        val ConnectButton = findViewById(R.id.connectb) as Button
         SwitchB?.isChecked=true;
         SwitchB?.text="Master";
         SButton?.text="הפעל לגילוי";
@@ -92,11 +109,11 @@ class MainActivity : AppCompatActivity() {
             if (SwitchB.isChecked) {
                 if (GetBAdapter()) {
                     RemText?.text=getBluetoothMacAddress(bluetoothAdapter!!);
-                    bluetoothAdapter?.name = "BPS Master " ;
+                    bluetoothAdapter?.name = "BPS Master " ;//+ Random.nextInt(0, 100).toString();
                     startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
                     Thread({
-                        val at : AcceptThread ?= AcceptThread(bluetoothAdapter!!);
-                        at?.getconextintent(this);
+                        at = AcceptThread(bluetoothAdapter!!);
+                        at?.setconextintent(this);
                         at?.run();
                     }).start();
 
@@ -139,21 +156,61 @@ class MainActivity : AppCompatActivity() {
         }
 
         ConnectButton.setOnClickListener {
-            Thread({
-                Log.e("ConnectThread",listofbluetoothPaireddevices[0].name);
-                val ct: ConnectThread? = ConnectThread(listofbluetoothPaireddevices[0]);
-                ct?.setname(listofbluetoothPaireddevices[0]?.name);
-                ct?.run();
-            }).start();
+            if (!SwitchB.isChecked) {
+                Thread({
+                    Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
+                    ct = ConnectThread(listofbluetoothPaireddevices[0]);
+                    ct?.setname(listofbluetoothPaireddevices[0]?.name);
+                    ct?.run();
+
+                }).start();
+                while (ct?.getsocket()==null)
+                {
+                    Thread.sleep(1000);
+                }
+                Thread({
+                    mbs = MyBluetoothService(ct?.getsocket() as BluetoothSocket);
+                    mbs?.setconextintent(this!!);
+                    mbs?.run();
+                }).start();
+            }
+        }
+
+        sendM.setOnClickListener {
+            if (!SwitchB.isChecked) {
+                if (ct?.getsocket() != null) {
+                    Thread({
+                            mbs?.write(("test").toByteArray());
+                    }).start();
+                    Log.e("BPSocial Client send message", "test");
+                }
+            }
+            else
+            {
+                if(itemckickllistposition!=-1) {
+                    Log.e("itemckickllistpositione", itemckickllistposition.toString());
+                    if (at?.getsocket(itemckickllistposition!!) != null) {
+                        Thread({
+                            val mbs: MyBluetoothService? =
+                                MyBluetoothService(at?.getsocket(itemckickllistposition!!) as BluetoothSocket);
+                            mbs?.setconextintent(this!!);
+                            mbs?.write(("test").toByteArray());
+                        }).start();
+                        Log.e("BPSocial Server send message", "test");
+                    }
+                }
+           }
         }
 
         SwitchB.setOnClickListener {
             if (SwitchB.isChecked) {
                 // The switch is enabled/checked
+                ConnectButton.isEnabled= false;
                 SwitchB.setText("Master");
                 SButton.setText("הפעל לגילוי");
 
             } else {
+                ConnectButton.isEnabled= true;
                 SwitchB.setText("End Point");
                 SButton.setText("חפש מנהל");
             }
@@ -177,7 +234,7 @@ class MainActivity : AppCompatActivity() {
         {
             Thread.sleep(1_000);
         }
-        alertm("התאמה","התאמה בוצעה בהצלחה");
+        alertm("התאמה","התאמה בוצעה בהצלחה" );
         return returnValue;
     }
 
@@ -194,22 +251,10 @@ class MainActivity : AppCompatActivity() {
         builder.show();
     }
     private fun getBluetoothMacAddress(bluetoothAdapter:BluetoothAdapter): String? {
-        var bluetoothMacAddress = ""
-        try {
-            val mServiceField: Field = bluetoothAdapter?.javaClass.getDeclaredField("mService")
-            mServiceField.setAccessible(true)
-            val btManagerService: Any = mServiceField.get(bluetoothAdapter!!)
-            if (btManagerService != null) {
-                bluetoothMacAddress = btManagerService?.javaClass.getMethod("getAddress")
-                    .invoke(btManagerService) as String
-            }
-        } catch (ignore: NoSuchFieldException) {
-        } catch (ignore: NoSuchMethodException) {
-        } catch (ignore: IllegalAccessException) {
-        } catch (ignore: InvocationTargetException) {
-        }
-        return bluetoothMacAddress
+        return "";
+
     }
+
     public fun  GetBAdapter():Boolean
     {
         // Get the default adapter
@@ -272,7 +317,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun makeRequest() {
         ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_WIFI_STATE),
             PERMISSION_REQUEST_CODE)
     }
 

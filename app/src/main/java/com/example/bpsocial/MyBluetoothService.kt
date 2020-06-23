@@ -2,8 +2,6 @@ package com.example.bpsocial
 
 import android.app.Activity
 import android.bluetooth.BluetoothSocket
-import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import java.io.IOException
 import java.io.InputStream
@@ -26,16 +24,18 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
         private var A : Activity?= null;
 
-    public fun getconextintent(a : Activity)
+    public fun setconextintent(a : Activity)
     {
         A=a;
     }
 
     override fun run() {
+
         var numBytes: Int // bytes returned from read()
 
         // Keep listening to the InputStream until an exception occurs.
         while (true) {
+            Log.e(TAG, "mmInStream.read(mmBuffer)");
             // Read from the InputStream.
             numBytes = try {
                 mmInStream.read(mmBuffer);
@@ -44,17 +44,15 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 Log.d(TAG, "Input stream was disconnected", e)
                 break
             }
-
+            addtesttolist(String( mmBuffer));
         }
-        A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-            Slist.list.add(mmBuffer.toString());
-            Slist.adapter?.notifyDataSetChanged();
-        })
+
     }
 
         // Call this from the main activity to send data to the remote device.
         fun write(bytes: ByteArray) {
             try {
+                Log.e(TAG, "mmOutStream.write(bytes)");
                 mmOutStream.write(bytes)
             } catch (e: IOException) {
                 Log.e(TAG, "Error occurred when sending data", e)
@@ -69,6 +67,13 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             } catch (e: IOException) {
                 Log.e(TAG, "Could not close the connect socket", e)
             }
+        }
+
+         fun addtesttolist(s: String) {
+            A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                Slist.list.add(s);
+                Slist.adapter?.notifyDataSetChanged();
+            })
         }
     }
 //}
