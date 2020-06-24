@@ -4,11 +4,14 @@ import android.app.Activity
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
+import com.example.bpsocial.SlaveObjectlist.cb
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.charset.StandardCharsets
 
 private const val TAG = "BPSocial MyBluetoothService"
 
@@ -55,6 +58,19 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             {
                 var intent = Intent(A, Slave::class.java)
                 A?.startActivity(intent)
+            }
+            if (String( mmBuffer).contains("checked"))
+            {
+                A?.runOnUiThread(Runnable {
+                    StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.setBackgroundColor(Color.WHITE);
+                })
+            }
+            if (String( mmBuffer).contains("blue"))
+            {
+                A?.runOnUiThread(Runnable {
+                    SlaveVal.bool=true;
+                    SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
+                })
             }
         }
 

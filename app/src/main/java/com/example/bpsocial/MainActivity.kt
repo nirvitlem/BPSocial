@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,7 @@ public var bluetoothAdapter : BluetoothAdapter? = null;
 public var ct : ConnectThread?=null;
 public var at : AcceptThread? = null;
 public var mbs: MyBluetoothService? = null;
+public var BTGObject : BlueToothGeneralClass?=null;
 //public var adapter:ArrayAdapter<String>?=null;
 //public var list=mutableListOf("");
 
@@ -53,9 +55,13 @@ private var itemckickllistposition : Int ?=-1;
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
+
+
+        BTGObject = BlueToothGeneralClass();
         makeRequest();
 
         val SwitchB = findViewById(R.id.switch1) as Switch
@@ -112,9 +118,10 @@ class MainActivity : AppCompatActivity() {
                     bluetoothAdapter?.name = "BPS Master " ;//+ Random.nextInt(0, 100).toString();
                     startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
                     Thread({
-                        at = AcceptThread(bluetoothAdapter!!);
-                        at?.setconextintent(this);
-                        at?.run();
+                       // BTGObject?.setaATobject(at!!);
+                        Objectlist.at = AcceptThread(bluetoothAdapter!!);
+                        Objectlist.at?.setconextintent(this);
+                        Objectlist.at?.run();
                     }).start();
 
                 }
@@ -160,12 +167,13 @@ class MainActivity : AppCompatActivity() {
             if (!SwitchB.isChecked) {
                 Thread({
                     Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
-                    ct = ConnectThread(listofbluetoothPaireddevices[0]);
-                    ct?.setname(listofbluetoothPaireddevices[0]?.name);
-                    ct?.run();
+                   // BTGObject?.setCAobject(ct!!);
+                    Objectlist.ct = ConnectThread(listofbluetoothPaireddevices[0]);
+                    Objectlist.ct?.setname(listofbluetoothPaireddevices[0]?.name);
+                    Objectlist.ct?.run();
 
                 }).start();
-                while (ct?.getsocket()==null)
+                while (Objectlist.ct?.getsocket()==null)
                 {
                     Thread.sleep(1000);
                     +t!!;
@@ -178,9 +186,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 if (t!!<10) {
                     Thread({
-                        mbs = MyBluetoothService(ct?.getsocket() as BluetoothSocket);
-                        mbs?.setconextintent(this!!);
-                        mbs?.run();
+                       // BTGObject?.setMBSobject(mbs!!);
+                        Objectlist.mbs = MyBluetoothService(Objectlist.ct?.getsocket() as BluetoothSocket);
+                        Objectlist.mbs?.setconextintent(this!!);
+                        Objectlist.mbs?.run();
                     }).start();
                     sendM.isEnabled=true;
                 }
@@ -191,8 +200,8 @@ class MainActivity : AppCompatActivity() {
             }
             else
             {
-                if (!at?.getlistsocket().isNullOrEmpty()) {
-                    for (element in at?.getlistsocket() as ArrayList<BluetoothSocket>) {
+                if (!Objectlist.at?.getlistsocket().isNullOrEmpty()) {
+                    for (element in Objectlist.at?.getlistsocket() as ArrayList<BluetoothSocket>) {
 
                         Thread({
                             val mbs: MyBluetoothService? =
@@ -204,6 +213,7 @@ class MainActivity : AppCompatActivity() {
 
                     }
                     var intent = Intent(this, Start::class.java)
+                    var b = Bundle()
                     this.startActivity(intent)
                 }
             }
@@ -211,21 +221,20 @@ class MainActivity : AppCompatActivity() {
 
         sendM.setOnClickListener {
             if (!SwitchB.isChecked) {
-                if (ct?.getsocket() != null) {
+                if (Objectlist.ct?.getsocket() != null) {
                     Thread({
                             list.add("נשלחה הודעה למנהל 150874")
-                            mbs?.write(("150874" + (0..100).random().toString()).toByteArray());
+                            Objectlist.mbs?.write(("150874" + (0..100).random().toString()).toByteArray());
                     }).start();
-                    Log.e("BPSocial Client send message", "test");
+                    Log.e("BPSocial Client send message", "150874");
                 }
             }
             else {
-                if (!at?.getlistsocket().isNullOrEmpty()) {
-                    for (element in at?.getlistsocket() as ArrayList<BluetoothSocket>) {
+                if (!Objectlist.at?.getlistsocket().isNullOrEmpty()) {
+                    for (element in Objectlist.at?.getlistsocket() as ArrayList<BluetoothSocket>) {
 
                         Thread({
-                            val mbs: MyBluetoothService? =
-                                MyBluetoothService(element as BluetoothSocket);
+                            val mbs: MyBluetoothService? = MyBluetoothService(element as BluetoothSocket);
                             mbs?.setconextintent(this!!);
                             mbs?.write(("150874" + (0..100).random()).toByteArray());
                         }).start();

@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.example.bpsocial.Oblist.listofbluetoothsocket
 import java.io.IOException
 import java.util.ArrayList
 
@@ -16,7 +17,11 @@ import java.util.ArrayList
 private const val TAG = "BPSocial Server"
 private var A : Activity ?= null;
 private var Socket: BluetoothSocket ?=null;
-private var listofbluetoothsocket : ArrayList<BluetoothSocket> = ArrayList();
+object Oblist {
+    @JvmStatic var listofbluetoothsocket : ArrayList<BluetoothSocket> = ArrayList();
+
+    //...
+}
 
 class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
 
