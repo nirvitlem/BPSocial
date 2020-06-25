@@ -49,7 +49,7 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
             socket?.also {
                 Socket = socket;
                 A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                    Slist.list.add(socket.remoteDevice.name);
+                    Slist.list.add(socket.remoteDevice.name  + " התחבר בהצלחה ");
                     Slist.adapter?.notifyDataSetChanged();
                 })
                 listofbluetoothsocket.add(Socket!!);

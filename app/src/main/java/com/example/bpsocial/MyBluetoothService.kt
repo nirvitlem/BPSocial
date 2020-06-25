@@ -29,6 +29,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         private val mmOutStream: OutputStream = mmSocket.outputStream
         private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
         private var A : Activity?= null;
+        private val time : TimersData ?= TimersData();
 
 
     public fun setconextintent(a : Activity)
@@ -61,16 +62,22 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             }
             if (String( mmBuffer).contains("checked"))
             {
+                time?.StopTime();
                 A?.runOnUiThread(Runnable {
                     StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.setBackgroundColor(Color.WHITE);
+                    val t= StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.tag.toString();
+                    StartObjectlist.list?.add(  TimersDataVal.time.toString() + " אחרי "+ t + "נגיעה ב - ");
+                    StartObjectlist.adapter?.notifyDataSetChanged()
                 })
             }
             if (String( mmBuffer).contains("blue"))
             {
+                time?.startTime();
                 A?.runOnUiThread(Runnable {
                     SlaveVal.bool=true;
                     SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
                 })
+
             }
         }
 

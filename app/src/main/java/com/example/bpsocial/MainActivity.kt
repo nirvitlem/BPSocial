@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         val sendM = findViewById(R.id.SendM) as Button
 
         SwitchB.isChecked=true;
+        ConnectButton.isEnabled=false;
         SButton.isEnabled = true;
 
         var filter :IntentFilter  =  IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -88,9 +89,9 @@ class MainActivity : AppCompatActivity() {
         ListBItems.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
                 if (!SwitchB.isChecked) {
+                    bluetoothAdapter?.cancelDiscovery();
                     val selectedItem = parent.getItemAtPosition(position)
                     if (listofbluetoothdevices[position].bondState == BluetoothDevice.BOND_BONDED) {
-                        alertm("התאמה", "בוצעה התאמה בהצלחה");
                         listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
                     } else {
                         if (createBond(listofbluetoothdevices[position])) {
@@ -98,7 +99,45 @@ class MainActivity : AppCompatActivity() {
                             listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
                         }
                     }
-                    bluetoothAdapter?.cancelDiscovery();
+                    while (listofbluetoothdevices[position].bondState != BluetoothDevice.BOND_BONDED)
+                    {
+                        Thread.sleep(1000);
+                    }
+                    alertm("התאמה", "בוצעה התאמה בהצלחה");
+                    val t : Int?=0;
+                    Thread({
+                        Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
+                        // BTGObject?.setCAobject(ct!!);
+                        Objectlist.ct = ConnectThread(listofbluetoothPaireddevices[0]);
+                        Objectlist.ct?.setname(listofbluetoothPaireddevices[0]?.name);
+                        Objectlist.ct?.run();
+
+                    }).start();
+                    while (Objectlist.ct?.getsocket()==null)
+                    {
+                        Thread.sleep(1000);
+                        +t!!;
+                        if (t==10)
+                        {
+                            break
+                        };
+                        list.clear();
+                        adapter?.notifyDataSetChanged();
+                    }
+                    if (t!!<10) {
+                        Thread({
+                            // BTGObject?.setMBSobject(mbs!!);
+                            Objectlist.mbs = MyBluetoothService(Objectlist.ct?.getsocket() as BluetoothSocket);
+                            Objectlist.mbs?.setconextintent(this!!);
+                            Objectlist.mbs?.run();
+                        }).start();
+                        sendM.isEnabled=true;
+                        alertm("הצלחה","הצלחה בחיבור למנהל");
+                    }
+                    else
+                    {
+                        alertm("שגיאת חיבור","לא מצליח להתחבר למנהל, נסה שנית");
+                    }
                 }else
                 {
                     itemckickllistposition = (position-1);
@@ -163,40 +202,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         ConnectButton.setOnClickListener {
-            val t : Int?=0;
             if (!SwitchB.isChecked) {
-                Thread({
-                    Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
-                   // BTGObject?.setCAobject(ct!!);
-                    Objectlist.ct = ConnectThread(listofbluetoothPaireddevices[0]);
-                    Objectlist.ct?.setname(listofbluetoothPaireddevices[0]?.name);
-                    Objectlist.ct?.run();
 
-                }).start();
-                while (Objectlist.ct?.getsocket()==null)
-                {
-                    Thread.sleep(1000);
-                    +t!!;
-                    if (t==10)
-                    {
-                        break
-                    };
-                    list.clear();
-                    adapter?.notifyDataSetChanged();
-                }
-                if (t!!<10) {
-                    Thread({
-                       // BTGObject?.setMBSobject(mbs!!);
-                        Objectlist.mbs = MyBluetoothService(Objectlist.ct?.getsocket() as BluetoothSocket);
-                        Objectlist.mbs?.setconextintent(this!!);
-                        Objectlist.mbs?.run();
-                    }).start();
-                    sendM.isEnabled=true;
-                }
-                else
-                {
-                    alertm("שגיאת חיבור","לא מצליח להתחבר למנהל, נסה שנית");
-                }
             }
             else
             {
@@ -253,6 +260,7 @@ class MainActivity : AppCompatActivity() {
                 ConnectButton.text="התחל";
 
             } else {
+                ConnectButton.isEnabled=true;
                 ConnectButton.text="התחבר";
                 SwitchB.setText("יחידת קצה");
                 SButton.setText("חפש מנהל");
@@ -297,6 +305,7 @@ class MainActivity : AppCompatActivity() {
        return "";
 
     }
+
 
     public fun  GetBAdapter():Boolean
     {
