@@ -12,6 +12,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "BPSocial MyBluetoothService"
 
@@ -29,7 +30,8 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         private val mmOutStream: OutputStream = mmSocket.outputStream
         private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
         private var A : Activity?= null;
-        private val time : TimersData ?= TimersData();
+       // private val time : TimersData ?= TimersData();
+        private var M : HashMap<String,Long> ?=null;
 
 
     public fun setconextintent(a : Activity)
@@ -62,17 +64,19 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             }
             if (String( mmBuffer).contains("checked"))
             {
-                time?.StopTime();
+               // time?.StopTime();
+                val sec = TimeUnit.MILLISECONDS.toSeconds (M?.get(mmSocket.remoteDevice.address.toString())?.toLong()!! - System.currentTimeMillis()!!)
                 A?.runOnUiThread(Runnable {
                     StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.setBackgroundColor(Color.WHITE);
                     val t= StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.tag.toString();
-                    StartObjectlist.list?.add(  TimersDataVal.time.toString() + " אחרי "+ t + "נגיעה ב - ");
+                    StartObjectlist.list?.add(  sec.toString() + " אחרי "+ t + "נגיעה ב - ");
                     StartObjectlist.adapter?.notifyDataSetChanged()
                 })
             }
             if (String( mmBuffer).contains("blue"))
             {
-                time?.startTime();
+                //time?.startTime();
+                M?.put(mmSocket.remoteDevice.address.toString(),System.currentTimeMillis())
                 A?.runOnUiThread(Runnable {
                     SlaveVal.bool=true;
                     SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
