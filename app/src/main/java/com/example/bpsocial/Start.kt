@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.util.TypedValue
 import android.view.View
@@ -14,18 +15,28 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bpsocial.StartObjectlist.listoftTableRow
+import com.example.bpsocial.StartObjectval.next
 import kotlinx.android.synthetic.main.activity_start.*
 
 
 public var tbl : TableLayout ?=null;
 public var size : Int ?=0;
 public var plan : String ?="";
+
+
 object StartObjectlist {
     @JvmStatic public var listoftTableRow: ArrayList<TableRow> = ArrayList();
     @JvmStatic public var list=mutableListOf("");
     @JvmStatic public var adapter:ArrayAdapter<String>?=null;
     //...
 }
+
+object StartObjectval {
+    @JvmField public var next : Boolean?=true;
+
+    //...
+}
+
 class Start : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -99,19 +110,41 @@ class Start : AppCompatActivity() {
         v.setBackgroundColor(c)
     }
 
-    fun Plan1()
-    {
+    fun Plan1() {
         StartObjectlist.list.clear();
-        PB(300);
-        Startbutton.isEnabled=false;
-        val r = (0..(size?.minus(1)!!)).random() as Int;
-        setcolorofcell(getchildview(r),Color.BLUE);
+        PB(60);
+        Startbutton.isEnabled = false;
+
+        // Start the lengthy operation in a background thread
+
+        val timer = object : CountDownTimer(60000, 1500) {
+            override fun onTick(millisUntilFinished: Long) {
+                if (StartObjectval.next!!) {
+                    val r = (0..(size?.minus(1)!!)).random() as Int;
+                    setcolorofcell(getchildview(r), Color.BLUE);
+                    firemessage(r);
+                    next = false;
+                }
+            }
+
+            override fun onFinish() {
+                StartObjectlist.list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
+                StartObjectlist.adapter?.notifyDataSetChanged();
+                Startbutton.isEnabled = true;
+            }
+        }
+        timer.start();
+    }
+
+    fun firemessage(r:Int) {
         Thread({
-            val mbs: MyBluetoothService? = MyBluetoothService( Oblist.listofbluetoothsocket[r] as BluetoothSocket);
+            val mbs: MyBluetoothService? =
+                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
             mbs?.setconextintent(this!!);
-            mbs?.write(("blue+" + r.toString()).toByteArray());
-            StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
-            StartObjectlist.adapter?.notifyDataSetChanged()
+            mbs?.write(("Cblue+" + r.toString()).toByteArray());
+            //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
+            // StartObjectlist.adapter?.notifyDataSetChanged()
+
         }).start();
     }
 
@@ -137,7 +170,7 @@ class Start : AppCompatActivity() {
 
     fun PB(t:Int) {
         var progressStatus = 0;
-
+        progressBar.max=t;
         // Initialize a new Handler instance
         val handler: Handler = Handler()
 
@@ -145,11 +178,11 @@ class Start : AppCompatActivity() {
         Thread(Runnable {
             while (progressStatus < t) {
                 // Update the progress status
-                progressStatus += 2
+                progressStatus += 1
 
-                // Try to sleep the thread for 50 milliseconds
+                // Try to sleep the thread for 1000 milliseconds
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(1000)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }
@@ -162,8 +195,9 @@ class Start : AppCompatActivity() {
                     textViewPB.text = progressStatus.toString()
                 })
             }
-            Startbutton.isEnabled = true;
+
         }).start() // Start the operation
+
 
     }
 
@@ -174,9 +208,8 @@ class Start : AppCompatActivity() {
 
         for (x in 0..size) {
             if (x==size) break;
-
             var tr = TableRow(this)
-            tr = TableRow(this)
+            tr = TableRow(this);
             //  tr.setBackgroundColor(Color.BLUE);
             tr.tag = Oblist.listofbluetoothsocket[x]?.remoteDevice?.name
             var t: TextView? = TextView(this);

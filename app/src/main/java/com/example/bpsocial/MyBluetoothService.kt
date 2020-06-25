@@ -12,7 +12,9 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 private const val TAG = "BPSocial MyBluetoothService"
 
@@ -30,8 +32,8 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         private val mmOutStream: OutputStream = mmSocket.outputStream
         private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
         private var A : Activity?= null;
-       // private val time : TimersData ?= TimersData();
-        private var M : HashMap<String,Long> ?=null;
+        private val time : TimersData ?= TimersData();
+        private var M : HashMap<String,Long> ?=HashMap<String,Long>();
 
 
     public fun setconextintent(a : Activity)
@@ -62,21 +64,31 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 var intent = Intent(A, Slave::class.java)
                 A?.startActivity(intent)
             }
-            if (String( mmBuffer).contains("checked"))
+
+            //server
+            if (String( mmBuffer).contains("Schecked"))
             {
                // time?.StopTime();
-                val sec = TimeUnit.MILLISECONDS.toSeconds (M?.get(mmSocket.remoteDevice.address.toString())?.toLong()!! - System.currentTimeMillis()!!)
+                val sec: Double ?=((Calendar.getInstance().timeInMillis.toDouble() - M?.get(mmSocket.remoteDevice.address.toString())?.toDouble()!!)/1000);
+                time?.sumtime(sec!!);
+                StartObjectval?.next=true;
                 A?.runOnUiThread(Runnable {
                     StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.setBackgroundColor(Color.WHITE);
                     val t= StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.tag.toString();
-                    StartObjectlist.list?.add(  sec.toString() + " אחרי "+ t + "נגיעה ב - ");
+                    StartObjectlist.list?.add(   " נגיעה ב- "+ t + " אחרי " + sec.toString() );
                     StartObjectlist.adapter?.notifyDataSetChanged()
                 })
             }
-            if (String( mmBuffer).contains("blue"))
+            if (String( mmBuffer).contains("Sblue"))
+            {
+                M?.put(mmSocket.remoteDevice.address.toString(), Calendar.getInstance().timeInMillis!!)
+            }
+
+            //client
+            if (String( mmBuffer).contains("Cblue"))
             {
                 //time?.startTime();
-                M?.put(mmSocket.remoteDevice.address.toString(),System.currentTimeMillis())
+                write("Sblue".toByteArray());
                 A?.runOnUiThread(Runnable {
                     SlaveVal.bool=true;
                     SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);

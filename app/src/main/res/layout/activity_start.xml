@@ -9,11 +9,11 @@
 
     <TableLayout
         android:id="@+id/tableLayout"
-        android:layout_width="405dp"
-        android:layout_height="290dp"
+        android:layout_width="392dp"
+        android:layout_height="206dp"
         android:layoutMode="clipBounds"
-        android:stretchColumns="*"
         android:screenOrientation="portrait"
+        android:stretchColumns="*"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

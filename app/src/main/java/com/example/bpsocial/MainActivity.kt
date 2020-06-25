@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         SwitchB.isChecked=true;
         ConnectButton.isEnabled=false;
         SButton.isEnabled = true;
+        ConnectButton.isEnabled=true;
 
         var filter :IntentFilter  =  IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
@@ -255,12 +256,13 @@ class MainActivity : AppCompatActivity() {
         SwitchB.setOnClickListener {
             if (SwitchB.isChecked) {
                 // The switch is enabled/checked
+                ConnectButton.isEnabled=true;
                 SwitchB.setText("מנהל");
                 SButton.setText("הפעל לגילוי");
                 ConnectButton.text="התחל";
 
             } else {
-                ConnectButton.isEnabled=true;
+                ConnectButton.isEnabled=false;
                 ConnectButton.text="התחבר";
                 SwitchB.setText("יחידת קצה");
                 SButton.setText("חפש מנהל");
