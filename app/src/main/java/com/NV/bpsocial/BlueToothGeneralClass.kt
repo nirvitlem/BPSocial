@@ -1,9 +1,7 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import com.example.bpsocial.Objectlist.mbs
-import com.example.bpsocial.Objectlist.ct
+import com.NV.bpsocial.Objectlist.mbs
+import com.NV.bpsocial.Objectlist.ct
 
 
 object Objectlist {

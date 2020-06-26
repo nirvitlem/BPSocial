@@ -1,30 +1,22 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.bluetooth.BluetoothSocket
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Environment
 import android.os.Handler
 import android.util.TypedValue
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bpsocial.StartObjectlist.adapter
-import com.example.bpsocial.StartObjectlist.list
-import com.example.bpsocial.StartObjectval.next
+import com.NV.bpsocial.StartObjectval.next
 import kotlinx.android.synthetic.main.activity_start.*
-import java.io.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 

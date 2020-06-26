@@ -1,4 +1,4 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket

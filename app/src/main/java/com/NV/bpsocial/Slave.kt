@@ -1,20 +1,13 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bpsocial.SlaveObjectlist.cb
-import com.example.bpsocial.SlaveVal.bool
-import com.example.bpsocial.SlaveVal.index
-import java.util.*
+import com.NV.bpsocial.SlaveObjectlist.cb
+import com.NV.bpsocial.SlaveVal.bool
+import com.NV.bpsocial.SlaveVal.index
 
 object SlaveVal {
     @JvmField var index : Int=0;

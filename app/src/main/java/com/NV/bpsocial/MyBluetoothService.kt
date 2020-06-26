@@ -1,20 +1,16 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
 import android.app.Activity
 import android.bluetooth.BluetoothSocket
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
-import com.example.bpsocial.SlaveObjectlist.cb
-import com.example.bpsocial.TimersObjectlist.listoftofResult
+import com.NV.bpsocial.TimersObjectlist.listoftofResult
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
 
 private const val TAG = "BPSocial MyBluetoothService"

@@ -6,7 +6,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.example.bpsocial"
+        applicationId "com.NV.bpsocial"
         minSdkVersion 25
         targetSdkVersion 29
         versionCode 1
