@@ -87,6 +87,7 @@ class Start : AppCompatActivity() {
         size = Oblist.listofbluetoothsocket.size as Int
         sb.setOnClickListener {
             buttons.isEnabled=false;
+            TimersObjectlist.listoftofResult.clear();
            /*test  size=4;
             var r = (0..(size?.minus(1)!!)).random() as Int;
             StartObjectlist.list.add(r.toString());
