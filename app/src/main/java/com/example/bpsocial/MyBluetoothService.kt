@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
 import com.example.bpsocial.SlaveObjectlist.cb
+import com.example.bpsocial.TimersObjectlist.listoftofResult
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -28,18 +29,16 @@ const val MESSAGE_TOAST: Int = 2
 class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
 
-        private val mmInStream: InputStream = mmSocket.inputStream
-        private val mmOutStream: OutputStream = mmSocket.outputStream
-        private var mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
-        private var A : Activity?= null;
-        private val time : TimersData ?= TimersData();
-        private var M : HashMap<String,Long> ?=HashMap<String,Long>();
-        private var IndexClient : Int ?= 0;
+    private val mmInStream: InputStream = mmSocket.inputStream
+    private val mmOutStream: OutputStream = mmSocket.outputStream
+    private var mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+    private var A: Activity? = null;
+    private val time: TimersData? = TimersData();
+    private var M: HashMap<String, Long>? = HashMap<String, Long>();
+    private var IndexClient: Int? = 0;
 
-
-    public fun setconextintent(a : Activity)
-    {
-        A=a;
+    public fun setconextintent(a: Activity) {
+        A = a;
     }
 
     override fun run() {
@@ -57,48 +56,57 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 Log.d(TAG, "Input stream was disconnected", e)
                 break
             }
-            addtesttolist(String( mmBuffer));
-            if (String( mmBuffer).contains("150874")) write("התקבלה הההודעה - 740815".toByteArray());
-            if (String( mmBuffer).contains("740815")) addtesttolist(mmSocket.remoteDevice.name + " בדיקה עברה בהצלחה ")
-            if (String( mmBuffer).contains("ready"))
-            {
+            addtesttolist(String(mmBuffer));
+            if (String(mmBuffer).contains("150874")) write("התקבלה הההודעה - 740815".toByteArray());
+            if (String(mmBuffer).contains("740815")) addtesttolist(mmSocket.remoteDevice.name + " בדיקה עברה בהצלחה ")
+            if (String(mmBuffer).contains("ready")) {
                 var intent = Intent(A, Slave::class.java)
                 A?.startActivity(intent)
             }
 
             //server
-            if (String( mmBuffer).contains("Schecked"))
-            {
-               // time?.StopTime();
-                val sec: Double ?=((Calendar.getInstance().timeInMillis.toDouble() - M?.get(mmSocket.remoteDevice.address.toString())?.toDouble()!!)/1000);
+            if (String(mmBuffer).contains("Schecked")) {
+                // time?.StopTime();
+                val sec: Double? =
+                    ((Calendar.getInstance().timeInMillis.toDouble() - M?.get(mmSocket.remoteDevice.address.toString())
+                        ?.toDouble()!!) / 1000);
+                val c = String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
+                    .split('+')[2].toString()
                 time?.sumtime(sec!!);
-                StartObjectval?.next=true;
                 A?.runOnUiThread(Runnable {
                     StartObjectlist.listoftTableRow[IndexClient!!]?.setBackgroundColor(Color.WHITE);
-                    val t= StartObjectlist.listoftTableRow[IndexClient!!]?.tag.toString();
-                    StartObjectlist.list?.add(   " נגיעה ב- "+ t + " אחרי " + sec.toString() );
+                    val t = StartObjectlist.listoftTableRow[IndexClient!!]?.tag.toString();
+                    listoftofResult.add("Schecked;" + t + ";" + sec + ";"+ Calendar.getInstance().time.toString() + ";" + c)
+                    StartObjectlist.list?.add(" נגיעה ב- " + t + " אחרי " + sec.toString());
                     StartObjectlist.adapter?.notifyDataSetChanged()
                 })
                 mmBuffer = ByteArray(1024);
+                StartObjectval?.next = true;
             }
-            if (String( mmBuffer).contains("Sblue"))
-            {
-
-                M?.put(mmSocket.remoteDevice.address.toString(), Calendar.getInstance().timeInMillis!!)
-                IndexClient=String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt();
+            if (String(mmBuffer).contains("Sblue")) {
+                listoftofResult.add("SSendblue; ; ;"+ Calendar.getInstance().time.toString()+";blue")
+                M?.put(
+                    mmSocket.remoteDevice.address.toString(),
+                    Calendar.getInstance().timeInMillis!!
+                )
+                IndexClient =
+                    String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
+                        .split('+')[1].toInt();
                 mmBuffer = ByteArray(1024);
             }
 
             //client
-            if (String( mmBuffer).contains("Cblue"))
-            {
-                val index= String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt();
+            if (String(mmBuffer).contains("Cblue")) {
+                val index =
+                    String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
+                        .split('+')[1].toInt();
                 //time?.startTime();
                 write(("Sblue+" + index.toString()).toByteArray());
                 A?.runOnUiThread(Runnable {
-                    SlaveVal.bool=true;
-                    SlaveVal.index= index
+                    SlaveVal.bool = true;
+                    SlaveVal.index = index
                     SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
+                    SlaveObjectlist.cb?.tag="Color Blue";
                 })
                 mmBuffer = ByteArray(1024);
 
@@ -107,37 +115,39 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
     }
 
-        // Call this from the main activity to send data to the remote device.
-        fun write(bytes: ByteArray) {
-            try {
-                Log.e(TAG, "mmOutStream.write(bytes)");
-                mmOutStream.write(bytes)
-            } catch (e: IOException) {
-                Log.e(TAG, "Error occurred when sending data", e)
-                return
-            }
+    // Call this from the main activity to send data to the remote device.
+    fun write(bytes: ByteArray) {
+        try {
+            Log.e(TAG, "mmOutStream.write(bytes)");
+            mmOutStream.write(bytes)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error occurred when sending data", e)
+            return
         }
+    }
 
-        // Call this method from the main activity to shut down the connection.
-        fun cancel() {
-            try {
-                mmSocket.close()
-            } catch (e: IOException) {
-                Log.e(TAG, "Could not close the connect socket", e)
-            }
+    // Call this method from the main activity to shut down the connection.
+    fun cancel() {
+        try {
+            mmSocket.close()
+        } catch (e: IOException) {
+            Log.e(TAG, "Could not close the connect socket", e)
         }
+    }
 
-         fun addtesttolist(s: String) {
-            A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                Slist.list.add(s);
-                Slist.adapter?.notifyDataSetChanged();
-            })
-        }
+    fun addtesttolist(s: String) {
+        A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
+            Slist.list.add(s);
+            Slist.adapter?.notifyDataSetChanged();
+        })
+    }
 
     fun addtesttotext(s: String) {
         A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-            Slist.RText?.text=s;
+            Slist.RText?.text = s;
         })
     }
-    }
+
+
+}
 //}

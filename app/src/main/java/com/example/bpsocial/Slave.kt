@@ -41,7 +41,7 @@ class Slave : AppCompatActivity() {
                 cb?.setBackgroundColor(Color.WHITE);
                 Thread({
                     Objectlist.mbs?.setconextintent(this);
-                    Objectlist.mbs?.write(("Schecked+" + index.toString()).toByteArray());
+                    Objectlist.mbs?.write(("Schecked+" + index.toString() + "+" +cb?.tag).toByteArray());
                 }).start();
 
             }

@@ -1,5 +1,7 @@
 package com.example.bpsocial
 
+import android.widget.ArrayAdapter
+import android.widget.TableRow
 import com.example.bpsocial.TimersDataVal.time
 import com.example.bpsocial.TimersDataVal.totaltime
 import java.sql.Time
@@ -14,6 +16,10 @@ object TimersDataVal {
     //...
 }
 
+object TimersObjectlist {
+    @JvmStatic public var listoftofResult: ArrayList<String> = ArrayList();
+    //...
+}
 
 class TimersData {
     public var T : Long?= 0;
@@ -38,3 +44,4 @@ class TimersData {
         totaltime=totaltime?.plus(t);
     }
 }
+

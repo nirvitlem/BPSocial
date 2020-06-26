@@ -110,15 +110,8 @@ class Start : AppCompatActivity() {
         listevents.adapter = StartObjectlist.adapter
         buttons.isEnabled=false;
         buttons.setOnClickListener {
-            val ed : EditText ?= EditText(this);
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("שתף קובץ")
-            builder.setMessage("הגדר שם לקובץ ")
-            builder.setView(ed);
-            builder.setPositiveButton("OK"){dialog, which ->
-                savefile(ed?.text.toString() + Calendar.getInstance()?.time.toString());
-            }
-            builder.show();
+            var intent = Intent(this, Summerize::class.java)
+            this.startActivity(intent)
         }
     }
 
@@ -157,8 +150,8 @@ class Start : AppCompatActivity() {
             override fun onFinish() {
                 next = true;
                 A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                    list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
-                    adapter?.notifyDataSetChanged();
+                    //list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
+                    //adapter?.notifyDataSetChanged();
                     Startbutton.isEnabled = true;
                     buttons.isEnabled = true;
                 })
@@ -227,10 +220,6 @@ class Start : AppCompatActivity() {
                     textViewPB.text = progressStatus.toString()
                 })
             }
-            A?.runOnUiThread(Runnable {
-                list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
-                adapter?.notifyDataSetChanged();
-            })
         }).start() // Start the operation
 
 
@@ -266,38 +255,6 @@ class Start : AppCompatActivity() {
        // tbl?.addView(tr);
     }
 
-    fun savefile(fname : String)
-    {
-        var myExternalFile:File = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS.toString()), fname+".txt")
-        val out: ObjectOutputStream
-        val objs = arrayOfNulls<Any>(listevents.getCount())
-
-        for (i in 0 until listevents.getCount()) {
-            val obj = listevents.getItemAtPosition(i) as Any
-            objs[i] = obj
-        }
-        try {
-            out = ObjectOutputStream(
-                FileOutputStream(
-                    myExternalFile
-                )
-            )
-            out.writeObject(objs)
-            out.flush()
-            out.close()
-
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        val sendIntent = Intent()
-        sendIntent.action = Intent.ACTION_SEND
-        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myExternalFile))
-        sendIntent.type = "text/csv"
-        startActivity(Intent.createChooser(sendIntent, "SHARE"))
-    }
 
     override fun onBackPressed() {
         moveTaskToBack(false)
