@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.util.Log
 import java.io.IOException
+import java.lang.Exception
+
 private const val TAG = "BPSocial Client"
 public var sname : String ?= "";
 
@@ -18,24 +20,25 @@ class ConnectThread(device: BluetoothDevice) : Thread() {
         sname=Sname;
     }
 
-    public override fun run()
-    {
+    public override fun run() {
+        try {
+            // Cancel discovery because it otherwise slows down the connection.
+            bluetoothAdapter?.cancelDiscovery()
+            Log.e("BPSocial Client SVal.M_UUID", SVal.M_UUID.toString());
+            mmSocket?.use { socket ->
+                // Connect to the remote device through the socket. This call blocks
+                // until it succeeds or throws an exception.
+                socket.connect()
 
-        // Cancel discovery because it otherwise slows down the connection.
-        bluetoothAdapter?.cancelDiscovery()
-        Log.e("BPSocial Client SVal.M_UUID" , SVal.M_UUID.toString());
-        mmSocket?.use { socket ->
-            // Connect to the remote device through the socket. This call blocks
-            // until it succeeds or throws an exception.
-            socket.connect()
+                while (mmSocket!!.isConnected) {
 
-            while(mmSocket!!.isConnected)
-            {
-
+                }
+                // The connection attempt succeeded. Perform work associated with
+                // the connection in a separate thread.
+                // manageMyConnectedSocket(socket)
             }
-            // The connection attempt succeeded. Perform work associated with
-            // the connection in a separate thread.
-           // manageMyConnectedSocket(socket)
+        } catch (e: Exception) {
+
         }
     }
 

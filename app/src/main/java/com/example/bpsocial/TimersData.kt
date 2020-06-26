@@ -35,6 +35,6 @@ class TimersData {
 
     public fun sumtime(t : Double)
     {
-        totaltime=+t;
+        totaltime=totaltime?.plus(t);
     }
 }

@@ -17,7 +17,7 @@ import com.example.bpsocial.SlaveVal.index
 import java.util.*
 
 object SlaveVal {
-    @JvmField val index : Int=0;
+    @JvmField var index : Int=0;
     @JvmField var bool : Boolean=false;
 
     //...
@@ -37,12 +37,13 @@ class Slave : AppCompatActivity() {
         cb?.setBackgroundColor(Color.WHITE);
         cb?.setOnClickListener {
             if (bool) {
+                bool=false;
                 cb?.setBackgroundColor(Color.WHITE);
                 Thread({
                     Objectlist.mbs?.setconextintent(this);
                     Objectlist.mbs?.write(("Schecked+" + index.toString()).toByteArray());
                 }).start();
-                bool=false;
+
             }
         }
     }

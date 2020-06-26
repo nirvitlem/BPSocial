@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
-
         BTGObject = BlueToothGeneralClass();
         makeRequest();
 
@@ -105,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                         Thread.sleep(1000);
                     }
                     alertm("התאמה", "בוצעה התאמה בהצלחה");
-                    val t : Int?=0;
+                    var t : Int?=0;
                     Thread({
                         Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
                         // BTGObject?.setCAobject(ct!!);
@@ -117,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                     while (Objectlist.ct?.getsocket()==null)
                     {
                         Thread.sleep(1000);
-                        +t!!;
+                        t=t?.plus(1);
                         if (t==10)
                         {
                             break
@@ -221,7 +220,6 @@ class MainActivity : AppCompatActivity() {
 
                     }
                     var intent = Intent(this, Start::class.java)
-                    var b = Bundle()
                     this.startActivity(intent)
                 }
             }
@@ -371,7 +369,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun makeRequest() {
         ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_WIFI_STATE),
+            arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_WIFI_STATE
+            ,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
             PERMISSION_REQUEST_CODE)
     }
 

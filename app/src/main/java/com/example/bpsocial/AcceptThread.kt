@@ -15,7 +15,7 @@ import java.util.ArrayList
 
 
 private const val TAG = "BPSocial Server"
-private var A : Activity ?= null;
+var A : Activity ?= null;
 private var Socket: BluetoothSocket ?=null;
 object Oblist {
     @JvmStatic var listofbluetoothsocket : ArrayList<BluetoothSocket> = ArrayList();

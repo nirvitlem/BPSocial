@@ -1,22 +1,31 @@
 package com.example.bpsocial
 
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.bluetooth.BluetoothSocket
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Environment
 import android.os.Handler
 import android.util.TypedValue
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bpsocial.StartObjectlist.listoftTableRow
+import com.example.bpsocial.StartObjectlist.adapter
+import com.example.bpsocial.StartObjectlist.list
 import com.example.bpsocial.StartObjectval.next
 import kotlinx.android.synthetic.main.activity_start.*
+import java.io.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 public var tbl : TableLayout ?=null;
@@ -33,6 +42,7 @@ object StartObjectlist {
 
 object StartObjectval {
     @JvmField public var next : Boolean?=true;
+    @JvmField public var A : Activity?=null;
 
     //...
 }
@@ -42,6 +52,7 @@ class Start : AppCompatActivity() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
+        A=this;
         textViewPB.text="";
         Objectlist.mbs?.setconextintent(this);
         tbl= findViewById(R.id.tableLayout) as TableLayout
@@ -75,6 +86,12 @@ class Start : AppCompatActivity() {
         val sb = findViewById(R.id.Startbutton) as Button;
         size = Oblist.listofbluetoothsocket.size as Int
         sb.setOnClickListener {
+            buttons.isEnabled=false;
+           /*test  size=4;
+            var r = (0..(size?.minus(1)!!)).random() as Int;
+            StartObjectlist.list.add(r.toString());
+            StartObjectlist.adapter?.notifyDataSetChanged();
+            setcolorofcell(getchildview(r),Color.BLUE)*/
            when (plan) {
                "תוכנית 1" -> Plan1();
                "תוכנית 2" -> Plan2();
@@ -91,21 +108,30 @@ class Start : AppCompatActivity() {
         )
         // attach the array adapter with list view
         listevents.adapter = StartObjectlist.adapter
-
-    }
-
-    fun getchildview(i:Int):View {
-        if (i<3)  return  tbl?.getChildAt(i) as View
-        else {
-            val X = (i % 3) +1
-            val Y = i/3;
-            val tableRow = tbl?.getChildAt(X) as TableRow
-            val childView: View = tableRow.getChildAt(Y)
-            return childView
+        buttons.isEnabled=false;
+        buttons.setOnClickListener {
+            val ed : EditText ?= EditText(this);
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("שתף קובץ")
+            builder.setMessage("הגדר שם לקובץ ")
+            builder.setView(ed);
+            builder.setPositiveButton("OK"){dialog, which ->
+                savefile(ed?.text.toString() + Calendar.getInstance()?.time.toString());
+            }
+            builder.show();
         }
     }
 
-    fun setcolorofcell(v : View,c:Int)
+    fun getchildview(i:Int):View {
+
+       // val X = (i % 3)
+       // val Y = i / 3;
+        val tableRow = tbl?.getChildAt(i) as TableRow
+      //  val childView: View = tableRow.getChildAt(X)
+        return tableRow
+    }
+
+    public fun setcolorofcell (v : View,c:Int)
     {
         v.setBackgroundColor(c)
     }
@@ -114,6 +140,7 @@ class Start : AppCompatActivity() {
         StartObjectlist.list.clear();
         PB(60);
         Startbutton.isEnabled = false;
+        TimersDataVal.totaltime=0.0;
 
         // Start the lengthy operation in a background thread
 
@@ -128,9 +155,14 @@ class Start : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                StartObjectlist.list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
-                StartObjectlist.adapter?.notifyDataSetChanged();
-                Startbutton.isEnabled = true;
+                next = true;
+                A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                    list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
+                    adapter?.notifyDataSetChanged();
+                    Startbutton.isEnabled = true;
+                    buttons.isEnabled = true;
+                })
+
             }
         }
         timer.start();
@@ -195,7 +227,10 @@ class Start : AppCompatActivity() {
                     textViewPB.text = progressStatus.toString()
                 })
             }
-
+            A?.runOnUiThread(Runnable {
+                list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
+                adapter?.notifyDataSetChanged();
+            })
         }).start() // Start the operation
 
 
@@ -203,14 +238,12 @@ class Start : AppCompatActivity() {
 
     fun addEndP() {
         val size = Oblist.listofbluetoothsocket.size as Int;
-        // lay_r_capture.setOrientation(LinearLayout.HORIZONTAL)
 
-
+        var tr = TableRow(this)
+        tr = TableRow(this);
         for (x in 0..size) {
             if (x==size) break;
-            var tr = TableRow(this)
             tr = TableRow(this);
-            //  tr.setBackgroundColor(Color.BLUE);
             tr.tag = Oblist.listofbluetoothsocket[x]?.remoteDevice?.name
             var t: TextView? = TextView(this);
             t?.setTypeface(null, Typeface.BOLD);
@@ -218,21 +251,52 @@ class Start : AppCompatActivity() {
             t?.textAlignment = TextView.TEXT_ALIGNMENT_CENTER;
             t?.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25F);
             t?.text = Oblist.listofbluetoothsocket[x]?.remoteDevice?.name
+           // t?.text = x.toString();
 
-            //        )
-            //    );
             tr?.addView(t)
-            listoftTableRow.add(tr);
-            val remainder = size % 3;
-            if (remainder==0) {
-                var tr = TableRow(this)
-                tr = TableRow(this)
+            StartObjectlist?.listoftTableRow.add(tr);
+           // val remainder = (x+1) % 3;
+          //  if (remainder==0) {
                 tbl?.addView(tr);
-            }
-            tbl?.addView(tr);
+       //         tr = TableRow(this);
+        //    }
+
 
         }
-        //tbl?.addView(tr);
+       // tbl?.addView(tr);
+    }
+
+    fun savefile(fname : String)
+    {
+        var myExternalFile:File = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS.toString()), fname+".txt")
+        val out: ObjectOutputStream
+        val objs = arrayOfNulls<Any>(listevents.getCount())
+
+        for (i in 0 until listevents.getCount()) {
+            val obj = listevents.getItemAtPosition(i) as Any
+            objs[i] = obj
+        }
+        try {
+            out = ObjectOutputStream(
+                FileOutputStream(
+                    myExternalFile
+                )
+            )
+            out.writeObject(objs)
+            out.flush()
+            out.close()
+
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myExternalFile))
+        sendIntent.type = "text/csv"
+        startActivity(Intent.createChooser(sendIntent, "SHARE"))
     }
 
     override fun onBackPressed() {

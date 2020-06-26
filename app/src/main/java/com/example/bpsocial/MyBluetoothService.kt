@@ -30,10 +30,11 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
         private val mmInStream: InputStream = mmSocket.inputStream
         private val mmOutStream: OutputStream = mmSocket.outputStream
-        private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+        private var mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
         private var A : Activity?= null;
         private val time : TimersData ?= TimersData();
         private var M : HashMap<String,Long> ?=HashMap<String,Long>();
+        private var IndexClient : Int ?= 0;
 
 
     public fun setconextintent(a : Activity)
@@ -73,26 +74,33 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 time?.sumtime(sec!!);
                 StartObjectval?.next=true;
                 A?.runOnUiThread(Runnable {
-                    StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.setBackgroundColor(Color.WHITE);
-                    val t= StartObjectlist.listoftTableRow[String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt()]?.tag.toString();
+                    StartObjectlist.listoftTableRow[IndexClient!!]?.setBackgroundColor(Color.WHITE);
+                    val t= StartObjectlist.listoftTableRow[IndexClient!!]?.tag.toString();
                     StartObjectlist.list?.add(   " נגיעה ב- "+ t + " אחרי " + sec.toString() );
                     StartObjectlist.adapter?.notifyDataSetChanged()
                 })
+                mmBuffer = ByteArray(1024);
             }
             if (String( mmBuffer).contains("Sblue"))
             {
+
                 M?.put(mmSocket.remoteDevice.address.toString(), Calendar.getInstance().timeInMillis!!)
+                IndexClient=String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt();
+                mmBuffer = ByteArray(1024);
             }
 
             //client
             if (String( mmBuffer).contains("Cblue"))
             {
+                val index= String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "").split('+')[1].toInt();
                 //time?.startTime();
-                write("Sblue".toByteArray());
+                write(("Sblue+" + index.toString()).toByteArray());
                 A?.runOnUiThread(Runnable {
                     SlaveVal.bool=true;
+                    SlaveVal.index= index
                     SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
                 })
+                mmBuffer = ByteArray(1024);
 
             }
         }
