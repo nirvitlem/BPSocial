@@ -1,15 +1,11 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
 import android.app.Activity
-import android.app.PendingIntent.getActivity
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
-import android.content.Context
-import android.content.Intent
 import android.util.Log
-import com.example.bpsocial.Oblist.listofbluetoothsocket
+import com.NV.bpsocial.Oblist.listofbluetoothsocket
 import java.io.IOException
 import java.util.ArrayList
 

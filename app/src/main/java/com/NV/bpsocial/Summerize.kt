@@ -1,23 +1,15 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.os.Bundle
 import android.os.Environment
-import android.view.View
-import android.view.View.MeasureSpec
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.ListAdapter
-import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import kotlinx.android.synthetic.main.activity_summerize.*
 import java.io.*
-import java.util.*
 
 
 //SSend; ; ;"+ Calendar.getInstance().time.toString()

@@ -1,4 +1,4 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
 import android.Manifest
 import android.app.AlertDialog
@@ -17,14 +17,10 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.bpsocial.Slist.adapter
-import com.example.bpsocial.Slist.list
-import com.example.bpsocial.Slist.RText;
-import kotlinx.android.synthetic.main.activity_main.*
-import java.net.NetworkInterface
+import com.NV.bpsocial.Slist.adapter
+import com.NV.bpsocial.Slist.list
+import com.NV.bpsocial.Slist.RText;
 import java.util.*
-import kotlin.experimental.and
-import kotlin.random.Random
 
 
 public var bluetoothAdapter : BluetoothAdapter? = null;
@@ -76,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, filter);
         filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(receiver, filter);
-        RText = findViewById(com.example.bpsocial.R.id.RemText) as android.widget.TextView;
+        RText = findViewById(R.id.RemText) as android.widget.TextView;
         val ListBItems = findViewById(R.id.ListItems) as ListView;
         adapter = ArrayAdapter(
             this,
@@ -370,7 +366,8 @@ class MainActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this,
             arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_WIFI_STATE
             ,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            PERMISSION_REQUEST_CODE)
+            PERMISSION_REQUEST_CODE
+        )
     }
 
     override fun onDestroy() {

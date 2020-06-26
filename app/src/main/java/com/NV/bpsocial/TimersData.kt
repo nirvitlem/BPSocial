@@ -1,10 +1,7 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
-import android.widget.ArrayAdapter
-import android.widget.TableRow
-import com.example.bpsocial.TimersDataVal.time
-import com.example.bpsocial.TimersDataVal.totaltime
-import java.sql.Time
+import com.NV.bpsocial.TimersDataVal.time
+import com.NV.bpsocial.TimersDataVal.totaltime
 import java.util.*
 import java.util.concurrent.TimeUnit
 

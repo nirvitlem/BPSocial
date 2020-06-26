@@ -1,4 +1,4 @@
-package com.example.bpsocial
+package com.NV.bpsocial
 
 import org.junit.Test
 
