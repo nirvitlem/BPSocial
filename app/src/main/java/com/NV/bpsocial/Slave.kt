@@ -32,11 +32,18 @@ class Slave : AppCompatActivity() {
             if (bool) {
                 bool=false;
                 cb?.setBackgroundColor(Color.WHITE);
-                Thread({
+                Thread {
                     Objectlist.mbs?.setconextintent(this);
                     Objectlist.mbs?.write(("Schecked+" + index.toString() + "+" +cb?.tag).toByteArray());
-                }).start();
+                }.start();
 
+            }
+            else
+            {
+                Thread {
+                    Objectlist.mbs?.setconextintent(this);
+                    Objectlist.mbs?.write(("Smistake+" + index.toString() + "+" +cb?.tag).toByteArray());
+                }.start();
             }
         }
     }

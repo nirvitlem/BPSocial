@@ -43,7 +43,7 @@
 
     <ListView
         android:id="@+id/listevents"
-        android:layout_width="399dp"
+        android:layout_width="0dp"
         android:layout_height="245dp"
         android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"

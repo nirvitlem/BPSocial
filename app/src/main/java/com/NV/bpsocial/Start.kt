@@ -80,6 +80,8 @@ class Start : AppCompatActivity() {
         sb.setOnClickListener {
             buttons.isEnabled=false;
             TimersObjectlist.listoftofResult.clear();
+            StartObjectlist.list.clear();
+            StartObjectlist.adapter?.clear();
            /*test  size=4;
             var r = (0..(size?.minus(1)!!)).random() as Int;
             StartObjectlist.list.add(r.toString());
@@ -123,7 +125,6 @@ class Start : AppCompatActivity() {
     }
 
     fun Plan1() {
-        StartObjectlist.list.clear();
         PB(60);
         Startbutton.isEnabled = false;
         TimersDataVal.totaltime=0.0;

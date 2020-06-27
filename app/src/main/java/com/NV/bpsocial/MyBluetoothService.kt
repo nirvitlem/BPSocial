@@ -79,6 +79,24 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 mmBuffer = ByteArray(1024);
                 StartObjectval?.next = true;
             }
+
+            if (String(mmBuffer).contains("Smistake")) {
+                // time?.StopTime();
+                val sec: Double? =
+                    ((Calendar.getInstance().timeInMillis.toDouble() - M?.get(mmSocket.remoteDevice.address.toString())
+                        ?.toDouble()!!) / 1000);
+                val c = String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
+                    .split('+')[2].toString()
+                time?.sumtime(sec!!);
+                A?.runOnUiThread(Runnable {
+                    val t = StartObjectlist.listoftTableRow[IndexClient!!]?.tag.toString();
+                    listoftofResult.add("Smistake;" + t + ";" + sec + ";"+ Calendar.getInstance().time.toString() + ";" + c)
+                    StartObjectlist.list?.add(" נגיעה בטעות ב- " + t + " אחרי " + sec.toString());
+                    StartObjectlist.adapter?.notifyDataSetChanged()
+                })
+                mmBuffer = ByteArray(1024);
+            }
+
             if (String(mmBuffer).contains("Sblue")) {
                 listoftofResult.add("SSendblue; ; ;"+ Calendar.getInstance().time.toString()+";blue")
                 M?.put(
