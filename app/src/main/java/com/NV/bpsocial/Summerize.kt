@@ -16,6 +16,9 @@ import java.io.*
 //"Schecked;" + t + ";" + sec + ";"+ Calendar.getInstance().time.toString(
 var list=mutableListOf("");
 var adapter: ArrayAdapter<String>?=null;
+public var listcolor = mutableListOf("");
+public var listendp  = mutableListOf("");
+
 
 class Summerize : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,8 +46,34 @@ class Summerize : AppCompatActivity() {
         list.add("תוצאות:")
         list.add("סיימת את תרגיל ב -  " + sumAlltimedCheked() + " שניות ")
         list.add("לחצת  " + TotalCheked()+" פעמים ")
-        list.add("לחצת  " + TotalChekedBlue()+" פעמים בצבע כחול ")
-        list.add(" התוצאה הטובה ביותר " + bestcore())
+        //list.add("לחצת  " + TotalChekedBlue()+" פעמים בצבע כחול ")
+        list.add(" התוצאה הטובה ביותר " + bestcore().split(";")[0].toString() + " ליחידת קצה " +  bestcore().split(";")[1].toString())
+        list.add(" התוצאה הגבוהה ביותר " + badscore().split(";")[0].toString() + " ליחידת קצה " +  badscore().split(";")[1].toString())
+        list.add(" זמן ממוצע " + average().toString())
+        getcountcolor();
+        for (element in listcolor)
+        {
+            if(element.toString()!="") {
+                var res = bestbadbycedp(element).toString();
+                list.add(" לחצת  " + res.split(";")[2] + " על " + element.toString() + " בזמן הכי טוב " + res.split(";")[0].toString()
+                            + " בזמן הכי גבוה " + res.split(";")[1].toString()
+                )
+            }
+        }
+        getcountendp();
+        for (element in listendp)
+        {
+            if(element.toString()!="") {
+                var res = bestbadbycedp(element).toString();
+                list.add(
+                    " לחצת  " + res.split(";")[2] + " על " + element.toString() + " בזמן הכי טוב " + res.split(";")[0].toString()
+                            + " בזמן הכי גבוה " +res.split(";")[1].toString()
+                )
+            }
+        }
+for (element in listendp) {
+}
+
         list.add("")
         list.add(" כל הלחיצות ")
         for (element in TimersObjectlist.listoftofResult.filter { s -> s.contains("checked")}) {
@@ -76,10 +105,80 @@ class Summerize : AppCompatActivity() {
 
         var CheckedList: List<String> = TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
         var best : Double ?=100.0;
+        var endp : String ?="";
         for (element in CheckedList) {
-            if (element.split(";")[2].toDouble()<best!!)  best = element.split(";")[2].toDouble();
+            if (element.split(";")[2].toDouble()<best!!) {
+                best = element.split(";")[2].toDouble();
+                endp= element.split(";")[1].toString();
+            }
         }
-        return best.toString();
+        return (best.toString() + ";" + endp);
+    }
+
+    fun bestbadbycedp(e : String): String {
+
+        var CheckedList: List<String> = TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+        CheckedList= CheckedList.filter { s -> s.contains(e) }
+        var best : Double ?=100.0;
+        var bad : Double ?=0.0;
+        for (element in CheckedList) {
+            if (element.split(";")[2].toDouble() < best!!) {
+                best = element.split(";")[2].toDouble();
+            }
+            if (element.split(";")[2].toDouble() > bad!!) {
+                bad = element.split(";")[2].toDouble();
+            }
+
+        }
+        return (best.toString() + ";" + bad.toString() + ";" +CheckedList.size );
+    }
+
+    fun badscore(): String {
+
+        var CheckedList: List<String> = TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+        var bad : Double ?=0.0;
+        var endp : String ?="";
+        for (element in CheckedList) {
+            if (element.split(";")[2].toDouble()>bad!!) {
+                bad = element.split(";")[2].toDouble();
+                endp= element.split(";")[1].toString();
+            }
+        }
+        return (bad.toString() + ";" + endp );
+    }
+
+
+    fun average(): String {
+
+        var CheckedList: List<String> = TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+        var sumall : Double ?=0.0;
+        for (element in CheckedList) {
+
+            sumall = sumall?.plus(element.split(";")[2].toDouble());
+
+        }
+        return ((sumall!!/CheckedList.size).toString() );
+    }
+
+    fun getcountendp()
+    {
+        var CheckedList: List<String> = TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+        for(element in CheckedList)
+        {
+            if (!listendp.contains(element.split(";")[1].toString()))
+                listendp.add( element.split(";")[1].toString() )
+        }
+
+    }
+
+    fun getcountcolor()
+    {
+        var CheckedList: List<String> = TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+        for(element in CheckedList)
+        {
+            if (!listcolor.contains(element.split(";")[4].toString().split(" ")[1].toString()))
+                listcolor.add(element.split(";")[4].toString().split(" ")[1].toString())
+        }
     }
 
     fun savefile(fname: String) {
