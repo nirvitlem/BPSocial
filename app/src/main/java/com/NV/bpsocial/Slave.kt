@@ -31,7 +31,13 @@ class Slave : AppCompatActivity() {
         cb?.setOnClickListener {
             if (bool) {
                 bool=false;
-                cb?.setBackgroundColor(Color.WHITE);
+                when (StartObjectval?.planN)
+                {
+                    0 -> cb?.setBackgroundColor(Color.WHITE)
+                    1 ->  cb?.setBackgroundColor(Color.BLUE)
+                    else ->  cb?.setBackgroundColor(Color.WHITE)
+                }
+                if (StartObjectval?.planN==0) cb?.setBackgroundColor(Color.WHITE)
                 Thread {
                     Objectlist.mbs?.setconextintent(this);
                     Objectlist.mbs?.write(("Schecked+" + index.toString() + "+" +cb?.tag).toByteArray());
