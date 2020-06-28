@@ -86,7 +86,7 @@ class Start : AppCompatActivity() {
             var r = (0..(size?.minus(1)!!)).random() as Int;
             StartObjectlist.list.add(r.toString());
             StartObjectlist.adapter?.notifyDataSetChanged();
-            setcolorofcell(getchildview(r),Color.BLUE)*/
+            setcolorofcell(getchildview(r),Color.RED)*/
            when (plan) {
                "תוכנית 1" -> Plan1();
                "תוכנית 2" -> Plan2();
@@ -135,7 +135,7 @@ class Start : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 if (StartObjectval.next!!) {
                     val r = (0..(size?.minus(1)!!)).random() as Int;
-                    setcolorofcell(getchildview(r), Color.BLUE);
+                    setcolorofcell(getchildview(r), Color.RED);
                     firemessage(r);
                     next = false;
                 }
@@ -160,7 +160,7 @@ class Start : AppCompatActivity() {
             val mbs: MyBluetoothService? =
                 MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
             mbs?.setconextintent(this!!);
-            mbs?.write(("Cblue+" + r.toString()).toByteArray());
+            mbs?.write(("Cred+" + r.toString()).toByteArray());
             //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
             // StartObjectlist.adapter?.notifyDataSetChanged()
 

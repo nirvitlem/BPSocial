@@ -94,8 +94,8 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 mmBuffer = ByteArray(1024);
             }
 
-            if (String(mmBuffer).contains("Sblue")) {
-                listoftofResult.add("SSendblue; ; ;"+ Calendar.getInstance().time.toString()+";blue")
+            if (String(mmBuffer).contains("Sred")) {
+                listoftofResult.add("SSendred; ; ;"+ Calendar.getInstance().time.toString()+";red")
                 M?.put(
                     mmSocket.remoteDevice.address.toString(),
                     Calendar.getInstance().timeInMillis!!
@@ -107,17 +107,17 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             }
 
             //client
-            if (String(mmBuffer).contains("Cblue")) {
+            if (String(mmBuffer).contains("Cred")) {
                 val index =
                     String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
                         .split('+')[1].toInt();
                 //time?.startTime();
-                write(("Sblue+" + index.toString()).toByteArray());
+                write(("Sred+" + index.toString()).toByteArray());
                 A?.runOnUiThread(Runnable {
                     SlaveVal.bool = true;
                     SlaveVal.index = index
-                    SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
-                    SlaveObjectlist.cb?.tag="Color Blue";
+                    SlaveObjectlist.cb?.setBackgroundColor(Color.RED);
+                    SlaveObjectlist.cb?.tag="Color red";
                 })
                 mmBuffer = ByteArray(1024);
 

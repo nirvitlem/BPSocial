@@ -116,10 +116,10 @@ class Summerize : AppCompatActivity() {
         return CheckedList.size.toString();
     }
 
-    fun TotalChekedBlue(): String {
+    fun TotalChekedRed(): String {
 
         var CheckedList: List<String> =
-            TimersObjectlist.listoftofResult.filter { s -> s.contains("Color Blue") }
+            TimersObjectlist.listoftofResult.filter { s -> s.contains("Color Red") }
         return CheckedList.size.toString();
     }
 
