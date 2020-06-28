@@ -213,8 +213,8 @@ class Summerize : AppCompatActivity() {
             out.write("<meta charset=\"utf-8\">");
             out.write("<html>")
             out.write("<body>")
+            out.write("<p dir=\"rtl\"> <br> שם - " + ed?.text.toString() + " בתאריך " + Calendar.getInstance().time.toString() + "<p/>")
             for (element in list) {
-                out.write("<p dir=\"rtl\"> <br> שם - " + ed?.text.toString() + " בתאריך " + Calendar.getInstance().time.toString() + "<p/>")
                 out.write("<p dir=\"rtl\"> <br>" + element.toString() + "<p/>")
                 out.write(" <br>")
             }

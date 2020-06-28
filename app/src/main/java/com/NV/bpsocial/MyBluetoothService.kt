@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import com.NV.bpsocial.StartObjectval.next
-import com.NV.bpsocial.StartObjectval.planN
 import com.NV.bpsocial.TimersObjectlist.listoftofResult
 import java.io.IOException
 import java.io.InputStream
@@ -86,34 +85,69 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     var mbs: MyBluetoothService? =
                         MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
                     mbs?.setconextintent(A!!);
-                    when (StartObjectval?.planN)
-                    {
-                        0 -> mbs?.write(("Cred+" + r.toString()).toByteArray());
+                    when (Objectlist.planN) {
+                        0 ->
+                        { //Thread.sleep(1000);
+                            A?.runOnUiThread(Runnable {
+                                StartObjectlist.tbl?.getChildAt(r)?.setBackgroundColor(Color.RED);
+                            })
+                            mbs?.write(("Cred+" + r.toString()).toByteArray())
+                        };
                         1 ->
                         {
-                            for (i in 0 until size!!)
-                            {
-                                if (i!=r) mbs?.write(("Cblue+" + i.toString()).toByteArray());
+                            A?.runOnUiThread(Runnable {
+                                StartObjectlist.tbl?.getChildAt(r)?.setBackgroundColor(Color.RED);
+                            })
+                            mbs?.write(("Cred+" + r.toString()).toByteArray())
+                            for (i in 0 until size!!) {
+                                if (i != r)
+                                {
+                                    Thread {
+                                        var mbst: MyBluetoothService? =
+                                            MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                                        mbst?.setconextintent(A!!)
+                                        mbst?.write(("Cblue+" + i.toString()).toByteArray())
+                                    }.start();
+                                };
                             }
+                            mmBuffer = ByteArray(1024);
                         }
-                        2->
-                        {
-                            for (i in 0 until size!!)
-                            {
-                                mbs =  MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
-                                mbs?.write(("Cwhite+" + i.toString()).toByteArray());
+                        2-> {
+                            for (i in 0 until size!!) {
+                                Thread {
+                                    var mbst: MyBluetoothService? =
+                                        MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                                    mbst?.setconextintent(A!!)
+                                    mbst?.write(("Cwhite+" + i.toString()).toByteArray())
+                                }.start();
                             }
-                            val r  =  (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
-                            mbs =  MyBluetoothService(Oblist.listofbluetoothsocket[r.indexOf(0)] as BluetoothSocket);
-                            mbs?.write(("Cred+" + r.indexOf(0).toString()).toByteArray());
-                            mbs =  MyBluetoothService(Oblist.listofbluetoothsocket[r.indexOf(1)] as BluetoothSocket);
-                            mbs?.write(("Cblue+" + r.indexOf(1).toString()).toByteArray());
-
+                            val r = (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
+                            A?.runOnUiThread(Runnable {
+                                StartObjectlist.tbl?.getChildAt(r.elementAt(0))
+                                    ?.setBackgroundColor(Color.RED);
+                            })
+                            Thread {
+                                var mbst: MyBluetoothService? =
+                                    MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(0)] as BluetoothSocket);
+                                mbst?.setconextintent(A!!)
+                                mbst?.write(("Cred+" + r.elementAt(0).toString()).toByteArray());
+                            }.start();
+                            A?.runOnUiThread(Runnable {
+                                StartObjectlist.tbl?.getChildAt(r.elementAt(0))
+                                    ?.setBackgroundColor(Color.BLUE);
+                            })
+                            Thread {
+                                var mbst: MyBluetoothService? =
+                                    MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(0)] as BluetoothSocket);
+                                mbst?.setconextintent(A!!)
+                                mbst?.write(("Cblue+" + r.elementAt(0).toString()).toByteArray());
+                            }.start();
+                            mmBuffer = ByteArray(1024);
                         }
                         else ->  SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE)
                     }
 
-                    write(("Cred+" + r.toString()).toByteArray());
+                    //write(("Cred+" + r.toString()).toByteArray());
                 }
             }
 
@@ -142,7 +176,29 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         .split('+')[1].toInt();
                 mmBuffer = ByteArray(1024);
             }
+
+            if (String(mmBuffer).contains("Sblue")) {
+                listoftofResult.add("SSendblue; ; ;"+ Calendar.getInstance().time.toString()+";blue")
+                M?.put(
+                    mmSocket.remoteDevice.address.toString(),
+                    Calendar.getInstance().timeInMillis!!
+                )
+                IndexClient =
+                    String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
+                        .split('+')[1].toInt();
+                mmBuffer = ByteArray(1024);
+            }
+
+            //**********************************************************************************8
             //client
+
+            if (String(mmBuffer).contains("plan")) {
+                Objectlist.planN = String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
+                    .split('+')[1].toInt();
+                mmBuffer = ByteArray(1024);
+
+            }
+
             if (String(mmBuffer).contains("Cred")) {
                 val index =
                     String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
@@ -156,16 +212,16 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     SlaveObjectlist.cb?.tag="Color red";
                 })
                 mmBuffer = ByteArray(1024);
-
             }
 
             if (String(mmBuffer).contains("Cblue")) {
-                when (planN) {
+                when (Objectlist.planN) {
                     1 -> {
                         A?.runOnUiThread(Runnable {
                             SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
                             SlaveObjectlist.cb?.tag = "Color blue";
                         })
+                        mmBuffer = ByteArray(1024);
                     }
                     2->
                     {
@@ -173,11 +229,11 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                             String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
                                 .split('+')[1].toInt();
                         //time?.startTime();
-                        write(("Sred+" + index.toString()).toByteArray());
+                        write(("Sblue+" + index.toString()).toByteArray());
                         A?.runOnUiThread(Runnable {
                             SlaveVal.bool = true;
                             SlaveVal.index = index
-                            SlaveObjectlist.cb?.setBackgroundColor(Color.RED);
+                            SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
                             SlaveObjectlist.cb?.tag="Color blue";
                         })
                     }
@@ -190,14 +246,10 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             }
 
             if (String(mmBuffer).contains("Cwhite")) {
-                val index =
-                    String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
-                        .split('+')[1].toInt();
+
                 //time?.startTime();
                // write(("Sred+" + index.toString()).toByteArray());
                 A?.runOnUiThread(Runnable {
-                    SlaveVal.bool = true;
-                    SlaveVal.index = index
                     SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE);
                     SlaveObjectlist.cb?.tag="Color white";
                 })

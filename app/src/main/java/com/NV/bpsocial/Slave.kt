@@ -31,8 +31,7 @@ class Slave : AppCompatActivity() {
         cb?.setOnClickListener {
             if (bool) {
                 bool=false;
-                when (StartObjectval?.planN)
-                {
+                when (Objectlist?.planN)                {
                     0 -> cb?.setBackgroundColor(Color.WHITE)
                     1 ->  cb?.setBackgroundColor(Color.BLUE)
                     2 -> cb?.setBackgroundColor(Color.WHITE)
