@@ -2,6 +2,7 @@ package com.NV.bpsocial
 
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -19,6 +20,8 @@ import com.NV.bpsocial.StartObjectval.next
 import com.NV.bpsocial.StartObjectval.planN
 import kotlinx.android.synthetic.main.activity_start.*
 import kotlin.collections.ArrayList
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 
 public var tbl : TableLayout ?=null;
@@ -91,7 +94,21 @@ class Start : AppCompatActivity() {
            when (plan) {
                "תוכנית 1" -> Plan1();
                " תוכנית 1, 2 צבעים" -> Plan2();
-               "תוכנית 3" -> Plan3();
+               "תוכנית 3" ->
+               {
+                   if (size!!<2)
+                   {
+                       val builder = AlertDialog.Builder(this)
+                       builder.setTitle("תקלה! ")
+                       builder.setMessage("צריך לפחות 2 יחידות קצה ")
+                       builder.setView(ed);
+                       builder.setPositiveButton("OK") { dialog, which ->
+
+                       }
+                       builder.show();
+                   }
+                   else  Plan3()
+               };
                "תוכנית 4" -> Plan4();
                "תוכנית 5" -> Plan5();
                else -> Plan1();
@@ -224,9 +241,51 @@ class Start : AppCompatActivity() {
         firemessage(r,"red");
     }
 
-    fun Plan3()
-    {
+    fun Plan3() {
+        planN = 2;
+        PB(60);
+        next = true;
+        Startbutton.isEnabled = false;
+        TimersDataVal.totaltime = 0.0;
 
+        // Start the lengthy operation in a background thread
+
+        val timer = object : CountDownTimer(60000, 2000) {
+            override fun onTick(millisUntilFinished: Long) {
+                //   if (StartObjectval.next!!) {
+                //       val r = (0..(size?.minus(1)!!)).random() as Int;
+                //       setcolorofcell(getchildview(r), Color.RED);
+                //       firemessage(r);
+                //  next = false;
+                //  }
+            }
+
+            override fun onFinish() {
+                next = false;
+                A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                    //list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
+                    //adapter?.notifyDataSetChanged();
+                    Startbutton.isEnabled = true;
+                    buttons.isEnabled = true;
+                })
+
+            }
+        }
+        timer.start();
+        val r  =  (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
+        var mbs: MyBluetoothService? =
+            MyBluetoothService(Oblist.listofbluetoothsocket[r.indexOf(0)] as BluetoothSocket);
+        mbs?.setconextintent(this!!);
+        mbs?.write(("Cred+" + r.indexOf(0).toString()).toByteArray());
+
+        mbs = MyBluetoothService(Oblist.listofbluetoothsocket[r.indexOf(1)] as BluetoothSocket);
+        mbs?.setconextintent(this!!);
+        mbs?.write(("Cblue+" + r.indexOf(1).toString()).toByteArray());
+
+        setcolorofcell(getchildview(r.indexOf(0)), Color.RED);
+        setcolorofcell(getchildview(r.indexOf(1)), Color.BLUE);
+        firemessage(r.indexOf(0), "red");
+        firemessage(r.indexOf(1), "blue");
     }
 
     fun Plan4()

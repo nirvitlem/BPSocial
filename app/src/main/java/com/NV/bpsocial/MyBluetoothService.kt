@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import com.NV.bpsocial.StartObjectval.next
+import com.NV.bpsocial.StartObjectval.planN
 import com.NV.bpsocial.TimersObjectlist.listoftofResult
 import java.io.IOException
 import java.io.InputStream
@@ -82,7 +83,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 ///send imeddate message
                 if (next==true) {
                     val r = (0..(size?.minus(1)!!)).random() as Int;
-                    val mbs: MyBluetoothService? =
+                    var mbs: MyBluetoothService? =
                         MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
                     mbs?.setconextintent(A!!);
                     when (StartObjectval?.planN)
@@ -94,6 +95,15 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                             {
                                 if (i!=r) mbs?.write(("Cblue+" + i.toString()).toByteArray());
                             }
+                        }
+                        2->
+                        {
+                            val r  =  (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
+                            mbs =  MyBluetoothService(Oblist.listofbluetoothsocket[r.indexOf(0)] as BluetoothSocket);
+                            mbs?.write(("Cred+" + r.indexOf(0).toString()).toByteArray());
+                            mbs =  MyBluetoothService(Oblist.listofbluetoothsocket[r.indexOf(1)] as BluetoothSocket);
+                            mbs?.write(("Cblue+" + r.indexOf(1).toString()).toByteArray());
+
                         }
                         else ->  SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE)
                     }
@@ -144,11 +154,33 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 mmBuffer = ByteArray(1024);
 
             }
+
             if (String(mmBuffer).contains("Cblue")) {
-                A?.runOnUiThread(Runnable {
-                    SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
-                    SlaveObjectlist.cb?.tag="Color blue";
-                })
+                when (planN) {
+                    1 -> {
+                        A?.runOnUiThread(Runnable {
+                            SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
+                            SlaveObjectlist.cb?.tag = "Color blue";
+                        })
+                    }
+                    2->
+                    {
+                        val index =
+                            String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
+                                .split('+')[1].toInt();
+                        //time?.startTime();
+                        write(("Sred+" + index.toString()).toByteArray());
+                        A?.runOnUiThread(Runnable {
+                            SlaveVal.bool = true;
+                            SlaveVal.index = index
+                            SlaveObjectlist.cb?.setBackgroundColor(Color.RED);
+                            SlaveObjectlist.cb?.tag="Color blue";
+                        })
+                    }
+                    else -> {
+
+                    }
+                }
                 mmBuffer = ByteArray(1024);
 
             }
