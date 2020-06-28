@@ -126,23 +126,24 @@ class Start : AppCompatActivity() {
 
     fun Plan1() {
         PB(60);
+        next = true;
         Startbutton.isEnabled = false;
-        TimersDataVal.totaltime=0.0;
+        TimersDataVal.totaltime = 0.0;
 
         // Start the lengthy operation in a background thread
 
-        val timer = object : CountDownTimer(60000, 1500) {
+        val timer = object : CountDownTimer(60000, 2000) {
             override fun onTick(millisUntilFinished: Long) {
-                if (StartObjectval.next!!) {
-                    val r = (0..(size?.minus(1)!!)).random() as Int;
-                    setcolorofcell(getchildview(r), Color.RED);
-                    firemessage(r);
-                    next = false;
-                }
+                //   if (StartObjectval.next!!) {
+                //       val r = (0..(size?.minus(1)!!)).random() as Int;
+                //       setcolorofcell(getchildview(r), Color.RED);
+                //       firemessage(r);
+                //  next = false;
+                //  }
             }
 
             override fun onFinish() {
-                next = true;
+                next = false;
                 A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
                     //list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
                     //adapter?.notifyDataSetChanged();
@@ -153,6 +154,9 @@ class Start : AppCompatActivity() {
             }
         }
         timer.start();
+        val r = (0..(size?.minus(1)!!)).random() as Int;
+        setcolorofcell(getchildview(r), Color.RED);
+        firemessage(r);
     }
 
     fun firemessage(r:Int) {

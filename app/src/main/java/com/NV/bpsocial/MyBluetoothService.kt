@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.graphics.Color
 import android.util.Log
+import com.NV.bpsocial.StartObjectval.next
 import com.NV.bpsocial.TimersObjectlist.listoftofResult
 import java.io.IOException
 import java.io.InputStream
@@ -77,7 +78,12 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     StartObjectlist.adapter?.notifyDataSetChanged()
                 })
                 mmBuffer = ByteArray(1024);
-                StartObjectval?.next = true;
+                //StartObjectval?.next = true;
+                ///send imeddate message
+                if (next==true) {
+                    val r = (0..(size?.minus(1)!!)).random() as Int;
+                    write(("Cred+" + r.toString()).toByteArray());
+                }
             }
 
             if (String(mmBuffer).contains("Smistake")) {
