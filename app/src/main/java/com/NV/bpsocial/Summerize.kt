@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import kotlinx.android.synthetic.main.activity_summerize.*
 import java.io.*
+import java.util.*
 
 
 //SSend; ; ;"+ Calendar.getInstance().time.toString()
@@ -18,6 +19,7 @@ var list=mutableListOf("");
 var adapter: ArrayAdapter<String>?=null;
 public var listcolor = mutableListOf("");
 public var listendp  = mutableListOf("");
+public var ed : EditText? = null;
 
 
 class Summerize : AppCompatActivity() {
@@ -28,7 +30,7 @@ class Summerize : AppCompatActivity() {
 
         ListSummerize.adapter = adapter
         SaveB.setOnClickListener {
-            val ed: EditText? = EditText(this);
+            ed = EditText(this);
             val builder = AlertDialog.Builder(this)
             builder.setTitle("שמור ושתף את התוצאות ")
             builder.setMessage("הגדר שם לקובץ ")
@@ -42,8 +44,8 @@ class Summerize : AppCompatActivity() {
     }
 
     fun showr() {
-
-        list.add("תוצאות:")
+        list.clear();
+        list.add("תוצאות:" )
         list.add("סיימת את תרגיל ב -  " + sumAlltimedCheked() + " שניות ")
         list.add("לחצת  " + TotalCheked() + " פעמים ")
         list.add("לחצת  " + Totalmistake()+" פעמים בטעות ")
@@ -212,6 +214,7 @@ class Summerize : AppCompatActivity() {
             out.write("<html>")
             out.write("<body>")
             for (element in list) {
+                out.write("<p dir=\"rtl\"> <br> שם - " + ed?.text.toString() + " בתאריך " + Calendar.getInstance().time.toString() + "<p/>")
                 out.write("<p dir=\"rtl\"> <br>" + element.toString() + "<p/>")
                 out.write(" <br>")
             }
@@ -226,8 +229,7 @@ class Summerize : AppCompatActivity() {
         sendIntent.putExtra(
             Intent.EXTRA_STREAM,
             FileProvider.getUriForFile(
-                this,
-                BuildConfig.APPLICATION_ID + ".provider",
+                this, BuildConfig.APPLICATION_ID + ".provider",
                 myExternalFile
             )
         )
