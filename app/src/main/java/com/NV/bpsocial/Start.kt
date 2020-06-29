@@ -11,6 +11,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.*
@@ -29,6 +30,7 @@ import kotlin.random.nextInt
 public var size : Int ?=0;
 public var plan : String ?="";
 public var timplan:Long ?=60000;
+
 
 
 object StartObjectlist {
@@ -150,6 +152,7 @@ class Start : AppCompatActivity() {
                 MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
             mbs?.setconextintent(this!!);
             mbs?.write(("plan+" + Objectlist.planN).toByteArray());
+            Log.e("Start ", "plan+" + Objectlist.planN)
         }.start()
 
         Thread {
@@ -160,12 +163,12 @@ class Start : AppCompatActivity() {
                 "red" ->mbs?.write(("Cred+" + r.toString()).toByteArray());
                 "blue" -> mbs?.write(("Cblue+" + r.toString()).toByteArray());
                 "black" -> mbs?.write(("Cblack+" + r.toString()).toByteArray());
-                "white" -> mbs?.write(("white+" + r.toString()).toByteArray());
-                "yellow" -> mbs?.write(("yellow+" + r.toString()).toByteArray());
-                "green" -> mbs?.write(("green+" + r.toString()).toByteArray());
+                "white" -> mbs?.write(("Cwhite+" + r.toString()).toByteArray());
+                "yellow" -> mbs?.write(("Cyellow+" + r.toString()).toByteArray());
+                "green" -> mbs?.write(("Cgreen+" + r.toString()).toByteArray());
                 else -> mbs?.write(("Cred+" + r.toString()).toByteArray());
             }
-
+            Log.e("Start ", c+"+"  + r.toString())
             //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
             // StartObjectlist.adapter?.notifyDataSetChanged()
 
@@ -176,7 +179,7 @@ class Start : AppCompatActivity() {
         Thread {
             val mbs: MyBluetoothService? =
                 MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
-            mbs?.setconextintent(this!!);
+            //mbs?.setconextintent(this!!);
             when (c) {
                 "red" -> mbs?.write("end+r".toByteArray());
                 "blue" -> mbs?.write("end+b".toByteArray());
@@ -185,6 +188,7 @@ class Start : AppCompatActivity() {
                 "green" -> mbs?.write("end+g".toByteArray());
                 else -> mbs?.write("end+w".toByteArray());
             }
+            Log.e("Start ", c+ "+"  + r.toString())
         }.start();
     }
 
@@ -195,14 +199,14 @@ class Start : AppCompatActivity() {
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, "green");
             }
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
         }
 
         for (i in 0..(size?.minus(1))!!.toInt()) {
             fireendmessage(i, "white");
         }
-
+        Thread.sleep(2000);
         PB(60);
         next = true;
         Startbutton.isEnabled = false;
@@ -262,7 +266,7 @@ class Start : AppCompatActivity() {
                         for (t in 0..4)
                         {
                             for (i in 0..(size?.minus(1))!!.toInt()) {
-                                fireendmessage(i, element.split(";")[4].toString().split(" ")[1].toString());
+                              //  fireendmessage(i, element.split(";")[4].toString().split(" ")[1].toString());
                             }
                             Thread.sleep(1000);
 

@@ -132,6 +132,7 @@ class MainActivity : AppCompatActivity() {
                         }).start();
                         sendM.isEnabled=true;
                         alertm("הצלחה","הצלחה בחיבור למנהל");
+                        bluetoothAdapter?.cancelDiscovery();
                     }
                     else
                     {
@@ -201,6 +202,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         ConnectButton.setOnClickListener {
+            bluetoothAdapter?.cancelDiscovery();
             if (!SwitchB.isChecked) {
 
             }
