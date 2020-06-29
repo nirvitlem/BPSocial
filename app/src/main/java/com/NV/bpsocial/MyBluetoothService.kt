@@ -256,6 +256,21 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 mmBuffer = ByteArray(1024);
 
             }
+
+            if (String(mmBuffer).contains("End")) {
+                A?.runOnUiThread(Runnable {
+                   when (String(mmBuffer).split("+")[1]) {
+                       "r" -> SlaveObjectlist.cb?.setBackgroundColor(Color.RED);
+                       "b" -> SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
+                       "w" -> SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE);
+                       "g" -> SlaveObjectlist.cb?.setBackgroundColor(Color.GREEN);
+                       "y"-> SlaveObjectlist.cb?.setBackgroundColor(Color.YELLOW);
+                       else -> SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE);
+                   }
+                })
+                mmBuffer = ByteArray(1024);
+            }
+
         }
 
     }

@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
+import com.NV.bpsocial.Objectlist.planN
 import com.NV.bpsocial.StartObjectlist.tbl
 import com.NV.bpsocial.StartObjectval.next
 import kotlinx.android.synthetic.main.activity_start.*
@@ -59,8 +60,8 @@ class Start : AppCompatActivity() {
         l.add("תוכנית 1")
         l.add("תוכנית 1, 2 צבעים")
         l.add("תוכנית 3")
-        l.add("תוכנית 4")
-        l.add("תוכנית 5")
+       // l.add("תוכנית 4")
+       // l.add("תוכנית 5")
         val dataAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item, l
@@ -160,6 +161,8 @@ class Start : AppCompatActivity() {
                 "blue" -> mbs?.write(("Cblue+" + r.toString()).toByteArray());
                 "black" -> mbs?.write(("Cblack+" + r.toString()).toByteArray());
                 "white" -> mbs?.write(("white+" + r.toString()).toByteArray());
+                "yellow" -> mbs?.write(("yellow+" + r.toString()).toByteArray());
+                "green" -> mbs?.write(("green+" + r.toString()).toByteArray());
                 else -> mbs?.write(("Cred+" + r.toString()).toByteArray());
             }
 
@@ -169,8 +172,37 @@ class Start : AppCompatActivity() {
         }.start();
     }
 
-    fun Plan1() {
-        Objectlist.planN=0;
+    fun fireendmessage(r:Int,c:String) {
+        Thread {
+            val mbs: MyBluetoothService? =
+                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
+            mbs?.setconextintent(this!!);
+            when (c) {
+                "red" -> mbs?.write("end+r".toByteArray());
+                "blue" -> mbs?.write("end+b".toByteArray());
+                "white" -> mbs?.write("end+w".toByteArray());
+                "yellow" -> mbs?.write("end+y".toByteArray());
+                "green" -> mbs?.write("end+g".toByteArray());
+                else -> mbs?.write("end+w".toByteArray());
+            }
+        }.start();
+    }
+
+    fun StartPlans()
+    {
+        for (t in 0..2)
+        {
+            for (i in 0..(size?.minus(1))!!.toInt()) {
+                fireendmessage(i, "green");
+            }
+            Thread.sleep(1000);
+
+        }
+
+        for (i in 0..(size?.minus(1))!!.toInt()) {
+            fireendmessage(i, "white");
+        }
+
         PB(60);
         next = true;
         Startbutton.isEnabled = false;
@@ -196,10 +228,77 @@ class Start : AppCompatActivity() {
                     Startbutton.isEnabled = true;
                     buttons.isEnabled = true;
                 })
+                for (t in 0..4)
+                {
+                    for (i in 0..(size?.minus(1))!!.toInt()) {
+                        fireendmessage(i, "yellow");
+                    }
+                    Thread.sleep(1000);
 
+                }
+                Thread.sleep(2000);
+                if (planN==2)
+                {
+                    var listcolor = mutableListOf("");
+                    var CheckedList: List<String> =
+                        TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+                    for (element in CheckedList) {
+                        if (!listcolor.contains(element.split(";")[4].toString().split(" ")[1].toString()))
+                            listcolor.add(element.split(";")[4].toString().split(" ")[1].toString())
+                    }
+                    var res = "0;0;0"
+                    var c = "";
+                    for (element in listcolor) {
+                        if (element.toString() != "") {
+                            var temp = bestbadbycedp(element);
+                            if (temp.split(";")[2].toInt() > res.split(";")[2].toInt())
+                            {
+                                res = temp.toString();
+                            }
+                        }
+                    }//  c = element.toString();
+                    CheckedList = TimersObjectlist.listoftofResult.filter { s -> s.contains(res.toString().split(";")[2].toString()) }
+                    for (element in CheckedList) {
+                        for (t in 0..4)
+                        {
+                            for (i in 0..(size?.minus(1))!!.toInt()) {
+                                fireendmessage(i, element.split(";")[4].toString().split(" ")[1].toString());
+                            }
+                            Thread.sleep(1000);
+
+                        }
+                    }
+
+                }
+                Thread.sleep(1000);
             }
         }
         timer.start();
+    }
+
+    fun bestbadbycedp(e: String): String {
+
+        var CheckedList: List<String> =
+            TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+        CheckedList = CheckedList.filter { s -> s.contains(e) }
+        var best: Double? = 100.0;
+        var bad: Double? = 0.0;
+        for (element in CheckedList) {
+            if (element.split(";")[2].toDouble() < best!!) {
+                best = element.split(";")[2].toDouble();
+            }
+            if (element.split(";")[2].toDouble() > bad!!) {
+                bad = element.split(";")[2].toDouble();
+            }
+
+        }
+        return (best.toString() + ";" + bad.toString() + ";" + CheckedList.size);
+    }
+
+
+    fun Plan1() {
+        Objectlist.planN=0;
+        StartPlans();
         val r = (0..(size?.minus(1)!!)).random() as Int;
         setcolorofcell(getchildview(r), Color.RED);
         firemessage(r,"red");
@@ -207,35 +306,7 @@ class Start : AppCompatActivity() {
 
     fun Plan2() {
         Objectlist.planN=1;
-        PB(60);
-        next = true;
-        Startbutton.isEnabled = false;
-        TimersDataVal.totaltime = 0.0;
-
-        // Start the lengthy operation in a background thread
-
-        val timer = object : CountDownTimer(timplan!!, 2000) {
-            override fun onTick(millisUntilFinished: Long) {
-                //   if (StartObjectval.next!!) {
-                //       val r = (0..(size?.minus(1)!!)).random() as Int;
-                //       setcolorofcell(getchildview(r), Color.RED);
-                //       firemessage(r);
-                //  next = false;
-                //  }
-            }
-
-            override fun onFinish() {
-                next = false;
-                A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                    //list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
-                    //adapter?.notifyDataSetChanged();
-                    Startbutton.isEnabled = true;
-                    buttons.isEnabled = true;
-                })
-
-            }
-        }
-        timer.start();
+        StartPlans();
         val r = (0..(size?.minus(1)!!)).random() as Int;
 
         for (i in 0 until size!!) {
@@ -250,35 +321,7 @@ class Start : AppCompatActivity() {
 
     fun Plan3() {
         Objectlist.planN = 2;
-        PB(60);
-        next = true;
-        Startbutton.isEnabled = false;
-        TimersDataVal.totaltime = 0.0;
-
-        // Start the lengthy operation in a background thread
-
-        val timer = object : CountDownTimer(timplan!!, 2000) {
-            override fun onTick(millisUntilFinished: Long) {
-                //   if (StartObjectval.next!!) {
-                //       val r = (0..(size?.minus(1)!!)).random() as Int;
-                //       setcolorofcell(getchildview(r), Color.RED);
-                //       firemessage(r);
-                //  next = false;
-                //  }
-            }
-
-            override fun onFinish() {
-                next = false;
-                A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                    //list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
-                    //adapter?.notifyDataSetChanged();
-                    Startbutton.isEnabled = true;
-                    buttons.isEnabled = true;
-                })
-
-            }
-        }
-        timer.start();
+        StartPlans();
         val r  =  (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
         setcolorofcell(getchildview(r.elementAt(0)), Color.RED);
         setcolorofcell(getchildview(r.elementAt(1)), Color.BLUE);
