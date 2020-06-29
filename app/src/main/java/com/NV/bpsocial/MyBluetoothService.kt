@@ -102,18 +102,18 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                             })
                             mbs?.write(("Cred+" + r.toString()).toByteArray())
                             Log.e(TAG, "Cred+" + r.toString())
+                            Thread {
                             for (i in 0 until size!!) {
                                 if (i != r)
                                 {
-                                    Thread {
                                         var mbst: MyBluetoothService? =
                                             MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
-                                        mbst?.setconextintent(A!!)
+                                        //mbst?.setconextintent(A!!)
                                         mbst?.write(("Cblue+" + i.toString()).toByteArray())
                                         Log.e(TAG, "Cblue+" + i.toString())
-                                    }.start();
+
                                 };
-                            }
+                            }}.start();
                             mmBuffer = ByteArray(2048);
                         }
                         2-> {
@@ -294,6 +294,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 Log.e(TAG, c)
                 mmBuffer = ByteArray(2048);
             }
+
             mmBuffer = ByteArray(2048);
         }
 

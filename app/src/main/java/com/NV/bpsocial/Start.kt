@@ -199,13 +199,13 @@ class Start : AppCompatActivity() {
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, "green");
             }
-            Thread.sleep(2000);
-
+            Thread.sleep(1000);
+            for (i in 0..(size?.minus(1))!!.toInt()) {
+                fireendmessage(i, "white");
+            }
+            Thread.sleep(1000);
         }
 
-        for (i in 0..(size?.minus(1))!!.toInt()) {
-            fireendmessage(i, "white");
-        }
         Thread.sleep(2000);
         PB(60);
         next = true;
@@ -238,6 +238,10 @@ class Start : AppCompatActivity() {
                         fireendmessage(i, "yellow");
                     }
                     Thread.sleep(1000);
+                    for (i in 0..(size?.minus(1))!!.toInt()) {
+                        fireendmessage(i, "white");
+                    }
+                    Thread.sleep(1000);
 
                 }
                 Thread.sleep(2000);
@@ -266,7 +270,11 @@ class Start : AppCompatActivity() {
                         for (t in 0..4)
                         {
                             for (i in 0..(size?.minus(1))!!.toInt()) {
-                              //  fireendmessage(i, element.split(";")[4].toString().split(" ")[1].toString());
+                               fireendmessage(i, element.split(";")[4].toString().split(" ")[1].toString());
+                            }
+                            Thread.sleep(1000);
+                            for (i in 0..(size?.minus(1))!!.toInt()) {
+                                fireendmessage(i, "white");
                             }
                             Thread.sleep(1000);
 
