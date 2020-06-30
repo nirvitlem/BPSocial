@@ -146,15 +146,20 @@ class Start : AppCompatActivity() {
         v.setBackgroundColor(c)
     }
 
-    fun firemessage(r:Int,c:String) {
+    fun fireplan() {
         Thread {
-            var mbs: MyBluetoothService? =
-                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
-            mbs?.setconextintent(this!!);
-            mbs?.write(("plan+" + Objectlist.planN).toByteArray());
-            Log.e("Start ", "plan+" + Objectlist.planN)
-        }.start()
+            for (i in 0..(size?.minus(1))!!.toInt()) {
 
+                var mbs: MyBluetoothService? =
+                    MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                mbs?.setconextintent(this!!);
+                mbs?.write(("plan+" + Objectlist.planN).toByteArray());
+                Log.e("Start ", "plan+" + Objectlist.planN)
+            }
+        }.start()
+    }
+
+    fun firemessage(r:Int,c:String) {
         Thread {
             val mbs: MyBluetoothService? =
                 MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
@@ -194,19 +199,20 @@ class Start : AppCompatActivity() {
 
     fun StartPlans()
     {
+        fireplan();
         for (t in 0..2)
         {
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.green);
             }
-            Thread.sleep(1000);
+            Thread.sleep(500);
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.white);
             }
-            Thread.sleep(1000);
+            Thread.sleep(500);
         }
 
-        Thread.sleep(2000);
+        Thread.sleep(1500);
         PB((timplan!!/1000).toInt());
         next = true;
         Startbutton.isEnabled = false;
@@ -237,14 +243,14 @@ class Start : AppCompatActivity() {
                     for (i in 0..(size?.minus(1))!!.toInt()) {
                         fireendmessage(i, ConstVal.yellow);
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                     for (i in 0..(size?.minus(1))!!.toInt()) {
                         fireendmessage(i, ConstVal.white);
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
 
                 }
-                Thread.sleep(2000);
+                Thread.sleep(1500);
                 if (planN==2)
                 {
                     var listcolor = mutableListOf("");
@@ -266,6 +272,7 @@ class Start : AppCompatActivity() {
                         }
                     }//  c = element.toString();
                     CheckedList = TimersObjectlist.listoftofResult.filter { s -> s.contains(res.toString().split(";")[2].toString()) }
+                    CheckedList = CheckedList.filter { s -> s.contains(ConstVal.checked) }
                     for (element in CheckedList) {
                         for (t in 0..4)
                         {
@@ -276,7 +283,7 @@ class Start : AppCompatActivity() {
                             for (i in 0..(size?.minus(1))!!.toInt()) {
                                 fireendmessage(i, ConstVal.white);
                             }
-                            Thread.sleep(1000);
+                            Thread.sleep(1500);
 
                         }
                     }
@@ -332,7 +339,7 @@ class Start : AppCompatActivity() {
     }
 
     fun Plan3() {
-        timplan=120000;
+        timplan=90000;
         Objectlist.planN = 2;
         StartPlans();
         val r  =  (0..(size?.minus(1)!!)).shuffled().take(2).toSet();

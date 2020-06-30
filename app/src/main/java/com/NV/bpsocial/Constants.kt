@@ -33,6 +33,7 @@ object ConstVal {
     const val SmistakeP="Smistake+"
     const val end="end"
     const val plan="plan"
+    const val slavebool = "slavebool"
     //...
 }
 
