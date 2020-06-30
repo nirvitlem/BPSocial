@@ -160,13 +160,13 @@ class Start : AppCompatActivity() {
                 MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
             mbs?.setconextintent(this!!);
             when (c) {
-                "red" ->mbs?.write(("Cred+" + r.toString()).toByteArray());
-                "blue" -> mbs?.write(("Cblue+" + r.toString()).toByteArray());
+                ConstVal.Cred ->mbs?.write((ConstVal.CredP + r.toString()).toByteArray());
+                "blue" -> mbs?.write((ConstVal.CblueP + r.toString()).toByteArray());
                 "black" -> mbs?.write(("Cblack+" + r.toString()).toByteArray());
-                "white" -> mbs?.write(("Cwhite+" + r.toString()).toByteArray());
-                "yellow" -> mbs?.write(("Cyellow+" + r.toString()).toByteArray());
-                "green" -> mbs?.write(("Cgreen+" + r.toString()).toByteArray());
-                else -> mbs?.write(("Cred+" + r.toString()).toByteArray());
+                "white" -> mbs?.write((ConstVal.CwhiteP + r.toString()).toByteArray());
+                "yellow" -> mbs?.write((ConstVal.CyellowP + r.toString()).toByteArray());
+                "green" -> mbs?.write((ConstVal.CgreenP + r.toString()).toByteArray());
+                else -> mbs?.write((ConstVal.CredP + r.toString()).toByteArray());
             }
             Log.e("Start ", c+"+"  + r.toString())
             //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
@@ -181,12 +181,12 @@ class Start : AppCompatActivity() {
                 MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
             //mbs?.setconextintent(this!!);
             when (c) {
-                "red" -> mbs?.write("end+r".toByteArray());
-                "blue" -> mbs?.write("end+b".toByteArray());
-                "white" -> mbs?.write("end+w".toByteArray());
-                "yellow" -> mbs?.write("end+y".toByteArray());
-                "green" -> mbs?.write("end+g".toByteArray());
-                else -> mbs?.write("end+w".toByteArray());
+                ConstVal.red -> mbs?.write((ConstVal.end+"+r").toByteArray());
+                ConstVal.blue -> mbs?.write((ConstVal.end+"+b").toByteArray());
+                ConstVal.white -> mbs?.write((ConstVal.end+"+w").toByteArray());
+                ConstVal.yellow -> mbs?.write((ConstVal.end+"+y").toByteArray());
+                ConstVal.green-> mbs?.write((ConstVal.end+"+g").toByteArray());
+                else -> mbs?.write((ConstVal.end+"+w").toByteArray());
             }
             Log.e("Start ", c+ "+"  + r.toString())
         }.start();
@@ -197,17 +197,17 @@ class Start : AppCompatActivity() {
         for (t in 0..2)
         {
             for (i in 0..(size?.minus(1))!!.toInt()) {
-                fireendmessage(i, "green");
+                fireendmessage(i, ConstVal.green);
             }
             Thread.sleep(1000);
             for (i in 0..(size?.minus(1))!!.toInt()) {
-                fireendmessage(i, "white");
+                fireendmessage(i, ConstVal.white);
             }
             Thread.sleep(1000);
         }
 
         Thread.sleep(2000);
-        PB(60);
+        PB((timplan!!/1000).toInt());
         next = true;
         Startbutton.isEnabled = false;
         TimersDataVal.totaltime = 0.0;
@@ -235,11 +235,11 @@ class Start : AppCompatActivity() {
                 for (t in 0..4)
                 {
                     for (i in 0..(size?.minus(1))!!.toInt()) {
-                        fireendmessage(i, "yellow");
+                        fireendmessage(i, ConstVal.yellow);
                     }
                     Thread.sleep(1000);
                     for (i in 0..(size?.minus(1))!!.toInt()) {
-                        fireendmessage(i, "white");
+                        fireendmessage(i, ConstVal.white);
                     }
                     Thread.sleep(1000);
 
@@ -249,7 +249,7 @@ class Start : AppCompatActivity() {
                 {
                     var listcolor = mutableListOf("");
                     var CheckedList: List<String> =
-                        TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+                        TimersObjectlist.listoftofResult.filter { s -> s.contains(ConstVal.checked) }
                     for (element in CheckedList) {
                         if (!listcolor.contains(element.split(";")[4].toString().split(" ")[1].toString()))
                             listcolor.add(element.split(";")[4].toString().split(" ")[1].toString())
@@ -274,7 +274,7 @@ class Start : AppCompatActivity() {
                             }
                             Thread.sleep(1000);
                             for (i in 0..(size?.minus(1))!!.toInt()) {
-                                fireendmessage(i, "white");
+                                fireendmessage(i, ConstVal.white);
                             }
                             Thread.sleep(1000);
 
@@ -307,16 +307,16 @@ class Start : AppCompatActivity() {
         return (best.toString() + ";" + bad.toString() + ";" + CheckedList.size);
     }
 
-
     fun Plan1() {
         Objectlist.planN=0;
         StartPlans();
         val r = (0..(size?.minus(1)!!)).random() as Int;
         setcolorofcell(getchildview(r), Color.RED);
-        firemessage(r,"red");
+        firemessage(r,ConstVal.red);
     }
 
     fun Plan2() {
+
         Objectlist.planN=1;
         StartPlans();
         val r = (0..(size?.minus(1)!!)).random() as Int;
@@ -324,21 +324,22 @@ class Start : AppCompatActivity() {
         for (i in 0 until size!!) {
             if (i != r) {
                 setcolorofcell(getchildview(i), Color.BLUE);
-                firemessage(i, "blue");
+                firemessage(i, ConstVal.blue);
             };
         }
         setcolorofcell(getchildview(r), Color.RED);
-        firemessage(r,"red");
+        firemessage(r,ConstVal.red);
     }
 
     fun Plan3() {
+        timplan=120000;
         Objectlist.planN = 2;
         StartPlans();
         val r  =  (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
         setcolorofcell(getchildview(r.elementAt(0)), Color.RED);
         setcolorofcell(getchildview(r.elementAt(1)), Color.BLUE);
-        firemessage(r.elementAt(0), "red");
-        firemessage(r.elementAt(1), "blue");
+        firemessage(r.elementAt(0), ConstVal.red);
+        firemessage(r.elementAt(1), ConstVal.blue);
     }
 
     fun Plan4()

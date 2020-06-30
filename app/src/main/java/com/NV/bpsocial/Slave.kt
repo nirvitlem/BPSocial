@@ -39,7 +39,7 @@ class Slave : AppCompatActivity() {
                 }
                 Thread {
                     Objectlist.mbs?.setconextintent(this);
-                    Objectlist.mbs?.write(("Schecked+" + index.toString() + "+" +cb?.tag).toByteArray());
+                    Objectlist.mbs?.write((ConstVal.ScheckedP + index.toString() + "+" +cb?.tag).toByteArray());
                 }.start();
 
             }
@@ -47,7 +47,7 @@ class Slave : AppCompatActivity() {
             {
                 Thread {
                     Objectlist.mbs?.setconextintent(this);
-                    Objectlist.mbs?.write(("Smistake+" + index.toString() + "+" +cb?.tag).toByteArray());
+                    Objectlist.mbs?.write((ConstVal.SmistakeP + index.toString() + "+" +cb?.tag).toByteArray());
                 }.start();
             }
         }
