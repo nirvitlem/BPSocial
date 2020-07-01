@@ -51,11 +51,11 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
                 listofbluetoothsocket.add(Socket!!);
                 //manageMyConnectedSocket(it)
                 Log.e(TAG, "Socket's accept() ");
-               Thread({
-                    val mbs: MyBluetoothService? = MyBluetoothService(socket);
-                    mbs?.setconextintent(A!!);
-                    mbs?.run();
-               }).start();
+               Thread {
+                   val mbs: MyBluetoothService? = MyBluetoothService(socket);
+                   mbs?.setconextintent(A!!);
+                   mbs?.run();
+               }.start();
                 //mmServerSocket?.close()
                 //shouldLoop = false
             }

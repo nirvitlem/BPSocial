@@ -2,6 +2,7 @@ package com.NV.bpsocial
 
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -10,26 +11,33 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.app.AppCompatActivity
+import com.NV.bpsocial.Objectlist.planN
+import com.NV.bpsocial.StartObjectlist.tbl
 import com.NV.bpsocial.StartObjectval.next
 import kotlinx.android.synthetic.main.activity_start.*
 import kotlin.collections.ArrayList
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 
-public var tbl : TableLayout ?=null;
+//public var tbl : TableLayout ?=null;
 public var size : Int ?=0;
 public var plan : String ?="";
+public var timplan:Long ?=60000;
+
 
 
 object StartObjectlist {
     @JvmStatic public var listoftTableRow: ArrayList<TableRow> = ArrayList();
     @JvmStatic public var list=mutableListOf("");
     @JvmStatic public var adapter:ArrayAdapter<String>?=null;
-    //...
+    @JvmStatic public var tbl : TableLayout ?=null;
 }
 
 object StartObjectval {
@@ -52,10 +60,10 @@ class Start : AppCompatActivity() {
         val planCoohser  = findViewById<Spinner>(R.id.spinner);
         val l: ArrayList<String> = ArrayList()
         l.add("תוכנית 1")
-        l.add("תוכנית 2")
+        l.add("תוכנית 1, 2 צבעים")
         l.add("תוכנית 3")
-        l.add("תוכנית 4")
-        l.add("תוכנית 5")
+       // l.add("תוכנית 4")
+       // l.add("תוכנית 5")
         val dataAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item, l
@@ -86,11 +94,25 @@ class Start : AppCompatActivity() {
             var r = (0..(size?.minus(1)!!)).random() as Int;
             StartObjectlist.list.add(r.toString());
             StartObjectlist.adapter?.notifyDataSetChanged();
-            setcolorofcell(getchildview(r),Color.BLUE)*/
+            setcolorofcell(getchildview(r),Color.RED)*/
            when (plan) {
                "תוכנית 1" -> Plan1();
-               "תוכנית 2" -> Plan2();
-               "תוכנית 3" -> Plan3();
+               "תוכנית 1, 2 צבעים" -> Plan2();
+               "תוכנית 3" ->
+               {
+                   if (size!!<2)
+                   {
+                       val builder = AlertDialog.Builder(this)
+                       builder.setTitle("תקלה! ")
+                       builder.setMessage("צריך לפחות 2 יחידות קצה ")
+                       builder.setView(ed);
+                       builder.setPositiveButton("OK") { dialog, which ->
+
+                       }
+                       builder.show();
+                   }
+                   else  Plan3()
+               };
                "תוכנית 4" -> Plan4();
                "תוכנית 5" -> Plan5();
                else -> Plan1();
@@ -124,57 +146,207 @@ class Start : AppCompatActivity() {
         v.setBackgroundColor(c)
     }
 
-    fun Plan1() {
-        PB(60);
+    fun fireplan() {
+        Thread {
+            for (i in 0..(size?.minus(1))!!.toInt()) {
+
+                var mbs: MyBluetoothService? =
+                    MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                mbs?.setconextintent(this!!);
+                mbs?.write(("plan+" + Objectlist.planN).toByteArray());
+                Log.e("Start ", "plan+" + Objectlist.planN)
+            }
+        }.start()
+    }
+
+    fun firemessage(r:Int,c:String) {
+        Thread {
+            val mbs: MyBluetoothService? =
+                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
+            mbs?.setconextintent(this!!);
+            when (c) {
+                ConstVal.Cred ->mbs?.write((ConstVal.CredP + r.toString()).toByteArray());
+                "blue" -> mbs?.write((ConstVal.CblueP + r.toString()).toByteArray());
+                "black" -> mbs?.write(("Cblack+" + r.toString()).toByteArray());
+                "white" -> mbs?.write((ConstVal.CwhiteP + r.toString()).toByteArray());
+                "yellow" -> mbs?.write((ConstVal.CyellowP + r.toString()).toByteArray());
+                "green" -> mbs?.write((ConstVal.CgreenP + r.toString()).toByteArray());
+                else -> mbs?.write((ConstVal.CredP + r.toString()).toByteArray());
+            }
+            Log.e("Start ", c+"+"  + r.toString())
+            //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
+            // StartObjectlist.adapter?.notifyDataSetChanged()
+
+        }.start();
+    }
+
+    fun fireendmessage(r:Int,c:String) {
+        Thread {
+            val mbs: MyBluetoothService? =
+                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
+            //mbs?.setconextintent(this!!);
+            when (c) {
+                ConstVal.red -> mbs?.write((ConstVal.end+"+r").toByteArray());
+                ConstVal.blue -> mbs?.write((ConstVal.end+"+b").toByteArray());
+                ConstVal.white -> mbs?.write((ConstVal.end+"+w").toByteArray());
+                ConstVal.yellow -> mbs?.write((ConstVal.end+"+y").toByteArray());
+                ConstVal.green-> mbs?.write((ConstVal.end+"+g").toByteArray());
+                else -> mbs?.write((ConstVal.end+"+w").toByteArray());
+            }
+            Log.e("Start ", c+ "+"  + r.toString())
+        }.start();
+    }
+
+    fun StartPlans()
+    {
+        fireplan();
+        for (t in 0..2)
+        {
+            for (i in 0..(size?.minus(1))!!.toInt()) {
+                fireendmessage(i, ConstVal.green);
+            }
+            Thread.sleep(500);
+            for (i in 0..(size?.minus(1))!!.toInt()) {
+                fireendmessage(i, ConstVal.white);
+            }
+            Thread.sleep(500);
+        }
+
+        Thread.sleep(1500);
+        PB((timplan!!/1000).toInt());
+        next = true;
         Startbutton.isEnabled = false;
-        TimersDataVal.totaltime=0.0;
+        TimersDataVal.totaltime = 0.0;
 
         // Start the lengthy operation in a background thread
 
-        val timer = object : CountDownTimer(60000, 1500) {
+        val timer = object : CountDownTimer(timplan!!, 2000) {
             override fun onTick(millisUntilFinished: Long) {
-                if (StartObjectval.next!!) {
-                    val r = (0..(size?.minus(1)!!)).random() as Int;
-                    setcolorofcell(getchildview(r), Color.BLUE);
-                    firemessage(r);
-                    next = false;
-                }
+                //   if (StartObjectval.next!!) {
+                //       val r = (0..(size?.minus(1)!!)).random() as Int;
+                //       setcolorofcell(getchildview(r), Color.RED);
+                //       firemessage(r);
+                //  next = false;
+                //  }
             }
 
             override fun onFinish() {
-                next = true;
+                next = false;
                 A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
                     //list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
                     //adapter?.notifyDataSetChanged();
                     Startbutton.isEnabled = true;
                     buttons.isEnabled = true;
                 })
+                for (t in 0..4)
+                {
+                    for (i in 0..(size?.minus(1))!!.toInt()) {
+                        fireendmessage(i, ConstVal.yellow);
+                    }
+                    Thread.sleep(500);
+                    for (i in 0..(size?.minus(1))!!.toInt()) {
+                        fireendmessage(i, ConstVal.white);
+                    }
+                    Thread.sleep(500);
 
+                }
+                Thread.sleep(1500);
+                if (planN==2)
+                {
+                    var listcolor = mutableListOf("");
+                    var CheckedList: List<String> =
+                        TimersObjectlist.listoftofResult.filter { s -> s.contains(ConstVal.checked) }
+                    for (element in CheckedList) {
+                        if (!listcolor.contains(element.split(";")[4].toString().split(" ")[1].toString()))
+                            listcolor.add(element.split(";")[4].toString().split(" ")[1].toString())
+                    }
+                    var res = "0;0;0"
+                    var c = "";
+                    for (element in listcolor) {
+                        if (element.toString() != "") {
+                            var temp = bestbadbycedp(element);
+                            if (temp.split(";")[2].toInt() > res.split(";")[2].toInt())
+                            {
+                                res = temp.toString();
+                            }
+                        }
+                    }//  c = element.toString();
+                    CheckedList = TimersObjectlist.listoftofResult.filter { s -> s.contains(res.toString().split(";")[2].toString()) }
+                    CheckedList = CheckedList.filter { s -> s.contains(ConstVal.checked) }
+                    for (element in CheckedList) {
+                        for (t in 0..4)
+                        {
+                            for (i in 0..(size?.minus(1))!!.toInt()) {
+                               fireendmessage(i, element.split(";")[4].toString().split(" ")[1].toString());
+                            }
+                            Thread.sleep(1000);
+                            for (i in 0..(size?.minus(1))!!.toInt()) {
+                                fireendmessage(i, ConstVal.white);
+                            }
+                            Thread.sleep(1500);
+
+                        }
+                    }
+
+                }
+                Thread.sleep(1000);
             }
         }
         timer.start();
     }
 
-    fun firemessage(r:Int) {
-        Thread({
-            val mbs: MyBluetoothService? =
-                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
-            mbs?.setconextintent(this!!);
-            mbs?.write(("Cblue+" + r.toString()).toByteArray());
-            //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
-            // StartObjectlist.adapter?.notifyDataSetChanged()
+    fun bestbadbycedp(e: String): String {
 
-        }).start();
+        var CheckedList: List<String> =
+            TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }
+        CheckedList = CheckedList.filter { s -> s.contains(e) }
+        var best: Double? = 100.0;
+        var bad: Double? = 0.0;
+        for (element in CheckedList) {
+            if (element.split(";")[2].toDouble() < best!!) {
+                best = element.split(";")[2].toDouble();
+            }
+            if (element.split(";")[2].toDouble() > bad!!) {
+                bad = element.split(";")[2].toDouble();
+            }
+
+        }
+        return (best.toString() + ";" + bad.toString() + ";" + CheckedList.size);
     }
 
-    fun Plan2()
-    {
-
+    fun Plan1() {
+        Objectlist.planN=0;
+        StartPlans();
+        val r = (0..(size?.minus(1)!!)).random() as Int;
+        setcolorofcell(getchildview(r), Color.RED);
+        firemessage(r,ConstVal.red);
     }
 
-    fun Plan3()
-    {
+    fun Plan2() {
 
+        Objectlist.planN=1;
+        StartPlans();
+        val r = (0..(size?.minus(1)!!)).random() as Int;
+
+        for (i in 0 until size!!) {
+            if (i != r) {
+                setcolorofcell(getchildview(i), Color.BLUE);
+                firemessage(i, ConstVal.blue);
+            };
+        }
+        setcolorofcell(getchildview(r), Color.RED);
+        firemessage(r,ConstVal.red);
+    }
+
+    fun Plan3() {
+        timplan=90000;
+        Objectlist.planN = 2;
+        StartPlans();
+        val r  =  (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
+        setcolorofcell(getchildview(r.elementAt(0)), Color.RED);
+        setcolorofcell(getchildview(r.elementAt(1)), Color.BLUE);
+        firemessage(r.elementAt(0), ConstVal.red);
+        firemessage(r.elementAt(1), ConstVal.blue);
     }
 
     fun Plan4()

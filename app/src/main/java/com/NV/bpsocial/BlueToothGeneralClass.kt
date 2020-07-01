@@ -8,6 +8,7 @@ object Objectlist {
     @JvmStatic public var ct:ConnectThread?=null;
     @JvmStatic public var at: AcceptThread?=null;
     @JvmStatic public var mbs: MyBluetoothService?=null;
+    @JvmField public var planN : Int? =0;
 
     //...
 }

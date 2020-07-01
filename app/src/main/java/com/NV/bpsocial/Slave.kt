@@ -31,10 +31,15 @@ class Slave : AppCompatActivity() {
         cb?.setOnClickListener {
             if (bool) {
                 bool=false;
-                cb?.setBackgroundColor(Color.WHITE);
+                when (Objectlist?.planN)                {
+                    0 -> cb?.setBackgroundColor(Color.WHITE)
+                    1 ->  cb?.setBackgroundColor(Color.BLUE)
+                    2 -> cb?.setBackgroundColor(Color.WHITE)
+                    else ->  cb?.setBackgroundColor(Color.WHITE)
+                }
                 Thread {
                     Objectlist.mbs?.setconextintent(this);
-                    Objectlist.mbs?.write(("Schecked+" + index.toString() + "+" +cb?.tag).toByteArray());
+                    Objectlist.mbs?.write((ConstVal.ScheckedP + index.toString() + "+" +cb?.tag).toByteArray());
                 }.start();
 
             }
@@ -42,7 +47,7 @@ class Slave : AppCompatActivity() {
             {
                 Thread {
                     Objectlist.mbs?.setconextintent(this);
-                    Objectlist.mbs?.write(("Smistake+" + index.toString() + "+" +cb?.tag).toByteArray());
+                    Objectlist.mbs?.write((ConstVal.SmistakeP + index.toString() + "+" +cb?.tag).toByteArray());
                 }.start();
             }
         }
