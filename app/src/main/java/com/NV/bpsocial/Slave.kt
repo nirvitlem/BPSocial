@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.NV.bpsocial.SlaveObjectlist.cb
 import com.NV.bpsocial.SlaveVal.bool
 import com.NV.bpsocial.SlaveVal.index
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 object SlaveVal {
     @JvmField var index : Int=0;
@@ -39,7 +41,7 @@ class Slave : AppCompatActivity() {
                 }
                 Thread {
                     Objectlist.mbs?.setconextintent(this);
-                    Objectlist.mbs?.write((ConstVal.ScheckedP + index.toString() + "+" +cb?.tag).toByteArray());
+                    Objectlist.mbs?.write((ConstVal.ScheckedP + index.toString() + "+" +cb?.tag + "+" + TimeUnit.MILLISECONDS.toMicros(System.currentTimeMillis()).toString()).toByteArray());
                 }.start();
 
             }

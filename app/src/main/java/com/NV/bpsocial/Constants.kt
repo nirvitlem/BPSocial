@@ -37,5 +37,11 @@ object ConstVal {
     //...
 }
 
+object GeneralVal
+{
+    @JvmStatic var timeresponse : Long ?= 0 ;
+    @JvmStatic var cReady : Int ?=0;
+}
+
 class Constants {
 }
