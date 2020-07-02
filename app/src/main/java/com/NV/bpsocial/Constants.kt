@@ -1,5 +1,7 @@
 package com.NV.bpsocial
 
+import java.util.concurrent.Semaphore
+
 object ConstVal {
     const val Schecked="Schecked";
     const val ScheckedP="Schecked+";
@@ -39,8 +41,14 @@ object ConstVal {
 
 object GeneralVal
 {
-    @JvmStatic var timeresponse : Long ?= 0 ;
-    @JvmStatic var cReady : Int ?=0;
+    @Volatile var timeresponse : Long ?= 0 ;
+    @Volatile var cReady : Int ?=0;
+    @Volatile var Plan2firstrecive :Boolean ?= true;
+}
+
+object GeneralObj
+{
+    @JvmStatic  val sharedCounterLock = Semaphore(1)
 }
 
 class Constants {

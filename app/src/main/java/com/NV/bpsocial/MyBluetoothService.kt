@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.graphics.Color
 import android.util.Log
+import com.NV.bpsocial.GeneralObj.sharedCounterLock
+import com.NV.bpsocial.GeneralVal.Plan2firstrecive
 import com.NV.bpsocial.GeneralVal.timeresponse
 import com.NV.bpsocial.StartObjectval.next
 import com.NV.bpsocial.TimersObjectlist.listoftofResult
@@ -39,7 +41,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
     private val time: TimersData? = TimersData();
     private var M: HashMap<String, Long>? = HashMap<String, Long>();
     private var IndexClient: Int? = 0;
-    private var Plan2firstrecive :Boolean ?= true;
+
 
 
 
@@ -158,8 +160,11 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         //mmBuffer = ByteArray(1024);
                     }
                     2-> {
-                        runplan2(message!!)
-                        //mmBuffer = ByteArray(1024);
+                        Thread {
+                            sharedCounterLock.acquire();
+                            runplan2(message!!)
+                        }.start()
+                        mmBuffer = ByteArray(1024);
                     }
                     else ->  SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE)
                 }
@@ -306,91 +311,95 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
     }
 
     fun runplan2(Buffer: String) {
-        Plan2firstrecive = false;
-        var t = Buffer;
-        var tSize = t.split('+').size;
-        var ctime = t.split('+')[3].toLong()
-        val c = t.split('+')[2].toString()
-        Log.e(
-            TAG,
-            "ctime " + c.toString()  + " " + ctime.toString() + " timeresponse " +(timeresponse!!).toString() );
 
-
-        if (ctime > (timeresponse!!) ) {
-            timeresponse = ctime.plus(500);
-            // Log.e(TAG, Calendar.getInstance().timeInMillis.toString());
-
-            //Log.e(TAG, String(Buffer));
-            val sec: Double? =
-                ((Calendar.getInstance().timeInMillis.toDouble() - M?.get(mmSocket.remoteDevice.address.toString())
-                    ?.toDouble()!!) / 1000);
+        if (Plan2firstrecive==true) {
+            Plan2firstrecive = false;
+            var t = Buffer;
+            var tSize = t.split('+').size;
+            var ctime = t.split('+')[3].toLong()
+            val c = t.split('+')[2].toString()
             Log.e(
                 TAG,
-                "in timeresponse " + c.toString() + " " + ctime.toString() + " timeresponse " + timeresponse.toString()
+                "ctime " + c.toString() + " " + ctime.toString() + " timeresponse " + (timeresponse!!).toString()
             );
-            time?.sumtime(sec!!);
-           // Thread.sleep(1000);
-            A?.runOnUiThread(Runnable {
-                StartObjectlist.listoftTableRow[IndexClient!!]?.setBackgroundColor(Color.WHITE);
-                val t = StartObjectlist.listoftTableRow[IndexClient!!]?.tag.toString();
-                listoftofResult.add("Schecked;" + t + ";" + sec + ";" + Calendar.getInstance().time.toString() + ";" + c)
-                StartObjectlist.list?.add(" נגיעה ב- " + t + " אחרי " + sec.toString());
-                StartObjectlist.adapter?.notifyDataSetChanged()
-            })
-            Thread {
-                for (i in 0 until size!!) {
-                    var mbst: MyBluetoothService? =
-                        MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
-                    mbst?.write(
-                        (ConstVal.slavebool).toByteArray()
-                    );
-                    Log.e(TAG, "send " +ConstVal.slavebool + i)
-                }
 
-                for (i in 0 until size!!) {
-                    A?.runOnUiThread(Runnable {
-                        StartObjectlist.tbl?.getChildAt(i)
-                            ?.setBackgroundColor(Color.WHITE);
-                    })
-                    var mbst: MyBluetoothService? =
-                        MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
-                    //mbst?.setconextintent(A!!)
-                    mbst?.write((ConstVal.CwhiteP + i.toString()).toByteArray())
-                    Log.e(TAG, "send " + ConstVal.CwhiteP + i.toString())
-                }
 
-            while(GeneralVal.cReady!!<Oblist.listofbluetoothsocket.size)
-            {
-                Thread.sleep(500)
-            }
-            GeneralVal.cReady=0;
+          //  if (ctime > (timeresponse!!)) {
+          //      timeresponse = ctime.plus(500);
+                // Log.e(TAG, Calendar.getInstance().timeInMillis.toString());
 
-                val r = (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
+                //Log.e(TAG, String(Buffer));
+                val sec: Double? =
+                    ((Calendar.getInstance().timeInMillis.toDouble() - M?.get(mmSocket.remoteDevice.address.toString())
+                        ?.toDouble()!!) / 1000);
+                Log.e(
+                    TAG,
+                    "in timeresponse " + c.toString() + " " + ctime.toString() + " timeresponse " + timeresponse.toString()
+                );
+                time?.sumtime(sec!!);
+                // Thread.sleep(1000);
                 A?.runOnUiThread(Runnable {
-                    StartObjectlist.tbl?.getChildAt(r.elementAt(0))
-                        ?.setBackgroundColor(Color.RED);
-                    StartObjectlist.tbl?.getChildAt(r.elementAt(1))
-                        ?.setBackgroundColor(Color.BLUE);
+                    StartObjectlist.listoftTableRow[IndexClient!!]?.setBackgroundColor(Color.WHITE);
+                    val t = StartObjectlist.listoftTableRow[IndexClient!!]?.tag.toString();
+                    listoftofResult.add("Schecked;" + t + ";" + sec + ";" + Calendar.getInstance().time.toString() + ";" + c)
+                    StartObjectlist.list?.add(" נגיעה ב- " + t + " אחרי " + sec.toString());
+                    StartObjectlist.adapter?.notifyDataSetChanged()
                 })
-                Plan2firstrecive = true;
+                Thread {
+                    for (i in 0 until size!!) {
+                        var mbst: MyBluetoothService? =
+                            MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                        mbst?.write(
+                            (ConstVal.slavebool).toByteArray()
+                        );
+                        Log.e(TAG, "send " + ConstVal.slavebool + i)
+                    }
 
-                var mbst: MyBluetoothService? =
-                    MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(0)] as BluetoothSocket);
-                mbst?.write((ConstVal.CredP + r.elementAt(0).toString()).toByteArray());
-                Log.e(TAG, ConstVal.CredP + r.elementAt(0).toString())
-                var mbstt: MyBluetoothService? =
-                    MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(1)] as BluetoothSocket);
-                mbstt?.write((ConstVal.CblueP + r.elementAt(1).toString()).toByteArray());
-                Log.e(TAG, ConstVal.CblueP + r.elementAt(1).toString())
-            }.start();
+                    for (i in 0 until size!!) {
+                        A?.runOnUiThread(Runnable {
+                            StartObjectlist.tbl?.getChildAt(i)
+                                ?.setBackgroundColor(Color.WHITE);
+                        })
+                        var mbst: MyBluetoothService? =
+                            MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                        //mbst?.setconextintent(A!!)
+                        mbst?.write((ConstVal.CwhiteP + i.toString()).toByteArray())
+                        Log.e(TAG, "send " + ConstVal.CwhiteP + i.toString())
+                    }
 
-        } else {
-            Log.e(
-                TAG,
-                "out timeresponse " + c.toString()  + " " + ctime.toString() + " timeresponse " +timeresponse!!.toString());
-           // mmBuffer = ByteArray(1024);
+                //    while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
+                        Thread.sleep(500)
+                //    }
+               //     GeneralVal.cReady = 0;
+
+                    val r = (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
+                    A?.runOnUiThread(Runnable {
+                        StartObjectlist.tbl?.getChildAt(r.elementAt(0))
+                            ?.setBackgroundColor(Color.RED);
+                        StartObjectlist.tbl?.getChildAt(r.elementAt(1))
+                            ?.setBackgroundColor(Color.BLUE);
+                    })
+                    Plan2firstrecive = true;
+
+                    var mbst: MyBluetoothService? =
+                        MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(0)] as BluetoothSocket);
+                    mbst?.write((ConstVal.CredP + r.elementAt(0).toString()).toByteArray());
+                    Log.e(TAG, ConstVal.CredP + r.elementAt(0).toString())
+                    var mbstt: MyBluetoothService? =
+                        MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(1)] as BluetoothSocket);
+                    mbstt?.write((ConstVal.CblueP + r.elementAt(1).toString()).toByteArray());
+                    Log.e(TAG, ConstVal.CblueP + r.elementAt(1).toString())
+                }.start();
+
+          //  } else {
+          //      Log.e(
+          //          TAG,
+          //          "out timeresponse " + c.toString() + " " + ctime.toString() + " timeresponse " + timeresponse!!.toString()
+           //     );
+                // mmBuffer = ByteArray(1024);
+            //}
         }
-
+        sharedCounterLock.release();
         //Thread.sleep(500);
 
 
