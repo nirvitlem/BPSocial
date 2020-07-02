@@ -284,11 +284,9 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 SlaveVal.bool = false;
                 //SlaveObjectlist.cb?.tag="Color white";
             })
-            write((ConstVal.SwhiteP + index.toString()).toByteArray());
-            Log.e(TAG, "send "  + ConstVal.SwhiteP + index.toString())
-            // write("Swhite+".toByteArray() );
-            // Log.e(TAG, "Swhite+" )
-           // mmBuffer = ByteArray(1024);
+           // write((ConstVal.SwhiteP + index.toString()).toByteArray());
+          //  Log.e(TAG, "send "  + ConstVal.SwhiteP + index.toString())
+           
         }
 
         if (message!!.contains(ConstVal.end)) {
