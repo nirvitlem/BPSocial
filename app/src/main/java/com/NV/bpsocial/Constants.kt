@@ -48,7 +48,7 @@ object GeneralVal
 
 object GeneralObj
 {
-    @JvmStatic  val sharedCounterLock = Semaphore(1)
+    @Volatile  var sharedCounterLock = Semaphore(1)
 }
 
 class Constants {

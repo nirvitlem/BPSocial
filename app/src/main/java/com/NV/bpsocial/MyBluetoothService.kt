@@ -14,13 +14,8 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
-import java.sql.Timestamp
-import java.time.Instant
 import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.ThreadPoolExecutor
 import kotlin.collections.HashMap
-import kotlin.concurrent.thread
 
 private const val TAG = "BPSocial MyBluetoothService"
 
@@ -34,7 +29,7 @@ const val MESSAGE_TOAST: Int = 2
 class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
 
-    private val mmInStream: InputStream = mmSocket.inputStream
+    private var mmInStream: InputStream = mmSocket.inputStream
     private val mmOutStream: OutputStream = mmSocket.outputStream
     private var mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
     private var A: Activity? = null;
@@ -62,6 +57,9 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
             } catch (e: IOException) {
                 Log.d(TAG, "Input stream was disconnected", e)
+                mmBuffer = ByteArray(1024);
+                mmInStream= mmSocket.inputStream
+
                 break
             }
             if (numBytes>0) {
@@ -70,7 +68,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                // addtesttolist(String(mmBuffer));
                 mmBuffer = ByteArray(1024);
 
-            }
+            } else   mmBuffer = ByteArray(1024);
 
         }
 
@@ -310,20 +308,19 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
     fun runplan2(Buffer: String) {
 
+        val c = Buffer.split('+')[2].toString()
         if (Plan2firstrecive==true) {
             Plan2firstrecive = false;
-            var t = Buffer;
-            var tSize = t.split('+').size;
-            var ctime = t.split('+')[3].toLong()
-            val c = t.split('+')[2].toString()
+            var tSize = Buffer.split('+').size;
+            var ctime = Buffer.split('+')[3].toLong()
             Log.e(
                 TAG,
                 "ctime " + c.toString() + " " + ctime.toString() + " timeresponse " + (timeresponse!!).toString()
             );
 
 
-          //  if (ctime > (timeresponse!!)) {
-          //      timeresponse = ctime.plus(500);
+            if (ctime > (timeresponse!!)) {
+                timeresponse = ctime.plus(500);
                 // Log.e(TAG, Calendar.getInstance().timeInMillis.toString());
 
                 //Log.e(TAG, String(Buffer));
@@ -389,13 +386,20 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     Log.e(TAG, ConstVal.CblueP + r.elementAt(1).toString())
                 }.start();
 
-          //  } else {
-          //      Log.e(
-          //          TAG,
-          //          "out timeresponse " + c.toString() + " " + ctime.toString() + " timeresponse " + timeresponse!!.toString()
-           //     );
+            } else {
+                Log.e(
+                    TAG,
+                    "out timeresponse " + c.toString() + " " + ctime.toString() + " timeresponse " + timeresponse!!.toString()
+               );
                 // mmBuffer = ByteArray(1024);
-            //}
+            }
+
+        }
+        else
+        {
+            Log.e(
+                TAG,
+                "out Plan2firstrecive " + c.toString() + " " + Plan2firstrecive!!.toString())
         }
         sharedCounterLock.release();
         //Thread.sleep(500);
@@ -407,6 +411,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
     fun write(bytes: ByteArray) {
         try {
             Log.e(TAG, "mmOutStream.write(bytes)");
+            mmBuffer = ByteArray(1024)
             mmOutStream.write(bytes)
         } catch (e: IOException) {
             Log.e(TAG, "Error occurred when sending data", e)

@@ -254,6 +254,7 @@ class Start : AppCompatActivity() {
                 if (planN==2)
                 {
                     var listcolor = mutableListOf("");
+                    var listcsize = mutableListOf("");
                     var CheckedList: List<String> =
                         TimersObjectlist.listoftofResult.filter { s -> s.contains(ConstVal.checked) }
                     for (element in CheckedList) {
@@ -265,25 +266,25 @@ class Start : AppCompatActivity() {
                     for (element in listcolor) {
                         if (element.toString() != "") {
                             var temp = bestbadbycedp(element);
+                            listcsize.add(element + ";" + temp)
                             if (temp.split(";")[2].toInt() > res.split(";")[2].toInt())
                             {
                                 res = temp.toString();
                             }
                         }
                     }//  c = element.toString();
-                    CheckedList = TimersObjectlist.listoftofResult.filter { s -> s.contains(res.toString().split(";")[2].toString()) }
-                    CheckedList = CheckedList.filter { s -> s.contains(ConstVal.checked) }
+                    CheckedList = listcsize.filter { s -> s.contains(res.toString().split(";")[2].toString()) }
                     for (element in CheckedList) {
                         for (t in 0..4)
                         {
                             for (i in 0..(size?.minus(1))!!.toInt()) {
-                               fireendmessage(i, element.split(";")[4].toString().split(" ")[1].toString());
+                               fireendmessage(i, element.split(";")[0].toString());
                             }
-                            Thread.sleep(1000);
+                            Thread.sleep(500);
                             for (i in 0..(size?.minus(1))!!.toInt()) {
                                 fireendmessage(i, ConstVal.white);
                             }
-                            Thread.sleep(1500);
+                            Thread.sleep(1000);
 
                         }
                     }
