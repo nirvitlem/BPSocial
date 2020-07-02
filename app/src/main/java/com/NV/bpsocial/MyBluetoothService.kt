@@ -320,7 +320,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
 
             if (ctime > (timeresponse!!)) {
-                timeresponse = ctime.plus(500);
+                timeresponse = ctime.plus(800);
                 // Log.e(TAG, Calendar.getInstance().timeInMillis.toString());
 
                 //Log.e(TAG, String(Buffer));
