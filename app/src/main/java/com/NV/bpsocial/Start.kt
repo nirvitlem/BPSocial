@@ -154,7 +154,7 @@ class Start : AppCompatActivity() {
                     MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
                 mbs?.setconextintent(this!!);
                 mbs?.write(("plan+" + Objectlist.planN).toByteArray());
-                Log.e("Start ", "plan+" + Objectlist.planN)
+                if (ConstVal.logEnable) Log.e("Start ", "plan+" + Objectlist.planN)
             }
         }.start()
     }
@@ -173,7 +173,7 @@ class Start : AppCompatActivity() {
                 "green" -> mbs?.write((ConstVal.CgreenP + r.toString()).toByteArray());
                 else -> mbs?.write((ConstVal.CredP + r.toString()).toByteArray());
             }
-            Log.e("Start ", c+"+"  + r.toString())
+            if (ConstVal.logEnable) Log.e("Start ", c+"+"  + r.toString())
             //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
             // StartObjectlist.adapter?.notifyDataSetChanged()
 
@@ -193,7 +193,7 @@ class Start : AppCompatActivity() {
                 ConstVal.green-> mbs?.write((ConstVal.end+"+g").toByteArray());
                 else -> mbs?.write((ConstVal.end+"+w").toByteArray());
             }
-            Log.e("Start ", c+ "+"  + r.toString())
+            if (ConstVal.logEnable) Log.e("Start ", c+ "+"  + r.toString())
         }.start();
     }
 

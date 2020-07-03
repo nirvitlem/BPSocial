@@ -32,13 +32,13 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
 
     override fun run() {
         // Keep listening until exception occurs or a socket is returned.
-        Log.e("BPSocial Server SVal.M_UUID" , SVal.M_UUID.toString());
+        if (ConstVal.logEnable) Log.e("BPSocial Server SVal.M_UUID" , SVal.M_UUID.toString());
         var shouldLoop = true
         while (shouldLoop) {
             val socket: BluetoothSocket? = try {
                 mmServerSocket?.accept()
             } catch (e: IOException) {
-                Log.e(TAG, "Socket's accept() method failed", e)
+                if (ConstVal.logEnable)Log.e(TAG, "Socket's accept() method failed", e)
                 shouldLoop = false
                 null
             }
@@ -50,7 +50,7 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
                 })
                 listofbluetoothsocket.add(Socket!!);
                 //manageMyConnectedSocket(it)
-                Log.e(TAG, "Socket's accept() ");
+                if (ConstVal.logEnable)Log.e(TAG, "Socket's accept() ");
                Thread {
                    val mbs: MyBluetoothService? = MyBluetoothService(socket);
                    mbs?.setconextintent(A!!);
@@ -66,7 +66,7 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
         try {
             mmServerSocket?.close()
         } catch (e: IOException) {
-            Log.e(TAG, "Could not close the connect socket", e)
+            if (ConstVal.logEnable) Log.e(TAG, "Could not close the connect socket", e)
         }
     }
     fun getsocket(index : Int):BluetoothSocket{

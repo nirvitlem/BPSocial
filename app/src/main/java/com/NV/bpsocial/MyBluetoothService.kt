@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import com.NV.bpsocial.ConstVal.bufferSize
+import com.NV.bpsocial.ConstVal.logEnable
 import com.NV.bpsocial.GeneralObj.sharedCounterLock
 import com.NV.bpsocial.GeneralVal.Plan2firstrecive
 import com.NV.bpsocial.GeneralVal.timeresponse
@@ -50,7 +51,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         var numBytes: Int // bytes returned from read()
         // Keep listening to the InputStream until an exception occurs.
         while (true) {
-            Log.e(TAG, "mmInStream.read(mmBuffer)");
+            if (logEnable) Log.e(TAG, "mmInStream.read(mmBuffer)");
             // Read from the InputStream.
             numBytes = try {
                 mmInStream.read(mmBuffer);
@@ -64,7 +65,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 break
             }
             if (numBytes>0) {
-                Log.e(TAG, String(mmBuffer));
+                if (logEnable) Log.e(TAG, String(mmBuffer));
                 handlebuffer(mmBuffer)
                // addtesttolist(String(mmBuffer));
                 mmBuffer = ByteArray(bufferSize);
@@ -121,7 +122,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                             StartObjectlist.tbl?.getChildAt(r)?.setBackgroundColor(Color.RED);
                         })
                         mbs?.write((ConstVal.CredP + r.toString()).toByteArray())
-                        Log.e(TAG, ConstVal.CredP + r.toString())
+                        if (logEnable) Log.e(TAG, ConstVal.CredP + r.toString())
                         //mmBuffer = ByteArray(bufferSize);
                     };
                     1 ->
@@ -147,13 +148,13 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                                 MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
                             //mbs?.setconextintent(A!!);
                             mbs?.write((ConstVal.CredP + r.toString()).toByteArray())
-                            Log.e(TAG, ConstVal.CredP + r.toString())
+                            if (logEnable) Log.e(TAG, ConstVal.CredP + r.toString())
                             for (i in 0 until size!!) {
                                 if (i != r) {
                                     mbs =  MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
                                     //mbst?.setconextintent(A!!)
                                     mbs.write((ConstVal.CblueP + i.toString()).toByteArray())
-                                    Log.e(TAG, ConstVal.CblueP + i.toString())
+                                    if (logEnable) Log.e(TAG, ConstVal.CblueP + i.toString())
                                 }
                             }}.start();
                         //mmBuffer = ByteArray(bufferSize);
@@ -212,7 +213,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             GeneralVal.cReady = GeneralVal.cReady!!.plus(1);
             val index =message!!.split('+')[1].toInt();
             //mmBuffer = ByteArray(bufferSize);
-            Log.e(TAG, "get "  + ConstVal.Swhite + index.toString())
+            if (logEnable) Log.e(TAG, "get "  + ConstVal.Swhite + index.toString())
         }
 
         //**********************************************************************************8
@@ -234,7 +235,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             //time?.startTime();
             //mmBuffer = ByteArray(bufferSize);
             write((ConstVal.SredP + index.toString()).toByteArray());
-            Log.e(TAG, "send "  +ConstVal.SredP + index.toString())
+            if (logEnable) Log.e(TAG, "send "  +ConstVal.SredP + index.toString())
             A?.runOnUiThread(Runnable {
                 SlaveVal.bool = true;
                 SlaveVal.index = index
@@ -259,7 +260,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     //time?.startTime();
                    // mmBuffer = ByteArray(bufferSize);
                     write((ConstVal.SblueP + index.toString()).toByteArray());
-                    Log.e(TAG, "send "  + ConstVal.SblueP + index.toString())
+                    if (logEnable) Log.e(TAG, "send "  + ConstVal.SblueP + index.toString())
                     A?.runOnUiThread(Runnable {
                         SlaveVal.bool = true;
                         SlaveVal.index = index
@@ -284,7 +285,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 //SlaveObjectlist.cb?.tag="Color white";
             })
            // write((ConstVal.SwhiteP + index.toString()).toByteArray());
-          //  Log.e(TAG, "send "  + ConstVal.SwhiteP + index.toString())
+          //  if (logEnable) Log.e(TAG, "send "  + ConstVal.SwhiteP + index.toString())
            
         }
 
@@ -301,7 +302,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     else -> SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE);
                 }
             })
-            Log.e(TAG, c)
+            if (logEnable) Log.e(TAG, c)
             //mmBuffer = ByteArray(bufferSize);
         }
 
@@ -314,7 +315,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             Plan2firstrecive = false;
             var tSize = Buffer.split('+').size;
             var ctime = Buffer.split('+')[3].toLong()
-            Log.e(
+            if (logEnable) Log.e(
                 TAG,
                 "ctime " + c.toString() + " " + ctime.toString() + " timeresponse " + (timeresponse!!).toString()
             );
@@ -322,13 +323,13 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
             if (ctime > (timeresponse!!)) {
                 timeresponse = ctime.plus(800);
-                // Log.e(TAG, Calendar.getInstance().timeInMillis.toString());
+                // if (logEnable) Log.e(TAG, Calendar.getInstance().timeInMillis.toString());
 
-                //Log.e(TAG, String(Buffer));
+                //if (logEnable) Log.e(TAG, String(Buffer));
                 val sec: Double? =
                     ((Calendar.getInstance().timeInMillis.toDouble() - M?.get(mmSocket.remoteDevice.address.toString())
                         ?.toDouble()!!) / 1000);
-                Log.e(
+                if (logEnable) Log.e(
                     TAG,
                     "in timeresponse " + c.toString() + " " + ctime.toString() + " timeresponse " + timeresponse.toString()
                 );
@@ -348,7 +349,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         mbst?.write(
                             (ConstVal.slavebool).toByteArray()
                         );
-                        Log.e(TAG, "send " + ConstVal.slavebool + i)
+                        if (logEnable) Log.e(TAG, "send " + ConstVal.slavebool + i)
                     }
 
                     for (i in 0 until size!!) {
@@ -360,7 +361,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                             MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
                         //mbst?.setconextintent(A!!)
                         mbst?.write((ConstVal.CwhiteP + i.toString()).toByteArray())
-                        Log.e(TAG, "send " + ConstVal.CwhiteP + i.toString())
+                        if (logEnable) Log.e(TAG, "send " + ConstVal.CwhiteP + i.toString())
                     }
 
                 //    while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
@@ -380,15 +381,15 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     var mbst: MyBluetoothService? =
                         MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(0)] as BluetoothSocket);
                     mbst?.write((ConstVal.CredP + r.elementAt(0).toString()).toByteArray());
-                    Log.e(TAG, ConstVal.CredP + r.elementAt(0).toString())
+                    if (logEnable) Log.e(TAG, ConstVal.CredP + r.elementAt(0).toString())
                     var mbstt: MyBluetoothService? =
                         MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(1)] as BluetoothSocket);
                     mbstt?.write((ConstVal.CblueP + r.elementAt(1).toString()).toByteArray());
-                    Log.e(TAG, ConstVal.CblueP + r.elementAt(1).toString())
+                    if (logEnable) Log.e(TAG, ConstVal.CblueP + r.elementAt(1).toString())
                 }.start();
 
             } else {
-                Log.e(
+                if (logEnable) Log.e(
                     TAG,
                     "out timeresponse " + c.toString() + " " + ctime.toString() + " timeresponse " + timeresponse!!.toString()
                );
@@ -398,7 +399,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         }
         else
         {
-            Log.e(
+            if (logEnable) Log.e(
                 TAG,
                 "out Plan2firstrecive " + c.toString() + " " + Plan2firstrecive!!.toString())
         }
@@ -411,11 +412,11 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
     // Call this from the main activity to send data to the remote device.
     fun write(bytes: ByteArray) {
         try {
-            Log.e(TAG, "mmOutStream.write(bytes)");
+            if (logEnable) Log.e(TAG, "mmOutStream.write(bytes)");
             mmBuffer = ByteArray(bufferSize)
             mmOutStream.write(bytes)
         } catch (e: IOException) {
-            Log.e(TAG, "Error occurred when sending data", e)
+            if (logEnable) Log.e(TAG, "Error occurred when sending data", e)
             return
         }
     }
@@ -425,7 +426,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         try {
             mmSocket.close()
         } catch (e: IOException) {
-            Log.e(TAG, "Could not close the connect socket", e)
+            if (logEnable) Log.e(TAG, "Could not close the connect socket", e)
         }
     }
 

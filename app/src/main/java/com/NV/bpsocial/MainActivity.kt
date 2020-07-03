@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                         listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
                     } else {
                         if (createBond(listofbluetoothdevices[position])) {
-                            Log.e("createBond ", "true");
+                            if (ConstVal.logEnable) Log.e("createBond ", "true");
                             listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
                         }
                     }
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                     alertm("התאמה", "בוצעה התאמה בהצלחה");
                     var t : Int?=0;
                     Thread {
-                        Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
+                        if (ConstVal.logEnable) Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
                         // BTGObject?.setCAobject(ct!!);
                         Objectlist.ct = ConnectThread(listofbluetoothPaireddevices[0]);
                         Objectlist.ct?.setname(listofbluetoothPaireddevices[0]?.name);
@@ -217,7 +217,7 @@ class MainActivity : AppCompatActivity() {
                             mbs?.setconextintent(this!!);
                             mbs?.write(("ready").toByteArray());
                         }.start();
-                        Log.e("BPSocial Server send message", "ready");
+                        if (ConstVal.logEnable) Log.e("BPSocial Server send message", "ready");
 
                     }
                     var intent = Intent(this, Start::class.java)
@@ -233,7 +233,7 @@ class MainActivity : AppCompatActivity() {
                         list.add("נשלחה הודעה למנהל 150874")
                         Objectlist.mbs?.write(("150874" + (0..100).random().toString()).toByteArray());
                     }.start();
-                    Log.e("BPSocial Client send message", "150874");
+                    if (ConstVal.logEnable) Log.e("BPSocial Client send message", "150874");
                 }
             }
             else {
@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity() {
                             mbs?.setconextintent(this!!);
                             mbs?.write(("150874" + (0..100).random()).toByteArray());
                         }.start();
-                        Log.e("BPSocial Server send message", "150874");
+                        if (ConstVal.logEnable) Log.e("BPSocial Server send message", "150874");
 
                     }
                 }
