@@ -234,7 +234,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             val index = message!!.split('+')[1].toInt();
             //time?.startTime();
             //mmBuffer = ByteArray(bufferSize);
-            write((ConstVal.SredP + index.toString()).toByteArray());
+
             if (logEnable) Log.e(TAG, "send "  +ConstVal.SredP + index.toString())
             A?.runOnUiThread(Runnable {
                 SlaveVal.bool = true;
@@ -242,6 +242,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 SlaveObjectlist.cb?.setBackgroundColor(Color.RED);
                 SlaveObjectlist.cb?.tag="Color red";
             })
+            write((ConstVal.SredP + index.toString()).toByteArray());
 
         }
 
@@ -413,8 +414,8 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
     fun write(bytes: ByteArray) {
         try {
             if (logEnable) Log.e(TAG, "mmOutStream.write(bytes)");
-            mmBuffer = ByteArray(bufferSize)
             mmOutStream.write(bytes)
+           // mmBuffer = ByteArray(bufferSize)
         } catch (e: IOException) {
             if (logEnable) Log.e(TAG, "Error occurred when sending data", e)
             return
