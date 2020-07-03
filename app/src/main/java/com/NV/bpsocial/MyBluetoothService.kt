@@ -60,9 +60,10 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             } catch (e: IOException) {
                 Log.d(TAG, "Input stream was disconnected", e)
                 mmBuffer = ByteArray(bufferSize);
-                mmInStream= mmSocket.inputStream
+                mmInStream = mmSocket.inputStream
+                mmInStream.read(mmBuffer);
 
-                break
+                //break
             }
             if (numBytes>0) {
                 if (logEnable) Log.e(TAG, String(mmBuffer));

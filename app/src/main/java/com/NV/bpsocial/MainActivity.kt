@@ -190,8 +190,9 @@ class MainActivity : AppCompatActivity() {
 
                         val deviceName = device.name
                         val deviceHardwareAddress = device.address // MAC address
-                        if (device.name == null) list?.add("UnKown Device " + device.address);
-                        else  list?.add(device.name + " " + device.address);
+                        if (device.name.contains("BPS")) list?.add(device.name + " " + device.address);
+                        //if (device.name == null) list?.add("UnKown Device " + device.address);
+                        //else  list?.add(device.name + " " + device.address);
                         adapter?.notifyDataSetChanged()
                         listofbluetoothdevices.add(device);
 
@@ -343,8 +344,9 @@ class MainActivity : AppCompatActivity() {
                     val device: BluetoothDevice =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     val deviceName = device.name
-                    if (device.name == null) list?.add("UnKown Device " + device.address);
-                    else  list?.add(device.name + " " + device.address);
+                    if (device.name.contains("BPS"))  list?.add(device.name + " " + device.address);
+                   // if (device.name == null) list?.add("UnKown Device " + device.address);
+                    // else  list?.add(device.name + " " + device.address);
 
                     listofbluetoothdevices.add(device);
                     adapter?.notifyDataSetChanged()
