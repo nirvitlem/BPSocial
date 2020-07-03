@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.graphics.Color
 import android.util.Log
+import com.NV.bpsocial.ConstVal.bufferSize
 import com.NV.bpsocial.GeneralObj.sharedCounterLock
 import com.NV.bpsocial.GeneralVal.Plan2firstrecive
 import com.NV.bpsocial.GeneralVal.timeresponse
@@ -31,7 +32,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
     private var mmInStream: InputStream = mmSocket.inputStream
     private val mmOutStream: OutputStream = mmSocket.outputStream
-    private var mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+    private var mmBuffer: ByteArray = ByteArray(bufferSize) // mmBuffer store for the stream
     private var A: Activity? = null;
     private val time: TimersData? = TimersData();
     private var M: HashMap<String, Long>? = HashMap<String, Long>();
@@ -57,7 +58,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
             } catch (e: IOException) {
                 Log.d(TAG, "Input stream was disconnected", e)
-                mmBuffer = ByteArray(1024);
+                mmBuffer = ByteArray(bufferSize);
                 mmInStream= mmSocket.inputStream
 
                 break
@@ -66,9 +67,9 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 Log.e(TAG, String(mmBuffer));
                 handlebuffer(mmBuffer)
                // addtesttolist(String(mmBuffer));
-                mmBuffer = ByteArray(1024);
+                mmBuffer = ByteArray(bufferSize);
 
-            } else   mmBuffer = ByteArray(1024);
+            } else   mmBuffer = ByteArray(bufferSize);
 
         }
 
@@ -79,18 +80,18 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         var message : String ?= String(Buffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "");
         if (message!!.contains("150874"))
         {
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
             write("התקבלה הההודעה - 740815".toByteArray())
         };
         if (message!!.contains("740815"))
         {
             addtesttolist(mmSocket.remoteDevice.name + " בדיקה עברה בהצלחה ")
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
         }
         if (message!!.contains("ready")) {
             var intent = Intent(A, Slave::class.java)
             A?.startActivity(intent)
-          //  mmBuffer = ByteArray(1024);
+          //  mmBuffer = ByteArray(bufferSize);
         }
 
         //server
@@ -121,7 +122,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         })
                         mbs?.write((ConstVal.CredP + r.toString()).toByteArray())
                         Log.e(TAG, ConstVal.CredP + r.toString())
-                        //mmBuffer = ByteArray(1024);
+                        //mmBuffer = ByteArray(bufferSize);
                     };
                     1 ->
                     {
@@ -155,14 +156,14 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                                     Log.e(TAG, ConstVal.CblueP + i.toString())
                                 }
                             }}.start();
-                        //mmBuffer = ByteArray(1024);
+                        //mmBuffer = ByteArray(bufferSize);
                     }
                     2-> {
                         Thread {
                             sharedCounterLock.acquire();
                             runplan2(message!!)
                         }.start()
-                        mmBuffer = ByteArray(1024);
+                        mmBuffer = ByteArray(bufferSize);
                     }
                     else ->  SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE)
                 }
@@ -179,7 +180,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 StartObjectlist.list?.add(" נגיעה בטעות ב- " + t + " אחרי " + " ");
                 StartObjectlist.adapter?.notifyDataSetChanged()
             })
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
         }
 
         if (message!!.contains(ConstVal.Sred)) {
@@ -190,7 +191,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 Calendar.getInstance().timeInMillis!!
             )
             IndexClient =message!!.split('+')[1].toInt();
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
         }
 
         if (message!!.contains(ConstVal.Sblue)) {
@@ -203,14 +204,14 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             IndexClient =
                 String(Buffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
                     .split('+')[1].toInt();
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
         }
 
         if (message!!.contains(ConstVal.Swhite)) {
 
             GeneralVal.cReady = GeneralVal.cReady!!.plus(1);
             val index =message!!.split('+')[1].toInt();
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
             Log.e(TAG, "get "  + ConstVal.Swhite + index.toString())
         }
 
@@ -219,19 +220,19 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
         if (message!!.contains(ConstVal.slavebool)) {
             SlaveVal.bool=false;
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
         }
 
         if (message!!.contains(ConstVal.plan)) {
             Objectlist.planN = message!!.split('+')[1].toInt();
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
 
         }
 
         if (message!!.contains(ConstVal.Cred)) {
             val index = message!!.split('+')[1].toInt();
             //time?.startTime();
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
             write((ConstVal.SredP + index.toString()).toByteArray());
             Log.e(TAG, "send "  +ConstVal.SredP + index.toString())
             A?.runOnUiThread(Runnable {
@@ -250,13 +251,13 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
                         SlaveObjectlist.cb?.tag = "Color blue";
                     })
-                   // mmBuffer = ByteArray(1024);
+                   // mmBuffer = ByteArray(bufferSize);
                 }
                 2->
                 {
                     val index = message!!.split('+')[1].toInt();
                     //time?.startTime();
-                   // mmBuffer = ByteArray(1024);
+                   // mmBuffer = ByteArray(bufferSize);
                     write((ConstVal.SblueP + index.toString()).toByteArray());
                     Log.e(TAG, "send "  + ConstVal.SblueP + index.toString())
                     A?.runOnUiThread(Runnable {
@@ -270,7 +271,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
                 }
             }
-            mmBuffer = ByteArray(1024);
+            mmBuffer = ByteArray(bufferSize);
 
         }
 
@@ -301,7 +302,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 }
             })
             Log.e(TAG, c)
-            //mmBuffer = ByteArray(1024);
+            //mmBuffer = ByteArray(bufferSize);
         }
 
     }
@@ -391,7 +392,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     TAG,
                     "out timeresponse " + c.toString() + " " + ctime.toString() + " timeresponse " + timeresponse!!.toString()
                );
-                // mmBuffer = ByteArray(1024);
+                // mmBuffer = ByteArray(bufferSize);
             }
 
         }
@@ -411,7 +412,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
     fun write(bytes: ByteArray) {
         try {
             Log.e(TAG, "mmOutStream.write(bytes)");
-            mmBuffer = ByteArray(1024)
+            mmBuffer = ByteArray(bufferSize)
             mmOutStream.write(bytes)
         } catch (e: IOException) {
             Log.e(TAG, "Error occurred when sending data", e)
