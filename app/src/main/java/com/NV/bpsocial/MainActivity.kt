@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
         SButton.setOnClickListener {
             if (SwitchB.isChecked) {
                 if (GetBAdapter()) {
-                    RText?.text=getBluetoothMacAddress(bluetoothAdapter!!);
+                    //RText?.text=getBluetoothMacAddress(bluetoothAdapter!!);
                     bluetoothAdapter?.name = "BPS Master " ;//+ Random.nextInt(0, 100).toString();
                     startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE), 1);
                     Thread {
@@ -202,7 +202,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         ConnectButton.setOnClickListener {
-            bluetoothAdapter?.cancelDiscovery();
+           // bluetoothAdapter?.cancelDiscovery();
             if (!SwitchB.isChecked) {
 
             }
@@ -241,9 +241,10 @@ class MainActivity : AppCompatActivity() {
                     for (element in Objectlist.at?.getlistsocket() as ArrayList<BluetoothSocket>) {
 
                         Thread {
-                            val mbs: MyBluetoothService? = MyBluetoothService(element as BluetoothSocket);
-                            mbs?.setconextintent(this!!);
-                            mbs?.write(("150874" + (0..100).random()).toByteArray());
+                          //  val mbs: MyBluetoothService? = MyBluetoothService(element as BluetoothSocket);
+                            //mbs?.setconextintent(this!!);
+                            //mbs?.write(("150874" + (0..100).random()).toByteArray());
+                            (Objectlist.MBSArray?.get(element as BluetoothSocket))?.write(("150874" + (0..100).random()).toByteArray());
                         }.start();
                         if (ConstVal.logEnable) Log.e("BPSocial Server send message", "150874");
 

@@ -10,6 +10,7 @@ import com.NV.bpsocial.ConstVal.logEnable
 import com.NV.bpsocial.GeneralObj.sharedCounterLock
 import com.NV.bpsocial.GeneralVal.Plan2firstrecive
 import com.NV.bpsocial.GeneralVal.timeresponse
+import com.NV.bpsocial.Objectlist.M
 import com.NV.bpsocial.StartObjectval.next
 import com.NV.bpsocial.TimersObjectlist.listoftofResult
 import java.io.IOException
@@ -36,7 +37,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
     private var mmBuffer: ByteArray = ByteArray(bufferSize) // mmBuffer store for the stream
     private var A: Activity? = null;
     private val time: TimersData? = TimersData();
-    private var M: HashMap<String, Long>? = HashMap<String, Long>();
+
     private var IndexClient: Int? = 0;
 
 
@@ -115,13 +116,14 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                             StartObjectlist.adapter?.notifyDataSetChanged()
                         })
                         val r = (0..(size?.minus(1)!!)).random() as Int;
-                        var mbs: MyBluetoothService? =
-                            MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
+                     //   var mbs: MyBluetoothService? =
+                      //      MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
                         //mbs?.setconextintent(A!!);
                         A?.runOnUiThread(Runnable {
                             StartObjectlist.tbl?.getChildAt(r)?.setBackgroundColor(Color.RED);
                         })
-                        mbs?.write((ConstVal.CredP + r.toString()).toByteArray())
+                        (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.toString()).toByteArray())
+                      //  mbs?.write((ConstVal.CredP + r.toString()).toByteArray())
                         if (logEnable) Log.e(TAG, ConstVal.CredP + r.toString())
                         //mmBuffer = ByteArray(bufferSize);
                     };
@@ -144,16 +146,18 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                             StartObjectlist.tbl?.getChildAt(r)?.setBackgroundColor(Color.RED);
                         })
                         Thread {
-                            var mbs: MyBluetoothService? =
-                                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
+                         //   var mbs: MyBluetoothService? =
+                          //      MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
                             //mbs?.setconextintent(A!!);
-                            mbs?.write((ConstVal.CredP + r.toString()).toByteArray())
+                            //mbs?.write((ConstVal.CredP + r.toString()).toByteArray())
+                            (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.toString()).toByteArray())
                             if (logEnable) Log.e(TAG, ConstVal.CredP + r.toString())
                             for (i in 0 until size!!) {
                                 if (i != r) {
-                                    mbs =  MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                                //    mbs =  MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
                                     //mbst?.setconextintent(A!!)
-                                    mbs.write((ConstVal.CblueP + i.toString()).toByteArray())
+                                  //  mbs.write((ConstVal.CblueP + i.toString()).toByteArray())
+                                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CblueP + i.toString()).toByteArray())
                                     if (logEnable) Log.e(TAG, ConstVal.CblueP + i.toString())
                                 }
                             }}.start();
@@ -323,7 +327,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
 
             if (ctime > (timeresponse!!)) {
-                timeresponse = ctime.plus(800);
+                timeresponse = ctime.plus(200);
                 // if (logEnable) Log.e(TAG, Calendar.getInstance().timeInMillis.toString());
 
                 //if (logEnable) Log.e(TAG, String(Buffer));
@@ -345,9 +349,12 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 })
                 Thread {
                     for (i in 0 until size!!) {
-                        var mbst: MyBluetoothService? =
-                            MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
-                        mbst?.write(
+                      //  var mbst: MyBluetoothService? =
+                      //      MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                      //  mbst?.write(
+                      //      (ConstVal.slavebool).toByteArray()
+                      //  );
+                        (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(
                             (ConstVal.slavebool).toByteArray()
                         );
                         if (logEnable) Log.e(TAG, "send " + ConstVal.slavebool + i)
@@ -358,10 +365,11 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                             StartObjectlist.tbl?.getChildAt(i)
                                 ?.setBackgroundColor(Color.WHITE);
                         })
-                        var mbst: MyBluetoothService? =
-                            MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
+                  //      var mbst: MyBluetoothService? =
+                    //        MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
                         //mbst?.setconextintent(A!!)
-                        mbst?.write((ConstVal.CwhiteP + i.toString()).toByteArray())
+                      //  mbst?.write((ConstVal.CwhiteP + i.toString()).toByteArray())
+                        (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CwhiteP + i.toString()).toByteArray())
                         if (logEnable) Log.e(TAG, "send " + ConstVal.CwhiteP + i.toString())
                     }
 
@@ -379,13 +387,16 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     })
                     Plan2firstrecive = true;
 
-                    var mbst: MyBluetoothService? =
-                        MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(0)] as BluetoothSocket);
-                    mbst?.write((ConstVal.CredP + r.elementAt(0).toString()).toByteArray());
+                   // var mbst: MyBluetoothService? =
+                     //   MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(0)] as BluetoothSocket);
+                    //mbst?.write((ConstVal.CredP + r.elementAt(0).toString()).toByteArray());
+                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r.elementAt(0)] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.elementAt(0).toString()).toByteArray());
                     if (logEnable) Log.e(TAG, ConstVal.CredP + r.elementAt(0).toString())
-                    var mbstt: MyBluetoothService? =
-                        MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(1)] as BluetoothSocket);
-                    mbstt?.write((ConstVal.CblueP + r.elementAt(1).toString()).toByteArray());
+                        //   var mbstt: MyBluetoothService? =
+                     //   MyBluetoothService(Oblist.listofbluetoothsocket[r.elementAt(1)] as BluetoothSocket);
+                   //mbstt?.write((ConstVal.CblueP + r.elementAt(1).toString()).toByteArray());
+                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r.elementAt(1)] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CblueP + r.elementAt(1).toString()).toByteArray());
+
                     if (logEnable) Log.e(TAG, ConstVal.CblueP + r.elementAt(1).toString())
                 }.start();
 
