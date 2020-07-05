@@ -5,49 +5,34 @@
     android:id="@+id/activity_start"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:keepScreenOn='true'
     android:layoutDirection="inherit"
     android:screenOrientation="portrait"
-    android:keepScreenOn='true'
     tools:context=".MainActivity">
 
     <Switch
         android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="135dp"
+        android:layout_height="64dp"
         android:layout_marginTop="36dp"
+        android:layout_marginBottom="32dp"
         android:text="יחידת קצה"
+        app:layout_constraintBottom_toTopOf="@+id/SButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/RemText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/ListItems"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SButton"
-        app:layout_constraintVertical_bias="0.431" />
 
     <ListView
         android:id="@+id/ListItems"
         android:layout_width="360dp"
         android:layout_height="285dp"
-        android:layout_marginTop="96dp"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="horizontal|vertical"
         android:smoothScrollbar="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.509"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SButton" />
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="223dp" />
 
     <Button
         android:id="@+id/connectb"
@@ -75,12 +60,14 @@
 
     <Button
         android:id="@+id/SButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_width="130dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="60dp"
         android:text="חפש"
+        app:layout_constraintBottom_toTopOf="@+id/ListItems"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switch1" />
 

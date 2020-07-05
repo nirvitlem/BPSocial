@@ -134,11 +134,7 @@ class Start : AppCompatActivity() {
     }
 
     fun getchildview(i:Int):View {
-
-       // val X = (i % 3)
-       // val Y = i / 3;
         val tableRow = tbl?.getChildAt(i) as TableRow
-      //  val childView: View = tableRow.getChildAt(X)
         return tableRow
     }
 
@@ -151,11 +147,6 @@ class Start : AppCompatActivity() {
         try {
             Thread {
                 for (i in 0..(size?.minus(1))!!.toInt()) {
-
-               //     var mbs: MyBluetoothService? =
-                 //       MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
-                   // mbs?.setconextintent(this!!);
-                    //mbs?.write(("plan+" + Objectlist.planN).toByteArray());
                     (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(("plan+" + Objectlist.planN).toByteArray());
                     if (ConstVal.logEnable) Log.e("Start ", "plan+" + Objectlist.planN)
                 }
@@ -169,9 +160,6 @@ class Start : AppCompatActivity() {
     fun firemessage(r:Int,c:String) {
         try {
             Thread {
-                //val mbs: MyBluetoothService? =
-                 //   MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
-                //mbs?.setconextintent(this!!);
                 when (c) {
                     ConstVal.Cred ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.toString()).toByteArray());
                     "blue" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CblueP + r.toString()).toByteArray());
@@ -182,9 +170,6 @@ class Start : AppCompatActivity() {
                     else ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.toString()).toByteArray());
                 }
                 if (ConstVal.logEnable) Log.e("Start ", c + "+" + r.toString())
-                //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
-                // StartObjectlist.adapter?.notifyDataSetChanged()
-
             }.start();
         }catch (e: Exception)
         {
@@ -195,9 +180,6 @@ class Start : AppCompatActivity() {
     fun fireendmessage(r:Int,c:String) {
         try {
             Thread {
-              //  val mbs: MyBluetoothService? =
-                //    MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
-                //mbs?.setconextintent(this!!);
                 when (c) {
                     ConstVal.red ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+r").toByteArray());
                     ConstVal.blue ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+b").toByteArray());
@@ -239,19 +221,12 @@ class Start : AppCompatActivity() {
 
         val timer = object : CountDownTimer(timplan!!, 2000) {
             override fun onTick(millisUntilFinished: Long) {
-                //   if (StartObjectval.next!!) {
-                //       val r = (0..(size?.minus(1)!!)).random() as Int;
-                //       setcolorofcell(getchildview(r), Color.RED);
-                //       firemessage(r);
-                //  next = false;
-                //  }
+
             }
 
             override fun onFinish() {
                 next = false;
                 A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                    //list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
-                    //adapter?.notifyDataSetChanged();
                     Startbutton.isEnabled = true;
                     buttons.isEnabled = true;
                 })

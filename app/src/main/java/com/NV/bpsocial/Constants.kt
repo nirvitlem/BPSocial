@@ -37,7 +37,7 @@ object ConstVal {
     const val plan="plan"
     const val slavebool = "slavebool"
 
-    const val bufferSize = 200;
+    const val bufferSize = 50;
     const val logEnable = true;
     //...
 }

@@ -13,9 +13,6 @@ import kotlinx.android.synthetic.main.activity_summerize.*
 import java.io.*
 import java.util.*
 
-
-//SSend; ; ;"+ Calendar.getInstance().time.toString()
-//"Schecked;" + t + ";" + sec + ";"+ Calendar.getInstance().time.toString(
 var list=mutableListOf("");
 var adapter: ArrayAdapter<String>?=null;
 public var listcolor = mutableListOf("");
