@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                     pairedDevices?.forEach { device ->
-                        if (device.name.contains("BPS")) {
+                        if (device.name!=null && device.name.contains("BPS")) {
                             val deviceName = device.name
                             val deviceHardwareAddress = device.address // MAC address
                             if (device.name == null) list?.add("UnKown Device " + device.address);

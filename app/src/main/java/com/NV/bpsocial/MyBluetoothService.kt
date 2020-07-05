@@ -17,6 +17,7 @@ import com.NV.bpsocial.TimersObjectlist.listoftofResult
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.lang.reflect.Array
 import java.nio.charset.StandardCharsets
 import java.util.*
 import kotlin.collections.HashMap
@@ -64,16 +65,21 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             }
             if (numBytes>0) {
                 if (logEnable) Log.e(TAG, String(mmBuffer));
-                handlebuffer(mmBuffer)
+
+                var message : String ?= String(mmBuffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "");
+                handlebuffer(message!!)
                 mmBuffer = ByteArray(bufferSize);
+
+
+
             }
             else   mmBuffer = ByteArray(bufferSize);
         }
     }
 
-    fun handlebuffer(Buffer : ByteArray)
+    fun handlebuffer(message : String)
     {
-        var message : String ?= String(Buffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "");
+
         if (message!!.contains("150874"))
         {
             write("התקבלה הההודעה - 740815".toByteArray())
@@ -144,6 +150,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     else ->  SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE)
                 }
             }
+
         }
 
         if (message!!.contains(ConstVal.Smistake)) {
@@ -175,9 +182,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 mmSocket.remoteDevice.address.toString(),
                 Calendar.getInstance().timeInMillis!!
             )
-            IndexClient =
-                String(Buffer, StandardCharsets.UTF_8).replace(0.toChar().toString(), "")
-                    .split('+')[1].toInt();
+            IndexClient = message.split('+')[1].toInt();
         }
 
         if (message!!.contains(ConstVal.Swhite)) {
@@ -320,28 +325,35 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CwhiteP + i.toString()).toByteArray())
                         if (logEnable) Log.e(TAG, "send " + ConstVal.CwhiteP + i.toString())
                     }
+                    A?.runOnUiThread {
+                        val timer = object : CountDownTimer(2000, 50) {
+                            override fun onTick(millisUntilFinished: Long) {
+                                if (GeneralVal.cReady!! == Oblist.listofbluetoothsocket.size) {
+                                    GeneralVal.cReady = 0;
+                                    cancel();
+                                }
 
-                    val timer = object : CountDownTimer(2000, 50) {
-                        override fun onTick(millisUntilFinished: Long) {
-                            if (GeneralVal.cReady!! == Oblist.listofbluetoothsocket.size) {
+                            }
+
+                            override fun onFinish() {
+                                for (i in 0 until size!!) {
+                                    A?.runOnUiThread(Runnable {
+                                        StartObjectlist.tbl?.getChildAt(i)
+                                            ?.setBackgroundColor(Color.WHITE);
+                                    })
+                                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(
+                                        (ConstVal.CwhitePC + i.toString()).toByteArray()
+                                    )
+                                    if (logEnable) Log.e(
+                                        TAG,
+                                        "send after clock end " + ConstVal.CwhitePC + i.toString()
+                                    )
+                                }
                                 GeneralVal.cReady = 0;
-                                cancel();
                             }
-
                         }
-                        override fun onFinish() {
-                            for (i in 0 until size!!) {
-                                A?.runOnUiThread(Runnable {
-                                    StartObjectlist.tbl?.getChildAt(i)
-                                        ?.setBackgroundColor(Color.WHITE);
-                                })
-                                (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(( ConstVal.CwhitePC + i.toString()).toByteArray())
-                                if (logEnable) Log.e(TAG, "send after clock end " + ConstVal.CwhitePC + i.toString())
-                            }
-                            GeneralVal.cReady = 0;
-                        }
+                        timer.start();
                     }
-                    timer.start();
                     while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
                         Thread.sleep(100)
                     }
@@ -372,6 +384,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 "out Plan2firstrecive " + c.toString() + " " + Plan2firstrecive!!.toString())
         }
         sharedCounterLock.release();
+
     }
 
     // Call this from the main activity to send data to the remote device.
