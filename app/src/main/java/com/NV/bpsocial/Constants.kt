@@ -29,6 +29,7 @@ object ConstVal {
     const val white="white"
     const val Cwhite="Cwhite"
     const val CwhiteP="Cwhite+"
+    const val CwhitePC="CwhitePC+"
     const val Swhite="Swhite"
     const val SwhiteP="Swhite+"
     const val Smistake="Smistake"

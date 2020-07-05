@@ -4,6 +4,7 @@ import android.app.Activity
 import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.graphics.Color
+import android.os.CountDownTimer
 import android.util.Log
 import com.NV.bpsocial.ConstVal.bufferSize
 import com.NV.bpsocial.ConstVal.logEnable
@@ -242,9 +243,18 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                 SlaveVal.bool = false;
                 //SlaveObjectlist.cb?.tag="Color white";
             })
-           // write((ConstVal.SwhiteP + index.toString()).toByteArray());
-          //  if (logEnable) Log.e(TAG, "send "  + ConstVal.SwhiteP + index.toString())
-           
+        }
+
+        if (message!!.contains(ConstVal.CwhitePC)) {
+            val index =message!!.split('+')[1].toInt();
+            A?.runOnUiThread(Runnable {
+                SlaveObjectlist.cb?.setBackgroundColor(Color.WHITE);
+                SlaveVal.bool = false;
+                //SlaveObjectlist.cb?.tag="Color white";
+            })
+            write((ConstVal.SwhiteP + index.toString()).toByteArray());
+            if (logEnable) Log.e(TAG, "send "  + ConstVal.SwhiteP + index.toString())
+
         }
 
         if (message!!.contains(ConstVal.end)) {
@@ -311,11 +321,30 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         if (logEnable) Log.e(TAG, "send " + ConstVal.CwhiteP + i.toString())
                     }
 
-                //    while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
-                        Thread.sleep(500)
-                //    }
-               //     GeneralVal.cReady = 0;
-                    Thread.sleep(500);
+                    val timer = object : CountDownTimer(2000, 50) {
+                        override fun onTick(millisUntilFinished: Long) {
+                            if (GeneralVal.cReady!! == Oblist.listofbluetoothsocket.size) {
+                                GeneralVal.cReady = 0;
+                                cancel();
+                            }
+
+                        }
+                        override fun onFinish() {
+                            for (i in 0 until size!!) {
+                                A?.runOnUiThread(Runnable {
+                                    StartObjectlist.tbl?.getChildAt(i)
+                                        ?.setBackgroundColor(Color.WHITE);
+                                })
+                                (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(( ConstVal.CwhitePC + i.toString()).toByteArray())
+                                if (logEnable) Log.e(TAG, "send after clock end " + ConstVal.CwhitePC + i.toString())
+                            }
+                            GeneralVal.cReady = 0;
+                        }
+                    }
+                    timer.start();
+                    while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
+                        Thread.sleep(100)
+                    }
                     val r = (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
                     A?.runOnUiThread(Runnable {
                         StartObjectlist.tbl?.getChildAt(r.elementAt(0))
