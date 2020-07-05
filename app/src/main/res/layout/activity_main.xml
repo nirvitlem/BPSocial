@@ -14,10 +14,8 @@
         android:id="@+id/switch1"
         android:layout_width="135dp"
         android:layout_height="64dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="124dp"
         android:text="יחידת קצה"
-        app:layout_constraintBottom_toTopOf="@+id/SButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,13 +24,15 @@
         android:id="@+id/ListItems"
         android:layout_width="360dp"
         android:layout_height="285dp"
+        android:layout_marginBottom="148dp"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="horizontal|vertical"
         android:smoothScrollbar="true"
-        tools:layout_editor_absoluteX="25dp"
-        tools:layout_editor_absoluteY="223dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SButton"
+        tools:layout_editor_absoluteX="25dp" />
 
     <Button
         android:id="@+id/connectb"
@@ -41,10 +41,10 @@
         android:text="התחבר"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.885"
+        app:layout_constraintHorizontal_bias="0.811"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ListItems"
-        app:layout_constraintVertical_bias="0.237" />
+        app:layout_constraintVertical_bias="0.241" />
 
     <Button
         android:id="@+id/SendM"
@@ -53,21 +53,18 @@
         android:text="בדיקה"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/connectb"
-        app:layout_constraintHorizontal_bias="0.419"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ListItems"
-        app:layout_constraintVertical_bias="0.237" />
+        app:layout_constraintVertical_bias="0.241" />
 
     <Button
         android:id="@+id/SButton"
         android:layout_width="130dp"
         android:layout_height="46dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginTop="32dp"
         android:text="חפש"
-        app:layout_constraintBottom_toTopOf="@+id/ListItems"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switch1" />
 
