@@ -46,7 +46,7 @@ class Slave : AppCompatActivity() {
                 }
                 Thread {
                     Objectlist.mbs?.setconextintent(this);
-                    Objectlist.mbs?.write((ConstVal.ScheckedP + index.toString() + "+" +cb?.tag + "+" + TimeUnit.MILLISECONDS.toMicros(System.currentTimeMillis()).toString()+ "+").toByteArray());
+                    Objectlist.mbs?.write((ConstVal.ScheckedP + index.toString() + "+" +cb?.tag + "+" + TimeUnit.MILLISECONDS.toMicros(System.currentTimeMillis()).toString()+ "+ENDM").toByteArray());
                 }.start();
 
             }
@@ -55,7 +55,7 @@ class Slave : AppCompatActivity() {
                 if (planN != 2 ) {
                       Thread {
                            Objectlist.mbs?.setconextintent(this);
-                          Objectlist.mbs?.write((ConstVal.SmistakeP + index.toString() + "+" +cb?.tag+ "+").toByteArray());
+                          Objectlist.mbs?.write((ConstVal.SmistakeP + index.toString() + "+" +cb?.tag+ "+ENDM").toByteArray());
                       }.start();
                 }
                 else

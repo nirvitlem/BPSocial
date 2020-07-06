@@ -48,6 +48,7 @@ object GeneralVal
     @Volatile var timeresponse : Long ?= 0 ;
     @Volatile var cReady : Int ?=0;
     @Volatile var Plan2firstrecive :Boolean ?= true;
+    @Volatile var tempMessage : String ?="";
 }
 
 object GeneralObj

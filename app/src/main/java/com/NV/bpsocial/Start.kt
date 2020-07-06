@@ -147,7 +147,7 @@ class Start : AppCompatActivity() {
         try {
             Thread {
                 for (i in 0..(size?.minus(1))!!.toInt()) {
-                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(("plan+" + Objectlist.planN+ "+").toByteArray());
+                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(("plan+" + Objectlist.planN+ "+ENDM").toByteArray());
                     if (ConstVal.logEnable) Log.e("Start ", "plan+" + Objectlist.planN)
                 }
             }.start()
@@ -161,13 +161,13 @@ class Start : AppCompatActivity() {
         try {
             Thread {
                 when (c) {
-                    ConstVal.Cred ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.toString()+ "+").toByteArray());
-                    "blue" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CblueP + r.toString()+ "+").toByteArray());
-                    "black" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("Cblack+" + r.toString()+ "+").toByteArray());
-                    "white" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CwhiteP + r.toString()+ "+").toByteArray());
-                    "yellow" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CyellowP + r.toString()+ "+").toByteArray());
-                    "green" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CgreenP + r.toString()+ "+").toByteArray());
-                    else ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.toString()+ "+").toByteArray());
+                    ConstVal.Cred ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.toString()+ "+ENDM").toByteArray());
+                    "blue" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CblueP + r.toString()+ "+ENDM").toByteArray());
+                    "black" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("Cblack+" + r.toString()+ "+ENDM").toByteArray());
+                    "white" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CwhiteP + r.toString()+ "+ENDM").toByteArray());
+                    "yellow" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CyellowP + r.toString()+ "+ENDM").toByteArray());
+                    "green" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CgreenP + r.toString()+ "+ENDM").toByteArray());
+                    else ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.CredP + r.toString()+ "+ENDM").toByteArray());
                 }
                 if (ConstVal.logEnable) Log.e("Start ", c + "+" + r.toString())
             }.start();
@@ -181,12 +181,12 @@ class Start : AppCompatActivity() {
         try {
             Thread {
                 when (c) {
-                    ConstVal.red ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+r"+ "+").toByteArray());
-                    ConstVal.blue ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+b"+ "+").toByteArray());
-                    ConstVal.white ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+w"+ "+").toByteArray());
-                    ConstVal.yellow ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+y"+ "+").toByteArray());
-                    ConstVal.green ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+g"+ "+").toByteArray());
-                    else ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+w"+ "+").toByteArray());
+                    ConstVal.red ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+r"+ "+ENDM").toByteArray());
+                    ConstVal.blue ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+b"+ "+ENDM").toByteArray());
+                    ConstVal.white ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+w"+ "+ENDM").toByteArray());
+                    ConstVal.yellow ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+y"+"+ENDM").toByteArray());
+                    ConstVal.green ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+g"+ "+ENDM").toByteArray());
+                    else ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write((ConstVal.end + "+w"+ "+ENDM").toByteArray());
                 }
                 if (ConstVal.logEnable) Log.e("Start ", c + "+" + r.toString())
             }.start();

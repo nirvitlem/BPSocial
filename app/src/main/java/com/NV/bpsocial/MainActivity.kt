@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                             val mbs: MyBluetoothService? =
                                 MyBluetoothService(element as BluetoothSocket);
                             mbs?.setconextintent(this!!);
-                            mbs?.write(("ready").toByteArray());
+                            mbs?.write(("ready"+"+ENDM").toByteArray());
                         }.start();
                         if (ConstVal.logEnable) Log.e("BPSocial Server send message", "ready");
 
@@ -226,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                 if (Objectlist.ct?.getsocket() != null) {
                     Thread {
                         list.add("נשלחה הודעה למנהל 150874")
-                        Objectlist.mbs?.write(("150874" + (0..100).random().toString()).toByteArray());
+                        Objectlist.mbs?.write(("150874" + (0..100).random().toString()+"+ENDM").toByteArray());
                     }.start();
                     if (ConstVal.logEnable) Log.e("BPSocial Client send message", "150874");
                 }
@@ -236,10 +236,7 @@ class MainActivity : AppCompatActivity() {
                     for (element in Objectlist.at?.getlistsocket() as ArrayList<BluetoothSocket>) {
 
                         Thread {
-                          //  val mbs: MyBluetoothService? = MyBluetoothService(element as BluetoothSocket);
-                            //mbs?.setconextintent(this!!);
-                            //mbs?.write(("150874" + (0..100).random()).toByteArray());
-                            (Objectlist.MBSArray?.get(element as BluetoothSocket))?.write(("150874" + (0..100).random()).toByteArray());
+                            (Objectlist.MBSArray?.get(element as BluetoothSocket))?.write(("150874" + (0..100).random()+"+ENDM").toByteArray());
                         }.start();
                         if (ConstVal.logEnable) Log.e("BPSocial Server send message", "150874");
 
