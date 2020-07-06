@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                             val mbs: MyBluetoothService? =
                                 MyBluetoothService(element as BluetoothSocket);
                             mbs?.setconextintent(this!!);
-                            mbs?.write(("ready"+"+ENDM").toByteArray());
+                            mbs?.write(("StartM+" +"ready"+"+ENDM").toByteArray());
                         }.start();
                         if (ConstVal.logEnable) Log.e("BPSocial Server send message", "ready");
 
@@ -226,7 +226,7 @@ class MainActivity : AppCompatActivity() {
                 if (Objectlist.ct?.getsocket() != null) {
                     Thread {
                         list.add("נשלחה הודעה למנהל 150874")
-                        Objectlist.mbs?.write(("150874" + (0..100).random().toString()+"+ENDM").toByteArray());
+                        Objectlist.mbs?.write(("StartM+" +"150874" + (0..100).random().toString()+"+ENDM").toByteArray());
                     }.start();
                     if (ConstVal.logEnable) Log.e("BPSocial Client send message", "150874");
                 }
@@ -236,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                     for (element in Objectlist.at?.getlistsocket() as ArrayList<BluetoothSocket>) {
 
                         Thread {
-                            (Objectlist.MBSArray?.get(element as BluetoothSocket))?.write(("150874" + (0..100).random()+"+ENDM").toByteArray());
+                            (Objectlist.MBSArray?.get(element as BluetoothSocket))?.write(("StartM+" +"150874" + (0..100).random()+"+ENDM").toByteArray());
                         }.start();
                         if (ConstVal.logEnable) Log.e("BPSocial Server send message", "150874");
 
@@ -332,7 +332,7 @@ class MainActivity : AppCompatActivity() {
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
                     val device: BluetoothDevice =  intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    if (device!=null && device.name.contains("BPS")) {
+                    if (device.name!=null && device.name.contains("BPS")) {
                         val deviceName = device.name
                         if (device.name == null) list?.add("UnKown Device " + device.address);
                         else list?.add(device.name + " " + device.address);
