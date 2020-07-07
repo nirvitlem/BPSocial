@@ -339,7 +339,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
 
 
             if (ctime > (timeresponse!!)) {
-                timeresponse = ctime.plus(200);
+                timeresponse = ctime;
                 val sec: Double? =
                     ((Calendar.getInstance().timeInMillis.toDouble() - M?.get(mmSocket.remoteDevice.address.toString())
                         ?.toDouble()!!) / 1000);
@@ -372,35 +372,6 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         if (logEnable) Log.e(TAG, "send " + ConstVal.CwhitePC + i.toString())
                     }
 
-                 /*   A?.runOnUiThread {
-                        val timer = object : CountDownTimer(2000, 50) {
-                            override fun onTick(millisUntilFinished: Long) {
-                                if (GeneralVal.cReady!! == Oblist.listofbluetoothsocket.size) {
-                                    GeneralVal.cReady = 0;
-
-                                }
-
-                            }
-
-                            override fun onFinish() {
-                                for (i in 0 until size!!) {
-                                    A?.runOnUiThread(Runnable {
-                                        StartObjectlist.tbl?.getChildAt(i)
-                                            ?.setBackgroundColor(Color.WHITE);
-                                    })
-                                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(
-                                        ("StartM+" +ConstVal.CwhitePC + i.toString()+ "+ENDM").toByteArray()
-                                    )
-                                    if (logEnable) Log.e(
-                                        TAG,
-                                        "send after clock end " + ConstVal.CwhitePC + i.toString()
-                                    )
-                                }
-                                GeneralVal.cReady = 0;
-                            }
-                        }
-                        timer.start();
-                    }*/
                     var index=0
                     while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
                         Thread.sleep(100)
@@ -416,7 +387,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         }
                     }
                     GeneralVal.cReady = 0;
-                    //Thread.sleep(1500)
+                    Thread.sleep(1500)
                     val r = (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
                     A?.runOnUiThread(Runnable {
                         StartObjectlist.tbl?.getChildAt(r.elementAt(0))
