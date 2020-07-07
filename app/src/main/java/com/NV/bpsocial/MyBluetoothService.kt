@@ -350,12 +350,13 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                         (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.CwhiteP + i.toString()+ "+ENDM").toByteArray())
                         if (logEnable) Log.e(TAG, "send " + ConstVal.CwhiteP + i.toString())
                     }
-                    A?.runOnUiThread {
+
+                 /*   A?.runOnUiThread {
                         val timer = object : CountDownTimer(2000, 50) {
                             override fun onTick(millisUntilFinished: Long) {
                                 if (GeneralVal.cReady!! == Oblist.listofbluetoothsocket.size) {
                                     GeneralVal.cReady = 0;
-                                    cancel();
+
                                 }
 
                             }
@@ -381,7 +382,8 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     }
                     while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
                         Thread.sleep(100)
-                    }
+                    }*/
+                    Thread.sleep(1500)
                     val r = (0..(size?.minus(1)!!)).shuffled().take(2).toSet();
                     A?.runOnUiThread(Runnable {
                         StartObjectlist.tbl?.getChildAt(r.elementAt(0))
