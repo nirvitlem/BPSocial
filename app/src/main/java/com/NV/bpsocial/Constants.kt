@@ -39,7 +39,7 @@ object ConstVal {
     const val slavebool = "slavebool"
 
     const val bufferSize = 50;
-    const val logEnable = true;
+    const val logEnable = false;
     //...
 }
 

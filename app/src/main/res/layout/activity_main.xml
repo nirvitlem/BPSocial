@@ -10,6 +10,22 @@
     android:screenOrientation="portrait"
     tools:context=".MainActivity">
 
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="cca-app-pub-3373354348631607/9115232330"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.042"></com.google.android.gms.ads.AdView>
+
     <Switch
         android:id="@+id/switch1"
         android:layout_width="135dp"
