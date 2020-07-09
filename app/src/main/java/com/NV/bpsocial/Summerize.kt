@@ -8,13 +8,11 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.NV.bpsocial.Objectlist.planN
 import kotlinx.android.synthetic.main.activity_summerize.*
 import java.io.*
 import java.util.*
 
-
-//SSend; ; ;"+ Calendar.getInstance().time.toString()
-//"Schecked;" + t + ";" + sec + ";"+ Calendar.getInstance().time.toString(
 var list=mutableListOf("");
 var adapter: ArrayAdapter<String>?=null;
 public var listcolor = mutableListOf("");
@@ -48,7 +46,7 @@ class Summerize : AppCompatActivity() {
         list.add("תוצאות:" )
         list.add("סיימת את תרגיל ב -  " + sumAlltimedCheked() + " שניות ")
         list.add("לחצת  " + TotalCheked() + " פעמים ")
-        list.add("לחצת  " + Totalmistake()+" פעמים בטעות ")
+        if (planN != 2 ) list.add("לחצת  " + Totalmistake()+" פעמים בטעות ")
         list.add(
             " התוצאה הטובה ביותר " + bestcore().split(";")[0].toString() + " ליחידת קצה " + bestcore().split(
                 ";"

@@ -21,6 +21,7 @@ import com.NV.bpsocial.Objectlist.planN
 import com.NV.bpsocial.StartObjectlist.tbl
 import com.NV.bpsocial.StartObjectval.next
 import kotlinx.android.synthetic.main.activity_start.*
+import java.lang.Exception
 import kotlin.collections.ArrayList
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -133,11 +134,7 @@ class Start : AppCompatActivity() {
     }
 
     fun getchildview(i:Int):View {
-
-       // val X = (i % 3)
-       // val Y = i / 3;
         val tableRow = tbl?.getChildAt(i) as TableRow
-      //  val childView: View = tableRow.getChildAt(X)
         return tableRow
     }
 
@@ -147,54 +144,56 @@ class Start : AppCompatActivity() {
     }
 
     fun fireplan() {
-        Thread {
-            for (i in 0..(size?.minus(1))!!.toInt()) {
-
-                var mbs: MyBluetoothService? =
-                    MyBluetoothService(Oblist.listofbluetoothsocket[i] as BluetoothSocket);
-                mbs?.setconextintent(this!!);
-                mbs?.write(("plan+" + Objectlist.planN).toByteArray());
-                Log.e("Start ", "plan+" + Objectlist.planN)
-            }
-        }.start()
+        try {
+            Thread {
+                for (i in 0..(size?.minus(1))!!.toInt()) {
+                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +"plan+" + Objectlist.planN+ "+ENDM").toByteArray());
+                    if (ConstVal.logEnable) Log.e("Start ", "plan+" + Objectlist.planN)
+                }
+            }.start()
+        }catch (e: Exception)
+        {
+            Log.e("Server " ,"fireplan " + e.message.toString())
+        }
     }
 
     fun firemessage(r:Int,c:String) {
-        Thread {
-            val mbs: MyBluetoothService? =
-                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
-            mbs?.setconextintent(this!!);
-            when (c) {
-                ConstVal.Cred ->mbs?.write((ConstVal.CredP + r.toString()).toByteArray());
-                "blue" -> mbs?.write((ConstVal.CblueP + r.toString()).toByteArray());
-                "black" -> mbs?.write(("Cblack+" + r.toString()).toByteArray());
-                "white" -> mbs?.write((ConstVal.CwhiteP + r.toString()).toByteArray());
-                "yellow" -> mbs?.write((ConstVal.CyellowP + r.toString()).toByteArray());
-                "green" -> mbs?.write((ConstVal.CgreenP + r.toString()).toByteArray());
-                else -> mbs?.write((ConstVal.CredP + r.toString()).toByteArray());
-            }
-            Log.e("Start ", c+"+"  + r.toString())
-            //StartObjectlist.list?.add(Oblist.listofbluetoothsocket[r].remoteDevice.name);
-            // StartObjectlist.adapter?.notifyDataSetChanged()
-
-        }.start();
+        try {
+            Thread {
+                when (c) {
+                    ConstVal.Cred ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.CredP + r.toString()+ "+ENDM").toByteArray());
+                    "blue" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.CblueP + r.toString()+ "+ENDM").toByteArray());
+                    "black" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +"Cblack+" + r.toString()+ "+ENDM").toByteArray());
+                    "white" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.CwhiteP + r.toString()+ "+ENDM").toByteArray());
+                    "yellow" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.CyellowP + r.toString()+ "+ENDM").toByteArray());
+                    "green" ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.CgreenP + r.toString()+ "+ENDM").toByteArray());
+                    else ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.CredP + r.toString()+ "+ENDM").toByteArray());
+                }
+                if (ConstVal.logEnable) Log.e("Start ", c + "+" + r.toString())
+            }.start();
+        }catch (e: Exception)
+        {
+            Log.e("Server " ,"firemessage " + e.message.toString())
+        }
     }
 
     fun fireendmessage(r:Int,c:String) {
-        Thread {
-            val mbs: MyBluetoothService? =
-                MyBluetoothService(Oblist.listofbluetoothsocket[r] as BluetoothSocket);
-            //mbs?.setconextintent(this!!);
-            when (c) {
-                ConstVal.red -> mbs?.write((ConstVal.end+"+r").toByteArray());
-                ConstVal.blue -> mbs?.write((ConstVal.end+"+b").toByteArray());
-                ConstVal.white -> mbs?.write((ConstVal.end+"+w").toByteArray());
-                ConstVal.yellow -> mbs?.write((ConstVal.end+"+y").toByteArray());
-                ConstVal.green-> mbs?.write((ConstVal.end+"+g").toByteArray());
-                else -> mbs?.write((ConstVal.end+"+w").toByteArray());
-            }
-            Log.e("Start ", c+ "+"  + r.toString())
-        }.start();
+        try {
+            Thread {
+                when (c) {
+                    ConstVal.red ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.end + "+r"+ "+ENDM").toByteArray());
+                    ConstVal.blue ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.end + "+b"+ "+ENDM").toByteArray());
+                    ConstVal.white ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.end + "+w"+ "+ENDM").toByteArray());
+                    ConstVal.yellow ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.end + "+y"+"+ENDM").toByteArray());
+                    ConstVal.green ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.end + "+g"+ "+ENDM").toByteArray());
+                    else ->  (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[r] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+" +ConstVal.end + "+w"+ "+ENDM").toByteArray());
+                }
+                if (ConstVal.logEnable) Log.e("Start ", c + "+" + r.toString())
+            }.start();
+        }catch (e: Exception)
+        {
+            Log.e("Server " ,"fireendmessage " + e.message.toString())
+        }
     }
 
     fun StartPlans()
@@ -222,19 +221,12 @@ class Start : AppCompatActivity() {
 
         val timer = object : CountDownTimer(timplan!!, 2000) {
             override fun onTick(millisUntilFinished: Long) {
-                //   if (StartObjectval.next!!) {
-                //       val r = (0..(size?.minus(1)!!)).random() as Int;
-                //       setcolorofcell(getchildview(r), Color.RED);
-                //       firemessage(r);
-                //  next = false;
-                //  }
+
             }
 
             override fun onFinish() {
                 next = false;
                 A?.runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
-                    //list.add(" סך הזמן לתרגיל " + TimersDataVal.totaltime.toString() + " שניות ");
-                    //adapter?.notifyDataSetChanged();
                     Startbutton.isEnabled = true;
                     buttons.isEnabled = true;
                 })
@@ -254,6 +246,7 @@ class Start : AppCompatActivity() {
                 if (planN==2)
                 {
                     var listcolor = mutableListOf("");
+                    var listcsize = mutableListOf("");
                     var CheckedList: List<String> =
                         TimersObjectlist.listoftofResult.filter { s -> s.contains(ConstVal.checked) }
                     for (element in CheckedList) {
@@ -265,25 +258,25 @@ class Start : AppCompatActivity() {
                     for (element in listcolor) {
                         if (element.toString() != "") {
                             var temp = bestbadbycedp(element);
+                            listcsize.add(element + ";" + temp)
                             if (temp.split(";")[2].toInt() > res.split(";")[2].toInt())
                             {
                                 res = temp.toString();
                             }
                         }
                     }//  c = element.toString();
-                    CheckedList = TimersObjectlist.listoftofResult.filter { s -> s.contains(res.toString().split(";")[2].toString()) }
-                    CheckedList = CheckedList.filter { s -> s.contains(ConstVal.checked) }
+                    CheckedList = listcsize.filter { s -> s.contains(res.toString().split(";")[2].toString()) }
                     for (element in CheckedList) {
                         for (t in 0..4)
                         {
                             for (i in 0..(size?.minus(1))!!.toInt()) {
-                               fireendmessage(i, element.split(";")[4].toString().split(" ")[1].toString());
+                               fireendmessage(i, element.split(";")[0].toString());
                             }
-                            Thread.sleep(1000);
+                            Thread.sleep(500);
                             for (i in 0..(size?.minus(1))!!.toInt()) {
                                 fireendmessage(i, ConstVal.white);
                             }
-                            Thread.sleep(1500);
+                            Thread.sleep(1000);
 
                         }
                     }
