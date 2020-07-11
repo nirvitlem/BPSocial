@@ -355,8 +355,8 @@ class MainActivity : AppCompatActivity() {
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
-                    alertm("סיום חיפש ","סיום חיפוש יחידות קצה ")
-                    bluetoothAdapter?.cancelDiscovery();
+                   // alertm("סיום חיפש ","סיום חיפוש יחידות קצה ")
+                  //  bluetoothAdapter?.cancelDiscovery();
                 }
             }
         }
