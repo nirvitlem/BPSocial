@@ -25,6 +25,7 @@ import java.lang.Exception
 import kotlin.collections.ArrayList
 import kotlin.random.Random
 import kotlin.random.nextInt
+import com.google.android.gms.ads.MobileAds;
 
 
 //public var tbl : TableLayout ?=null;
@@ -53,6 +54,7 @@ class Start : AppCompatActivity() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
+        MobileAds.initialize(this) {}
         A=this;
         textViewPB.text="";
         Objectlist.mbs?.setconextintent(this);
