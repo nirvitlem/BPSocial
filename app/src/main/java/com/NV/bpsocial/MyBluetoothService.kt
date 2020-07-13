@@ -424,9 +424,10 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
     fun write(bytes: ByteArray) {
         try {
             if (logEnable) Log.e(TAG, "mmOutStream.write(bytes)");
-            mmOutStream.write(bytes)
-            mmOutStream.flush();
-           // mmBuffer = ByteArray(bufferSize)
+            Thread({
+                mmOutStream.write(bytes)
+                mmOutStream.flush();
+            }).start()
         } catch (e: IOException) {
             if (logEnable) Log.e(TAG, "Error occurred when sending data", e)
             Objectlist.MBSArray?.remove(mmSocket);
