@@ -200,6 +200,18 @@ class Start : AppCompatActivity() {
 
     fun StartPlans()
     {
+        var t : Long ?=0;
+        val ed : EditText ?= EditText(this);
+        val builder = AlertDialog.Builder(this@Start)
+        builder.setTitle("זמן ריצה")
+        builder.setMessage("הגדר זמן ריצה לתוכנית(בשניות) ")
+        builder.setView(ed);
+        builder.setPositiveButton("OK"){dialog, which ->
+            t=ed?.text.toString().toLong() * 1000
+        }
+        builder.show();
+        if (t!=null && t!! >0) timplan=t;
+
         fireplan();
         for (t in 0..2)
         {
