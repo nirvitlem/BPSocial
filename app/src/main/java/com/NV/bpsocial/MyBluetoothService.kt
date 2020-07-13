@@ -373,7 +373,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     }
 
                     var index=0
-                    while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
+                    loop@ while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
                         Thread.sleep(100)
                         index.plus(1);
                         if (index==15) {
@@ -381,9 +381,10 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                                 (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(
                                     ("StartM+" + ConstVal.Cwhite + "+ENDM").toByteArray()
                                 );
-                                if (logEnable) Log.e(TAG, "send " + ConstVal.slavebool + i)
-                                break
+                                if (logEnable) Log.e(TAG, "send " + ConstVal.Cwhite + " " + i)
+
                             };
+                            break@loop
                         }
                     }
                     GeneralVal.cReady = 0;
