@@ -376,7 +376,7 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     loop@ while (GeneralVal.cReady!! < Oblist.listofbluetoothsocket.size) {
                         Thread.sleep(100)
                         index.plus(1);
-                        if (index==15) {
+                        if (index==30) {
                             for (i in 0 until size!!) {
                                 (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(
                                     ("StartM+" + ConstVal.Cwhite + "+ENDM").toByteArray()
