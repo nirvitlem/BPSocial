@@ -224,6 +224,7 @@ class Start : AppCompatActivity() {
                     for (i in 0..(size?.minus(1))!!.toInt()) {
                         fireendmessage(i, ConstVal.white);
                     }
+                    Thread.sleep(1000);
                     val r = (0..(size?.minus(1)!!)).shuffled().take(1).toSet();
                     val colors =  arrayOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.BLACK);
                     val randomColor = colors.random()
@@ -355,7 +356,7 @@ class Start : AppCompatActivity() {
 
     fun Plan4()
     {
-        timplan=300000;
+        timplan=306000;
         Objectlist.planN = 3;
         StartPlans();
         val r  =  (0..(size?.minus(1)!!)).shuffled().take(1).toSet();
