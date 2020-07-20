@@ -245,16 +245,28 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
          }
 
         if (message!!.contains(ConstVal.Cred)) {
-            val index = message!!.split('+')[1].toInt();
-            if (logEnable) Log.e(TAG, "send "  +ConstVal.SredP + index.toString())
-            A?.runOnUiThread(Runnable {
-                SlaveVal.bool = true;
-                SlaveVal.index = index
-                SlaveObjectlist.cb?.setBackgroundColor(Color.RED);
-                SlaveObjectlist.cb?.tag="Color red";
-            })
-            write(("StartM+" +ConstVal.SredP + index.toString()+ "+ENDM").toByteArray());
-            return ConstVal.Cred;
+            when (Objectlist.planN) {
+                3 -> {
+                    A?.runOnUiThread(Runnable {
+                        SlaveObjectlist.cb?.setBackgroundColor(Color.RED);
+                        SlaveObjectlist.cb?.tag = "Color Red";
+                    })
+                    return ConstVal.Cblue + " plan 3"
+                }
+                else -> {
+                    val index = message!!.split('+')[1].toInt();
+                    if (logEnable) Log.e(TAG, "send " + ConstVal.SredP + index.toString())
+                    A?.runOnUiThread(Runnable {
+                        SlaveVal.bool = true;
+                        SlaveVal.index = index
+                        SlaveObjectlist.cb?.setBackgroundColor(Color.RED);
+                        SlaveObjectlist.cb?.tag = "Color red";
+                    })
+                    write(("StartM+" + ConstVal.SredP + index.toString() + "+ENDM").toByteArray());
+                    return ConstVal.Cred;
+                }
+            }
+
         }
 
         if (message!!.contains(ConstVal.Cblue)) {
@@ -279,11 +291,66 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
                     })
                     return ConstVal.Cblue + " plan 2"
                 }
+                3 -> {
+                    A?.runOnUiThread(Runnable {
+                        SlaveObjectlist.cb?.setBackgroundColor(Color.BLUE);
+                        SlaveObjectlist.cb?.tag = "Color blue";
+                    })
+                    return ConstVal.Cblue + " plan 1"
+                }
                 else -> {
 
                 }
             }
          }
+
+        if (message!!.contains(ConstVal.Cyellow)) {
+            when (Objectlist.planN) {
+                3 -> {
+                    A?.runOnUiThread(Runnable {
+                        SlaveObjectlist.cb?.setBackgroundColor(Color.YELLOW);
+                        SlaveObjectlist.cb?.tag = "Color Yellow";
+                    })
+                    return ConstVal.Cblue + " plan 3"
+                }
+                else -> {
+
+                }
+            }
+
+        }
+
+        if (message!!.contains(ConstVal.Cblack)) {
+            when (Objectlist.planN) {
+                3 -> {
+                    A?.runOnUiThread(Runnable {
+                        SlaveObjectlist.cb?.setBackgroundColor(Color.BLACK);
+                        SlaveObjectlist.cb?.tag = "Color Black";
+                    })
+                    return ConstVal.Cblue + " plan 3"
+                }
+                else -> {
+
+                }
+            }
+
+        }
+
+        if (message!!.contains(ConstVal.Cgreen)) {
+            when (Objectlist.planN) {
+                3 -> {
+                    A?.runOnUiThread(Runnable {
+                        SlaveObjectlist.cb?.setBackgroundColor(Color.GREEN);
+                        SlaveObjectlist.cb?.tag = "Color Green";
+                    })
+                    return ConstVal.Cblue + " plan 3"
+                }
+                else -> {
+
+                }
+            }
+
+        }
 
         if (message!!.contains(ConstVal.CwhitePC)) {
             val index =message!!.split('+')[1].toInt();

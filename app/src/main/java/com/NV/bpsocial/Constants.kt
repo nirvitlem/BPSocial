@@ -6,6 +6,9 @@ object ConstVal {
     const val Schecked="Schecked";
     const val ScheckedP="Schecked+";
     const val checked="checked";
+    const val black="black"
+    const val Cblack="Cblack"
+    const val CblackP="Cblack+"
     const val red="red"
     const val Cred="Cred"
     const val CredP="Cred+"
@@ -54,7 +57,6 @@ object GeneralVal
 object GeneralObj
 {
     @Volatile  var sharedCounterLock = Semaphore(1)
-
 
 }
 
