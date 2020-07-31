@@ -10,7 +10,7 @@
 
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+        android:id="@+id/adViewsu"
         android:layout_width="327dp"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -22,10 +22,11 @@
         app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023"></com.google.android.gms.ads.AdView>
+        app:layout_constraintVertical_bias="0.023">
+</com.google.android.gms.ads.AdView>
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView1"
+        android:id="@+id/adViewsd"
         android:layout_width="329dp"
         android:layout_height="54dp"
         android:layout_alignParentBottom="true"
@@ -36,7 +37,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.995"></com.google.android.gms.ads.AdView>
+        app:layout_constraintVertical_bias="0.995">
+
+    </com.google.android.gms.ads.AdView>
 
     <TableLayout
         android:id="@+id/tableLayout"

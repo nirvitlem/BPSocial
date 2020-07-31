@@ -21,7 +21,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.NV.bpsocial.Objectlist.planN
 import com.NV.bpsocial.StartObjectlist.tbl
 import com.NV.bpsocial.StartObjectval.next
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_start.*
 
 
@@ -52,6 +54,10 @@ class Start : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
         MobileAds.initialize(this) {}
+        val adRequest = AdRequest.Builder().build()
+        adViewsu.loadAd(adRequest)
+        adViewsd.loadAd(adRequest)
+        
         A=this;
         textViewPB.text="";
         Objectlist.mbs?.setconextintent(this);
@@ -229,7 +235,13 @@ class Start : AppCompatActivity() {
                     val colors =  arrayOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.BLACK);
                     val randomColor = colors.random()
                     setcolorofcell(getchildview(r.elementAt(0)), randomColor);
-                    firemessage(r.elementAt(0), randomColor.toString());
+                    when (randomColor) {
+                        Color.RED -> firemessage(r.elementAt(0), ConstVal.Cred);
+                        Color.BLUE -> firemessage(r.elementAt(0), ConstVal.blue);
+                        Color.GREEN -> firemessage(r.elementAt(0), ConstVal.green);
+                        Color.YELLOW -> firemessage(r.elementAt(0), ConstVal.yellow);
+                        Color.BLACK -> firemessage(r.elementAt(0), ConstVal.black);
+                    }
                 }
             }
 
@@ -363,7 +375,13 @@ class Start : AppCompatActivity() {
         val colors = arrayOf(Color.RED, Color.BLUE, Color.GREEN,Color.YELLOW,Color.BLACK);
         val randomColor = colors.random()
         setcolorofcell(getchildview(r.elementAt(0)), randomColor);
-        firemessage(r.elementAt(0), randomColor.toString());
+        when (randomColor) {
+            Color.RED -> firemessage(r.elementAt(0), ConstVal.Cred);
+            Color.BLUE -> firemessage(r.elementAt(0), ConstVal.blue);
+            Color.GREEN -> firemessage(r.elementAt(0), ConstVal.green);
+            Color.YELLOW -> firemessage(r.elementAt(0), ConstVal.yellow);
+            Color.BLACK -> firemessage(r.elementAt(0), ConstVal.black);
+        }
 
     }
 

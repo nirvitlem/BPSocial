@@ -19,8 +19,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.NV.bpsocial.Slist.adapter
 import com.NV.bpsocial.Slist.list
+import com.google.android.gms.ads.AdRequest
 import java.util.*
 import com.google.android.gms.ads.MobileAds;
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 public var bluetoothAdapter : BluetoothAdapter? = null;
@@ -55,7 +57,8 @@ class MainActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
         MobileAds.initialize(this) {}
-
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
         /*for Test var intent = Intent(this, Start::class.java)
         this.startActivity(intent)*/
 
