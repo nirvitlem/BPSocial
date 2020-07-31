@@ -57,7 +57,7 @@ class Start : AppCompatActivity() {
         val adRequest = AdRequest.Builder().build()
         adViewsu.loadAd(adRequest)
         adViewsd.loadAd(adRequest)
-        
+
         A=this;
         textViewPB.text="";
         Objectlist.mbs?.setconextintent(this);
