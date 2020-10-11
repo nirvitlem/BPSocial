@@ -87,9 +87,15 @@ class Summerize : AppCompatActivity() {
 
         list.add("")
         list.add(" כל הלחיצות ")
-        for (element in TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") }) {
-
-            list.add(" לחצת " + element.split(";")[1].toString() + " ב " + element.split(";")[2].toString() + " שניות ")
+        //***11.10.2020
+        for (element in TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") || s.contains("STimer")}) {
+            if (element.split(";")[0].contains("STimer"))
+            {
+                list.add(" עברו " +  element.split(";")[1].toString()  + " שניות ")
+            }
+            else {
+                list.add(" לחצת " + element.split(";")[1].toString() + " ב " + element.split(";")[2].toString() + " שניות ")
+            }
         }
 
         adapter?.notifyDataSetChanged();

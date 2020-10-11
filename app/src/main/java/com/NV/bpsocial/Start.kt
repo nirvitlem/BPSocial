@@ -25,6 +25,8 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_start.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 //public var tbl : TableLayout ?=null;
@@ -243,6 +245,8 @@ class Start : AppCompatActivity() {
                         Color.BLACK -> firemessage(r.elementAt(0), ConstVal.black);
                     }
                 }
+                //***11.10.2020
+                TimersObjectlist.listoftofResult.add("STimer;" + ((timplan!!/1000)-(millisUntilFinished/1000)).toString() )
             }
 
             override fun onFinish() {
