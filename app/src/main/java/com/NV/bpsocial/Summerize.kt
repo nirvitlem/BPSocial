@@ -107,22 +107,31 @@ class Summerize : AppCompatActivity() {
 
     fun getGPSandDis()
     {
-        var CheckedList: List<String> =
-            TimersObjectlist.listoftofResult.filter { s -> s.contains("SGEO") }
-        for (element in CheckedList) {
-
+        var CheckedList: List<String> = TimersObjectlist.listoftofResult.filter { s -> s.contains("SGEO") }
+        if (CheckedList.size>1) {
+            for (index in 0 until CheckedList.size) {
+                val loc1 = Location("")
+                loc1.setLatitude(CheckedList[index].split(";")[3].toDouble())
+                loc1.setLongitude(CheckedList[index].split(";")[5].toDouble())
+                if (loc1.latitude>0 && loc1.longitude>0)
+                {
+                    for (index2 in 1..CheckedList.size) {
+                        if (CheckedList[index].split(";")[1].toString() != CheckedList[index2].split(";")[1].toString())
+                        {
+                            val loc2 = Location("")
+                            loc2.setLatitude(CheckedList[index2].split(";")[3].toDouble())
+                            loc2.setLongitude(CheckedList[index2].split(";")[5].toDouble())
+                            if (loc2.latitude>0 && loc2.longitude>0) {
+                                val distanceInMeters: Float = loc1.distanceTo(loc2)
+                                list.add( " המרחק בן  " + CheckedList[index].split(";")[1].toString() + " ל- " + CheckedList[index2].split(";")[1].toString() + " = " + distanceInMeters.toString() + " מטרים ");
+                            }
+                        }
+                    }
+                }
+            }
         }
-        /*val loc1 = Location("")
-        loc1.setLatitude(lat1)
-        loc1.setLongitude(lon1)
 
-        val loc2 = Location("")
-        loc2.setLatitude(lat2)
-        loc2.setLongitude(lon2)
-
-        val distanceInMeters: Float = loc1.distanceTo(loc2)
-
-        adapter?.notifyDataSetChanged();*/
+        adapter?.notifyDataSetChanged();
 
 
     }

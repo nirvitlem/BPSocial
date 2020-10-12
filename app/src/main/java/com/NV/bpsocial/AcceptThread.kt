@@ -22,7 +22,7 @@ object Oblist {
 class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
 
     private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
-        bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord("BPSocial", SVal.M_UUID)
+        bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord("BPSocial", SVal.M_UUID)
     }
 
     public fun setconextintent(a : Activity)
@@ -71,7 +71,7 @@ class AcceptThread(bluetoothAdapter : BluetoothAdapter) : Thread() {
         }
     }
     fun getsocket(index : Int):BluetoothSocket{
-        return listofbluetoothsocket[index] as BluetoothSocket;
+        return listofbluetoothsocket[index];
     }
 
     fun getlistsocket():ArrayList<BluetoothSocket>

@@ -1,7 +1,6 @@
 package com.NV.bpsocial
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -28,8 +27,6 @@ import com.NV.bpsocial.Slist.list
 import com.google.android.gms.ads.AdRequest
 import java.util.*
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_start.*
 
@@ -39,7 +36,6 @@ public var ct : ConnectThread?=null;
 public var at : AcceptThread? = null;
 public var mbs: MyBluetoothService? = null;
 public var BTGObject : BlueToothGeneralClass?=null;
-private lateinit var fusedLocationClient: FusedLocationProviderClient;
 //public var adapter:ArrayAdapter<String>?=null;
 //public var list=mutableListOf("");
 lateinit var locationManager: LocationManager;
@@ -73,8 +69,6 @@ class MainActivity : AppCompatActivity() {
         adView.loadAd(adRequest)
         /*for Test var intent = Intent(this, Start::class.java)
         this.startActivity(intent)*/
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
         BTGObject = BlueToothGeneralClass();
         makeRequest();
 
@@ -432,6 +426,7 @@ class MainActivity : AppCompatActivity() {
 
         // alertm("GPS","latitude " + latitude.toString() + " longitude " + longitude.toString())
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
         var hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
         if (hasGps) {
