@@ -351,6 +351,7 @@ class Start : AppCompatActivity() {
     }
 
     fun Plan1() {
+        timplan=10000;
         Objectlist.planN=0;
         StartPlans();
         val r = (0..(size?.minus(1)!!)).random() as Int;

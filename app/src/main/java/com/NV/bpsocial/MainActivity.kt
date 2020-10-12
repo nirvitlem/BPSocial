@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.location.Criteria
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -425,7 +426,7 @@ class MainActivity : AppCompatActivity() {
     private fun getLocation() {
 
         // alertm("GPS","latitude " + latitude.toString() + " longitude " + longitude.toString())
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager=getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         var hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
@@ -447,7 +448,13 @@ class MainActivity : AppCompatActivity() {
                 // for ActivityCompat#requestPermissions for more details.
                 return
             }
+            var criteria : Criteria? =  Criteria();
+            criteria!!.accuracy = Criteria.ACCURACY_COARSE ;
+            criteria!!.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria!!.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria!!.setBearingAccuracy(Criteria.ACCURACY_HIGH);
 
+            locationManager.getBestProvider(criteria, true)
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 5000,
