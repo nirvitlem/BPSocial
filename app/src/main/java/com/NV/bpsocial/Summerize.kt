@@ -2,6 +2,7 @@ package com.NV.bpsocial
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.os.Environment
 import android.widget.ArrayAdapter
@@ -10,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.NV.bpsocial.Objectlist.planN
 import kotlinx.android.synthetic.main.activity_summerize.*
-import java.io.*
+import java.io.File
 import java.util.*
 
 var list=mutableListOf("");
@@ -43,10 +44,10 @@ class Summerize : AppCompatActivity() {
 
     fun showr() {
         list.clear();
-        list.add("תוצאות:" )
+        list.add("תוצאות:")
         list.add("סיימת את תרגיל ב -  " + sumAlltimedCheked() + " שניות ")
         list.add("לחצת  " + TotalCheked() + " פעמים ")
-        if (planN != 2 ) list.add("לחצת  " + Totalmistake()+" פעמים בטעות ")
+        if (planN != 2 ) list.add("לחצת  " + Totalmistake() + " פעמים בטעות ")
         list.add(
             " התוצאה הטובה ביותר " + bestcore().split(";")[0].toString() + " ליחידת קצה " + bestcore().split(
                 ";"
@@ -59,6 +60,7 @@ class Summerize : AppCompatActivity() {
         )
         list.add(" זמן ממוצע " + average().toString())
         getcountcolor();
+        getGPSandDis();
         for (element in listcolor) {
             if (element.toString() != "") {
                 var res = bestbadbycedp(element).toString();
@@ -88,10 +90,12 @@ class Summerize : AppCompatActivity() {
         list.add("")
         list.add(" כל הלחיצות ")
         //***11.10.2020
-        for (element in TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") || s.contains("STimer")}) {
+        for (element in TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") || s.contains(
+            "STimer"
+        )}) {
             if (element.split(";")[0].contains("STimer"))
             {
-                list.add(" עברו " +  element.split(";")[1].toString()  + " שניות ")
+                list.add(" עברו " + element.split(";")[1].toString() + " שניות ")
             }
             else {
                 list.add(" לחצת " + element.split(";")[1].toString() + " ב " + element.split(";")[2].toString() + " שניות ")
@@ -99,6 +103,28 @@ class Summerize : AppCompatActivity() {
         }
 
         adapter?.notifyDataSetChanged();
+    }
+
+    fun getGPSandDis()
+    {
+        var CheckedList: List<String> =
+            TimersObjectlist.listoftofResult.filter { s -> s.contains("SGEO") }
+        for (element in CheckedList) {
+
+        }
+        /*val loc1 = Location("")
+        loc1.setLatitude(lat1)
+        loc1.setLongitude(lon1)
+
+        val loc2 = Location("")
+        loc2.setLatitude(lat2)
+        loc2.setLongitude(lon2)
+
+        val distanceInMeters: Float = loc1.distanceTo(loc2)
+
+        adapter?.notifyDataSetChanged();*/
+
+
     }
 
     fun sumAlltimedCheked(): String {
