@@ -39,6 +39,8 @@ object ConstVal {
     const val SmistakeP="Smistake+"
     const val end="end"
     const val plan="plan"
+    const val GPS="GPS+"
+    const val SGEO="SGEO"
     const val slavebool = "slavebool"
 
     const val bufferSize = 50;
@@ -52,6 +54,8 @@ object GeneralVal
     @Volatile var cReady : Int ?=0;
     @Volatile var Plan2firstrecive :Boolean ?= true;
     @Volatile var tempMessage : String ?="";
+    @Volatile var latitude :  Double ?= 0.0 ;
+    @Volatile var longitude :  Double ?= 0.0 ;
 }
 
 object GeneralObj

@@ -11,6 +11,18 @@
     tools:context=".MainActivity">
 
 
+    <Button
+        android:id="@+id/sendGPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="מיקום"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/SendM"
+        app:layout_constraintHorizontal_bias="0.78"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ListItems"
+        app:layout_constraintVertical_bias="0.24" />
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="362dp"
@@ -74,9 +86,10 @@
         android:text="בדיקה"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/connectb"
+        app:layout_constraintHorizontal_bias="0.925"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ListItems"
-        app:layout_constraintVertical_bias="0.241" />
+        app:layout_constraintVertical_bias="0.24" />
 
     <Button
         android:id="@+id/SButton"
