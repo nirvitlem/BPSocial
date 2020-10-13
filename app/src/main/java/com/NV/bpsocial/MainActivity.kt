@@ -11,18 +11,25 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.location.Criteria
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.NV.bpsocial.GeneralVal.latitude
+import com.NV.bpsocial.GeneralVal.longitude
 import com.NV.bpsocial.Slist.adapter
 import com.NV.bpsocial.Slist.list
 import com.google.android.gms.ads.AdRequest
 import java.util.*
 import com.google.android.gms.ads.MobileAds;
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_start.*
 
 
 public var bluetoothAdapter : BluetoothAdapter? = null;
@@ -32,6 +39,8 @@ public var mbs: MyBluetoothService? = null;
 public var BTGObject : BlueToothGeneralClass?=null;
 //public var adapter:ArrayAdapter<String>?=null;
 //public var list=mutableListOf("");
+lateinit var locationManager: LocationManager;
+
 
 private val PERMISSION_REQUEST_CODE = 101;
 private val TAG = "Permission";
@@ -61,15 +70,16 @@ class MainActivity : AppCompatActivity() {
         adView.loadAd(adRequest)
         /*for Test var intent = Intent(this, Start::class.java)
         this.startActivity(intent)*/
-
         BTGObject = BlueToothGeneralClass();
         makeRequest();
 
         val SwitchB = findViewById(R.id.switch1) as Switch
         val SButton = findViewById(R.id.SButton) as Button
+        val GPSButton = findViewById(R.id.sendGPS) as Button
         val ConnectButton = findViewById(R.id.connectb) as Button
         val sendM = findViewById(R.id.SendM) as Button
 
+       //getLocation();//call GPS
         SwitchB.isChecked=true;
         ConnectButton.isEnabled=false;
         SButton.isEnabled = true;
@@ -250,6 +260,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        GPSButton.setOnClickListener{
+            getLocation();
+        }
+
         SwitchB.setOnClickListener {
             if (SwitchB.isChecked) {
                 // The switch is enabled/checked
@@ -266,6 +280,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     @Throws(Exception::class)
     fun removeBond(btDevice: BluetoothDevice?): Boolean {
@@ -367,7 +382,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun makeRequest() {
         ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_WIFI_STATE
+            arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_WIFI_STATE
             ,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
             PERMISSION_REQUEST_CODE
         )
@@ -406,6 +421,85 @@ class MainActivity : AppCompatActivity() {
                 // Ignore all other requests.
             }
         }
+    }
+
+    private fun getLocation() {
+
+        // alertm("GPS","latitude " + latitude.toString() + " longitude " + longitude.toString())
+        locationManager=getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        var hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+
+        if (hasGps) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+            var criteria : Criteria? =  Criteria();
+            criteria!!.accuracy = Criteria.ACCURACY_COARSE ;
+            criteria!!.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria!!.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria!!.setBearingAccuracy(Criteria.ACCURACY_HIGH);
+
+            locationManager.getBestProvider(criteria, true)
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                5000,
+                0F,
+                object : LocationListener {
+                    override fun onLocationChanged(p0: Location) {
+                        if (p0 != null) {
+                            latitude = p0!!.latitude;
+                            longitude = p0!!.longitude;
+                            runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                                alertm(
+                                    "GPS",
+                                    "latitude " + p0!!.latitude.toString() + " longitude " + p0!!.longitude.toString()
+                                );
+                            })
+                            locationManager.removeUpdates(this);
+                        }
+                    }
+
+                    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onProviderEnabled(p0: String?) {
+
+                    }
+
+                    override fun onProviderDisabled(p0: String?) {
+
+                    }
+
+                })
+
+        }
+        else
+        {
+            runOnUiThread(Runnable { // This code will always run on the UI thread, therefore is safe to modify UI elements.
+                alertm(
+                    "GPS",
+                    "GPS Disabled , Enabled GPS "
+                );
+            })
+        }
+
+
     }
 
 

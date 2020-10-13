@@ -10,6 +10,8 @@ import com.NV.bpsocial.ConstVal.bufferSize
 import com.NV.bpsocial.ConstVal.logEnable
 import com.NV.bpsocial.GeneralObj.sharedCounterLock
 import com.NV.bpsocial.GeneralVal.Plan2firstrecive
+import com.NV.bpsocial.GeneralVal.latitude
+import com.NV.bpsocial.GeneralVal.longitude
 import com.NV.bpsocial.GeneralVal.tempMessage
 import com.NV.bpsocial.GeneralVal.timeresponse
 import com.NV.bpsocial.Objectlist.M
@@ -104,7 +106,6 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
         }
 
     }
-
 
     fun  handlebuffer(message : String) : String
     {
@@ -212,6 +213,14 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             return ConstVal.Sred
         }
 
+        if (message!!.contains(ConstVal.SGEO)) {
+            IndexClient =message!!.split('+')[1].toInt();
+            val t = StartObjectlist.listoftTableRow[IndexClient!!]?.tag.toString();
+            listoftofResult.add("SGEO;" + t + ";latitude;" + message!!.split("+")[2].toDouble() + ";longitude;" + + message!!.split("+")[3].toDouble())
+
+            return ConstVal.SGEO
+        }
+
         if (message!!.contains(ConstVal.Sblue)) {
             Plan2firstrecive = true;
             listoftofResult.add("SSendblue; ; ;"+ Calendar.getInstance().time.toString()+";blue")
@@ -243,6 +252,12 @@ class MyBluetoothService(private val mmSocket: BluetoothSocket) : Thread() {
             Objectlist.planN = message!!.split('+')[1].toInt();
             return  ConstVal.plan
          }
+
+        if (message!!.contains(ConstVal.GPS)) {
+            val index = message!!.split('+')[1].toInt();
+            write(("StartM+SGEO+" + index.toString() + "+" + latitude.toString() + "+" + longitude.toString() + "+ENDM").toByteArray());
+            return  ConstVal.GPS
+        }
 
         if (message!!.contains(ConstVal.Cred)) {
             when (Objectlist.planN) {
