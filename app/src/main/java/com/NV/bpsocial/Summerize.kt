@@ -36,7 +36,7 @@ class Summerize : AppCompatActivity() {
             builder.setPositiveButton("OK") { dialog, which ->
                 savefile(ed?.text.toString());
             }
-            builder.show();
+            builder.show(); 
         }
         showr()
     }
