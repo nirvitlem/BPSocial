@@ -162,6 +162,21 @@ class Start : AppCompatActivity() {
         }
     }
 
+    fun getGPS()
+    {
+        try {
+            Thread {
+                for (i in 0..(size?.minus(1))!!.toInt()) {
+                    (Objectlist.MBSArray?.get(Oblist.listofbluetoothsocket[i] as BluetoothSocket) as MyBluetoothService)?.write(("StartM+GPS+" + i.toString() + "+ENDM").toByteArray());
+                    if (ConstVal.logEnable) Log.e("Start ", "GPS+" )
+                }
+            }.start()
+        }catch (e: Exception)
+        {
+            Log.e("Server " ,"getGPS " + e.message.toString())
+        }
+    }
+
     fun firemessage(r:Int,c:String) {
         try {
             Thread {
@@ -203,8 +218,8 @@ class Start : AppCompatActivity() {
     }
 
     fun StartPlans() {
-
         fireplan();
+        getGPS();
         for (t in 0..2) {
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.green);
@@ -336,6 +351,7 @@ class Start : AppCompatActivity() {
     }
 
     fun Plan1() {
+        timplan=10000;
         Objectlist.planN=0;
         StartPlans();
         val r = (0..(size?.minus(1)!!)).random() as Int;
