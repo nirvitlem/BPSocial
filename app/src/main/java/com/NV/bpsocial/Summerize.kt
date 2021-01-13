@@ -16,6 +16,8 @@ import java.util.*
 import kotlin.math.*
 
 var list=mutableListOf("");
+var listforCSV = mutableListOf("");
+var time="";
 var adapter: ArrayAdapter<String>?=null;
 public var listcolor = mutableListOf("");
 public var listendp  = mutableListOf("");
@@ -40,11 +42,25 @@ class Summerize : AppCompatActivity() {
             }
             builder.show(); 
         }
+        SaveC.setOnClickListener {
+            ed = EditText(this);
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("שמור ושתף את התוצאות כקובץ לניתוח ")
+            builder.setMessage("הגדר שם לקובץ ")
+            builder.setView(ed);
+            builder.setPositiveButton("OK") { dialog, which ->
+                savefileC(ed?.text.toString());
+            }
+            builder.show();
+        }
         showr()
     }
 
     fun showr() {
-        list.clear();
+        list.clear()
+        listforCSV.clear();
+        listforCSV.add("זמן;אובייקט;מהירות תגובה")
+        time="";
         list.add("תוצאות:")
         list.add("סיימת את תרגיל ב -  " + sumAlltimedCheked() + " שניות ")
         list.add("לחצת  " + TotalCheked() + " פעמים ")
@@ -61,7 +77,7 @@ class Summerize : AppCompatActivity() {
         )
         list.add(" זמן ממוצע " + average().toString())
         getcountcolor();
-        getGPSandDis();
+        //getGPSandDis();
         for (element in listcolor) {
             if (element.toString() != "") {
                 var res = bestbadbycedp(element).toString();
@@ -97,9 +113,11 @@ class Summerize : AppCompatActivity() {
             if (element.split(";")[0].contains("STimer"))
             {
                 list.add(" עברו " + element.split(";")[1].toString() + " שניות ")
+                time= element.split(";")[1].toString();
             }
             else {
                 list.add(" לחצת " + element.split(";")[1].toString() + " ב " + element.split(";")[2].toString() + " שניות ")
+                listforCSV.add(time + ";" +element.split(";")[1].toString() +";" +  element.split(";")[2].toString());
             }
         }
 
@@ -285,6 +303,31 @@ class Summerize : AppCompatActivity() {
             }
             out.write("</body>")
             out.write("</html>")
+
+        }
+
+
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(
+            Intent.EXTRA_STREAM,
+            FileProvider.getUriForFile(
+                this, BuildConfig.APPLICATION_ID + ".provider",
+                myExternalFile
+            )
+        )
+        sendIntent.type = "text/csv"
+        startActivity(Intent.createChooser(sendIntent, "SHARE"))
+    }
+
+    fun savefileC(fname: String) {
+        var myExternalFile: File =
+            File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS.toString()), fname + ".csv")
+        myExternalFile.bufferedWriter().use { out ->
+            out.write(Calendar.getInstance().time.toString() +";;");
+            for (element in list) {
+                out.write( element.toString())
+            }
 
         }
 

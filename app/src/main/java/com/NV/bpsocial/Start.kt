@@ -219,7 +219,8 @@ class Start : AppCompatActivity() {
 
     fun StartPlans() {
         fireplan();
-        getGPS();
+        //
+        // getGPS();
         for (t in 0..2) {
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.green);
