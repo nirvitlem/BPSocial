@@ -18,6 +18,7 @@ import kotlin.math.*
 var list=mutableListOf("");
 var listforCSV = mutableListOf("");
 var time="";
+var cTime="";
 var adapter: ArrayAdapter<String>?=null;
 public var listcolor = mutableListOf("");
 public var listendp  = mutableListOf("");
@@ -59,7 +60,8 @@ class Summerize : AppCompatActivity() {
     fun showr() {
         list.clear()
         listforCSV.clear();
-        listforCSV.add("זמן;אובייקט;מהירות תגובה")
+        cTime=Calendar.getInstance().time.toString();
+        listforCSV.add("תאריך;זמן;אובייקט;מהירות תגובה");
         time="";
         list.add("תוצאות:")
         list.add("סיימת את תרגיל ב -  " + sumAlltimedCheked() + " שניות ")
@@ -117,7 +119,7 @@ class Summerize : AppCompatActivity() {
             }
             else {
                 list.add(" לחצת " + element.split(";")[1].toString() + " ב " + element.split(";")[2].toString() + " שניות ")
-                listforCSV.add(time + ";" +element.split(";")[1].toString() +";" +  element.split(";")[2].toString());
+                listforCSV.add( cTime + ";" + time + ";" +element.split(";")[1].toString() +";" +  element.split(";")[2].toString());
             }
         }
 
@@ -324,9 +326,10 @@ class Summerize : AppCompatActivity() {
         var myExternalFile: File =
             File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS.toString()), fname + ".csv")
         myExternalFile.bufferedWriter().use { out ->
-            out.write(Calendar.getInstance().time.toString() +";;");
-            for (element in list) {
+            //out.write(Calendar.getInstance().time.toString() +";;");
+            for (element in listforCSV) {
                 out.write( element.toString())
+                out.newLine();
             }
 
         }

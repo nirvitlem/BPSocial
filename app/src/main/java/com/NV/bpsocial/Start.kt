@@ -225,11 +225,11 @@ class Start : AppCompatActivity() {
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.green);
             }
-            Thread.sleep(500);
+            Thread.sleep(700);
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.white);
             }
-            Thread.sleep(500);
+            Thread.sleep(700);
         }
 
         Thread.sleep(1500);
