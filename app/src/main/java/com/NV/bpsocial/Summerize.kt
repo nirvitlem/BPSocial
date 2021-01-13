@@ -61,7 +61,7 @@ class Summerize : AppCompatActivity() {
         list.clear()
         listforCSV.clear();
         cTime=Calendar.getInstance().time.toString();
-        listforCSV.add("תאריך;זמן;אובייקט;מהירות תגובה");
+        listforCSV.add("תאריך;זמן;אובייקט;מהירות תגובה;תקין");
         time="";
         list.add("תוצאות:")
         list.add("סיימת את תרגיל ב -  " + sumAlltimedCheked() + " שניות ")
@@ -109,17 +109,23 @@ class Summerize : AppCompatActivity() {
         list.add("")
         list.add(" כל הלחיצות ")
         //***11.10.2020
-        for (element in TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") || s.contains(
-            "STimer"
-        )}) {
+        for (element in TimersObjectlist.listoftofResult.filter { s -> s.contains("checked") || s.contains("STimer") || s.contains("mistake")})
+            {
             if (element.split(";")[0].contains("STimer"))
             {
                 list.add(" עברו " + element.split(";")[1].toString() + " שניות ")
                 time= element.split(";")[1].toString();
             }
             else {
-                list.add(" לחצת " + element.split(";")[1].toString() + " ב " + element.split(";")[2].toString() + " שניות ")
-                listforCSV.add( cTime + ";" + time + ";" +element.split(";")[1].toString() +";" +  element.split(";")[2].toString());
+                if ( element.contains("checked"))
+                {
+                    list.add(" לחצת " + element.split(";")[1].toString() + " ב " + element.split(";")[2].toString() + " שניות ")
+                    listforCSV.add( cTime + ";" + time + ";" +element.split(";")[1].toString() +";" +  element.split(";")[2].toString()+";S");
+                }
+                else
+                {
+                    listforCSV.add( cTime + ";" + time + ";" +element.split(";")[1].toString() +";" +  element.split(";")[2].toString()+";F");
+                }
             }
         }
 
