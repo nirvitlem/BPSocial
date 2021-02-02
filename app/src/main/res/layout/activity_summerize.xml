@@ -7,16 +7,28 @@
     tools:context=".Summerize">
 
     <Button
+        android:id="@+id/SaveC"
+        android:layout_width="145dp"
+        android:layout_height="57dp"
+        android:text="קובץ ניתוח"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/SaveB"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.884" />
+
+    <Button
         android:id="@+id/SaveB"
         android:layout_width="145dp"
         android:layout_height="57dp"
-        android:text="שמור ושתף"
+        android:text="שתף"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.888"
+        app:layout_constraintHorizontal_bias="0.898"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.874" />
+        app:layout_constraintVertical_bias="0.884" />
 
     <ListView
         android:id="@+id/ListSummerize"
@@ -33,4 +45,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.489" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

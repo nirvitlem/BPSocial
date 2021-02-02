@@ -219,17 +219,19 @@ class Start : AppCompatActivity() {
 
     fun StartPlans() {
         fireplan();
-        getGPS();
-        for (t in 0..2) {
+        Thread.sleep(1000);
+        //
+        // getGPS();
+       // for (t in 0..2) {
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.green);
             }
-            Thread.sleep(500);
+            Thread.sleep(3000);
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.white);
             }
-            Thread.sleep(500);
-        }
+            //Thread.sleep(700);
+       // }
 
         Thread.sleep(1500);
         PB((timplan!! / 1000).toInt());
@@ -351,7 +353,7 @@ class Start : AppCompatActivity() {
     }
 
     fun Plan1() {
-        timplan=10000;
+       // timplan=10000;
         Objectlist.planN=0;
         StartPlans();
         val r = (0..(size?.minus(1)!!)).random() as Int;

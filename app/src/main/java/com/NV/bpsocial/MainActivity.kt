@@ -381,9 +381,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun makeRequest() {
-        ActivityCompat.requestPermissions(this,
+     /*   ActivityCompat.requestPermissions(this,
             arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_WIFI_STATE
             ,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            PERMISSION_REQUEST_CODE
+        )*/
+        ActivityCompat.requestPermissions(this,
+            arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH
+                ,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
             PERMISSION_REQUEST_CODE
         )
     }
