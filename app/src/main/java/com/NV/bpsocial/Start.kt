@@ -219,18 +219,19 @@ class Start : AppCompatActivity() {
 
     fun StartPlans() {
         fireplan();
+        Thread.sleep(1000);
         //
         // getGPS();
-        for (t in 0..2) {
+       // for (t in 0..2) {
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.green);
             }
-            Thread.sleep(700);
+            Thread.sleep(3000);
             for (i in 0..(size?.minus(1))!!.toInt()) {
                 fireendmessage(i, ConstVal.white);
             }
-            Thread.sleep(700);
-        }
+            //Thread.sleep(700);
+       // }
 
         Thread.sleep(1500);
         PB((timplan!! / 1000).toInt());
