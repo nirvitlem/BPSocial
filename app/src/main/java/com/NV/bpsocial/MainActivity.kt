@@ -57,6 +57,7 @@ object Slist {
 private var listofbluetoothdevices : ArrayList<BluetoothDevice> = ArrayList();
 private var listofbluetoothPaireddevices : ArrayList<BluetoothDevice> = ArrayList();
 private var itemckickllistposition : Int ?=-1;
+private var btPBar : ProgressBar ?=null;
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +79,12 @@ class MainActivity : AppCompatActivity() {
         val GPSButton = findViewById(R.id.sendGPS) as Button
         val ConnectButton = findViewById(R.id.connectb) as Button
         val sendM = findViewById(R.id.SendM) as Button
+        btPBar = findViewById<ProgressBar>(R.id.progressBar2)
+        btPBar?.isEnabled=false;
+        btPBar?.visibility = View.GONE;
 
-       //getLocation();//call GPS
+
+        //getLocation();//call GPS
         SwitchB.isChecked=true;
         SwitchV.isChecked=false;
         ConnectButton.isEnabled=false;
@@ -105,6 +110,8 @@ class MainActivity : AppCompatActivity() {
         ListBItems.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
                 if (!SwitchB.isChecked) {
+                    btPBar?.visibility = View.GONE;
+                    btPBar?.isEnabled = false;
                     bluetoothAdapter?.cancelDiscovery();
                     val selectedItem = parent.getItemAtPosition(position)
                     if (listofbluetoothdevices[position].bondState == BluetoothDevice.BOND_BONDED) {
@@ -115,12 +122,11 @@ class MainActivity : AppCompatActivity() {
                             listofbluetoothPaireddevices.add(listofbluetoothdevices[position]);
                         }
                     }
-                    while (listofbluetoothdevices[position].bondState != BluetoothDevice.BOND_BONDED)
-                    {
+                    while (listofbluetoothdevices[position].bondState != BluetoothDevice.BOND_BONDED) {
                         Thread.sleep(1000);
                     }
                     //alertm("התאמה", "בוצעה התאמה בהצלחה");
-                    var t : Int?=0;
+                    var t: Int? = 0;
                     Thread {
                         if (ConstVal.logEnable) Log.e(
                             "ConnectThread",
@@ -132,35 +138,31 @@ class MainActivity : AppCompatActivity() {
                         Objectlist.ct?.run();
 
                     }.start();
-                    while (Objectlist.ct?.getsocket()==null)
-                    {
+                    while (Objectlist.ct?.getsocket() == null) {
                         Thread.sleep(1000);
-                        t=t?.plus(1);
-                        if (t==15)
-                        {
+                        t = t?.plus(1);
+                        if (t == 15) {
                             break
                         };
                         //list.clear();
                         //adapter?.notifyDataSetChanged();
                     }
-                    if (t!!<15) {
+                    if (t!! < 15) {
                         Thread {
                             // BTGObject?.setMBSobject(mbs!!);
-                            Objectlist.mbs = MyBluetoothService(Objectlist.ct?.getsocket() as BluetoothSocket);
+                            Objectlist.mbs =
+                                MyBluetoothService(Objectlist.ct?.getsocket() as BluetoothSocket);
                             Objectlist.mbs?.setconextintent(this!!);
                             Objectlist.mbs?.run();
                         }.start();
-                        sendM.isEnabled=true;
+                        sendM.isEnabled = true;
                         alertm("הצלחה", "הצלחה בחיבור למנהל");
                         bluetoothAdapter?.cancelDiscovery();
-                    }
-                    else
-                    {
+                    } else {
                         alertm("שגיאת חיבור", "לא מצליח להתחבר למנהל, נסה שנית");
                     }
-                }else
-                {
-                    itemckickllistposition = (position-1);
+                } else {
+                    itemckickllistposition = (position - 1);
                 }
 
             }
@@ -193,16 +195,19 @@ class MainActivity : AppCompatActivity() {
 
                 if (GetBAdapter()) {
                     if (ConstVal.logEnable) Log.e("GetBAdapter", "GetBAdapter");
-                    val ed : EditText ?= EditText(this);
-                    val builder = AlertDialog.Builder(this@MainActivity)
-                    builder.setTitle("שם")
-                    builder.setMessage("הגדר שם למכשיר לזיהוי ")
-                    builder.setView(ed);
-                    builder.setPositiveButton("OK"){ dialog, which ->
-                        bluetoothAdapter?.name=ed?.text.toString()
-                        //finishAffinity();
-                    }
-                    builder.show();
+                    btPBar?.isEnabled= true;
+                    btPBar?.visibility = View.VISIBLE;
+
+                       val ed : EditText ?= EditText(this);
+                        val builder = AlertDialog.Builder(this@MainActivity)
+                        builder.setTitle("שם")
+                        builder.setMessage("הגדר שם למכשיר לזיהוי ")
+                        builder.setView(ed);
+                        builder.setPositiveButton("OK"){ dialog, which ->
+                            bluetoothAdapter?.name=ed?.text.toString()
+                            //finishAffinity();
+                        }
+                        builder.show();
                     if (bluetoothAdapter?.isDiscovering() == true) {
                         bluetoothAdapter?.cancelDiscovery();
                     }
@@ -418,6 +423,8 @@ class MainActivity : AppCompatActivity() {
                     // object and its info from the Intent.
                     // alertm("סיום חיפש ","סיום חיפוש יחידות קצה ")
                     //  bluetoothAdapter?.cancelDiscovery();
+                    btPBar?.visibility  = View.GONE;
+                    btPBar?.isEnabled= false;
                     if (ConstVal.logEnable) Log.e(
                         "bluetooth Receiverr",
                         "ACTION_DISCOVERY_FINISHED"
