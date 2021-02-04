@@ -45,12 +45,25 @@
         android:id="@+id/switch1"
         android:layout_width="135dp"
         android:layout_height="64dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="104dp"
         android:text="יחידת קצה"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.84"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/SButton"
+        android:layout_width="132dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="32dp"
+        android:text="חפש"
+        app:layout_constraintBottom_toTopOf="@+id/ListItems"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.523"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switch1"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ListView
         android:id="@+id/ListItems"
@@ -92,17 +105,16 @@
         app:layout_constraintTop_toBottomOf="@+id/ListItems"
         app:layout_constraintVertical_bias="0.24" />
 
-    <Button
-        android:id="@+id/SButton"
-        android:layout_width="130dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="32dp"
-        android:text="חפש"
-        app:layout_constraintBottom_toTopOf="@+id/ListItems"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.516"
+    <Switch
+        android:id="@+id/switch2"
+        android:layout_width="137dp"
+        android:layout_height="63dp"
+        android:text="חיישן חיצוני"
+        app:layout_constraintBottom_toTopOf="@+id/SButton"
+        app:layout_constraintEnd_toStartOf="@+id/switch1"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.748" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

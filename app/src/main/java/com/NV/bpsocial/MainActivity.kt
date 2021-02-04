@@ -11,25 +11,23 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.location.Criteria
-import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.NV.bpsocial.GeneralVal.latitude
-import com.NV.bpsocial.GeneralVal.longitude
+import androidx.core.view.isVisible
+import com.NV.bpsocial.SVal.vibpnum
 import com.NV.bpsocial.Slist.adapter
 import com.NV.bpsocial.Slist.list
 import com.google.android.gms.ads.AdRequest
-import java.util.*
-import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_start.*
+import java.util.*
 
 
 public var bluetoothAdapter : BluetoothAdapter? = null;
@@ -46,6 +44,7 @@ private val PERMISSION_REQUEST_CODE = 101;
 private val TAG = "Permission";
 object SVal {
     @JvmField val M_UUID : UUID ?=  UUID.fromString("8ce255c0-1508-74e0-ac64-0800200c9a66");
+    @JvmField var vibpnum : Int ?=15;
     //...
 }
 
@@ -74,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         makeRequest();
 
         val SwitchB = findViewById(R.id.switch1) as Switch
+        val SwitchV = findViewById(R.id.switch2) as Switch
         val SButton = findViewById(R.id.SButton) as Button
         val GPSButton = findViewById(R.id.sendGPS) as Button
         val ConnectButton = findViewById(R.id.connectb) as Button
@@ -81,9 +81,13 @@ class MainActivity : AppCompatActivity() {
 
        //getLocation();//call GPS
         SwitchB.isChecked=true;
+        SwitchV.isChecked=false;
         ConnectButton.isEnabled=false;
         SButton.isEnabled = true;
         ConnectButton.isEnabled=true;
+
+
+
 
         var filter :IntentFilter  =  IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
@@ -92,8 +96,9 @@ class MainActivity : AppCompatActivity() {
         val ListBItems = findViewById(R.id.ListItems) as ListView;
         adapter = ArrayAdapter(
             this,
-            android.R.layout.simple_dropdown_item_1line,list
+            android.R.layout.simple_dropdown_item_1line, list
         )
+
         // attach the array adapter with list view
         ListBItems.adapter = adapter
         // list view item click listener
@@ -117,7 +122,10 @@ class MainActivity : AppCompatActivity() {
                     //alertm("התאמה", "בוצעה התאמה בהצלחה");
                     var t : Int?=0;
                     Thread {
-                        if (ConstVal.logEnable) Log.e("ConnectThread", listofbluetoothPaireddevices[0].name);
+                        if (ConstVal.logEnable) Log.e(
+                            "ConnectThread",
+                            listofbluetoothPaireddevices[0].name
+                        );
                         // BTGObject?.setCAobject(ct!!);
                         Objectlist.ct = ConnectThread(listofbluetoothPaireddevices[0]);
                         Objectlist.ct?.setname(listofbluetoothPaireddevices[0]?.name);
@@ -143,12 +151,12 @@ class MainActivity : AppCompatActivity() {
                             Objectlist.mbs?.run();
                         }.start();
                         sendM.isEnabled=true;
-                        alertm("הצלחה","הצלחה בחיבור למנהל");
+                        alertm("הצלחה", "הצלחה בחיבור למנהל");
                         bluetoothAdapter?.cancelDiscovery();
                     }
                     else
                     {
-                        alertm("שגיאת חיבור","לא מצליח להתחבר למנהל, נסה שנית");
+                        alertm("שגיאת חיבור", "לא מצליח להתחבר למנהל, נסה שנית");
                     }
                 }else
                 {
@@ -163,6 +171,8 @@ class MainActivity : AppCompatActivity() {
         SwitchB?.text="מנהל";
         SButton?.text="הפעל לגילוי";
         SButton.setOnClickListener {
+            if (ConstVal.logEnable) Log.e(" SButton.setOnClickListener", "click");
+            if (ConstVal.logEnable) Log.e(" SwitchB ", SwitchB.isChecked.toString());
             if (SwitchB.isChecked) {
                 if (GetBAdapter()) {
                     bluetoothAdapter?.name = "BPS Master "
@@ -182,12 +192,13 @@ class MainActivity : AppCompatActivity() {
                 listofbluetoothdevices.clear();
 
                 if (GetBAdapter()) {
+                    if (ConstVal.logEnable) Log.e("GetBAdapter", "GetBAdapter");
                     val ed : EditText ?= EditText(this);
                     val builder = AlertDialog.Builder(this@MainActivity)
                     builder.setTitle("שם")
                     builder.setMessage("הגדר שם למכשיר לזיהוי ")
                     builder.setView(ed);
-                    builder.setPositiveButton("OK"){dialog, which ->
+                    builder.setPositiveButton("OK"){ dialog, which ->
                         bluetoothAdapter?.name=ed?.text.toString()
                         //finishAffinity();
                     }
@@ -207,6 +218,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     bluetoothAdapter?.startDiscovery();
+                    if (ConstVal.logEnable) Log.e("bluetoothAdapter", "startDiscovery");
                 }
             }
         }
@@ -225,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                             val mbs: MyBluetoothService? =
                                 MyBluetoothService(element as BluetoothSocket);
                             mbs?.setconextintent(this!!);
-                            mbs?.write(("StartM+" +"ready"+"+ENDM").toByteArray());
+                            mbs?.write(("StartM+" + "ready" + "+ENDM").toByteArray());
                         }.start();
                         if (ConstVal.logEnable) Log.e("BPSocial Server send message", "ready");
 
@@ -241,7 +253,10 @@ class MainActivity : AppCompatActivity() {
                 if (Objectlist.ct?.getsocket() != null) {
                     Thread {
                         list.add("נשלחה הודעה למנהל 150874")
-                        Objectlist.mbs?.write(("StartM+" +"150874" + (0..100).random().toString()+"+ENDM").toByteArray());
+                        Objectlist.mbs?.write(
+                            ("StartM+" + "150874" + (0..100).random()
+                                .toString() + "+ENDM").toByteArray()
+                        );
                     }.start();
                     if (ConstVal.logEnable) Log.e("BPSocial Client send message", "150874");
                 }
@@ -251,7 +266,7 @@ class MainActivity : AppCompatActivity() {
                     for (element in Objectlist.at?.getlistsocket() as ArrayList<BluetoothSocket>) {
 
                         Thread {
-                            (Objectlist.MBSArray?.get(element as BluetoothSocket))?.write(("StartM+" +"150874" + (0..100).random()+"+ENDM").toByteArray());
+                            (Objectlist.MBSArray?.get(element as BluetoothSocket))?.write(("StartM+" + "150874" + (0..100).random() + "+ENDM").toByteArray());
                         }.start();
                         if (ConstVal.logEnable) Log.e("BPSocial Server send message", "150874");
 
@@ -279,6 +294,20 @@ class MainActivity : AppCompatActivity() {
                 SButton.setText("חפש מנהל");
             }
         }
+        SwitchV.setOnClickListener {
+            if (SwitchV.isChecked) {
+                // The switch is enabled/checked
+                if (ConstVal.logEnable) Log.e("SwitchV.isChecked", "SwitchV.isChecked");
+                SwitchV.setText("חיישן פנימי");
+                SlaveVal.eVib=false;
+
+            } else {
+                if (ConstVal.logEnable) Log.e("SwitchV.isnotChecked", "SwitchV.isnotChecked");
+                SwitchV.setText("חיישן חיצוני");
+                SlaveVal.eVib=true;
+
+            }
+        }
     }
 
 
@@ -299,29 +328,30 @@ class MainActivity : AppCompatActivity() {
         {
             Thread.sleep(1_000);
         }
-        alertm("התאמה","התאמה בוצעה בהצלחה" );
+        alertm("התאמה", "התאמה בוצעה בהצלחה");
         return returnValue;
     }
 
-    private fun alertm(t : String , m :String)
+    private fun alertm(t: String, m: String)
     {
         val builder = AlertDialog.Builder(this@MainActivity)
         builder.setTitle(t)
         builder.setMessage(m)
 
-        builder.setPositiveButton("OK"){dialog, which ->
+        builder.setPositiveButton("OK"){ dialog, which ->
         }
         builder.show();
     }
-    private fun getBluetoothMacAddress(bluetoothAdapter:BluetoothAdapter): String? {
+    private fun getBluetoothMacAddress(bluetoothAdapter: BluetoothAdapter): String? {
        return "";
 
     }
 
 
-    public fun  GetBAdapter():Boolean
+    private fun  GetBAdapter():Boolean
     {
         // Get the default adapter
+        if (ConstVal.logEnable) Log.e("bluetooth GetBAdapter", "GetBAdapter");
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
             if (bluetoothAdapter?.isEnabled == true) {
@@ -336,7 +366,7 @@ class MainActivity : AppCompatActivity() {
                 val builder = AlertDialog.Builder(this@MainActivity)
                 builder.setTitle("Bluetooth Error")
                 builder.setMessage("Please Enabled you Bluetooth device ")
-                builder.setPositiveButton("OK"){dialog, which -> finishAffinity();
+                builder.setPositiveButton("OK"){ dialog, which -> finishAffinity();
                 }
                 builder.show();
             }
@@ -344,15 +374,25 @@ class MainActivity : AppCompatActivity() {
         return false;
     }
     // Create a BroadcastReceiver for ACTION_FOUND.
-    public val receiver = object : BroadcastReceiver() {
+    private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action: String? = intent.action;
+            if (ConstVal.logEnable) Log.e("bluetooth Receiverr", "in");
             when(action) {
+
                 BluetoothDevice.ACTION_FOUND -> {
+                    if (ConstVal.logEnable) Log.e("bluetooth Receiverr", "ACTION_FOUND");
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
-                    val device: BluetoothDevice =  intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    if (device.name!=null && device.name.contains("BPS")) {
+                    val device: BluetoothDevice =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    if (device.name != null) {
+                        if (ConstVal.logEnable)
+                            Log.e("BluetoothDevice", device.name);
+                    } else {
+                        if (ConstVal.logEnable) Log.e("BluetoothDevice", "null'");
+                    }
+                    if (device.name != null && device.name.contains("BPS")) {
                         val deviceName = device.name
                         if (device.name == null) list?.add("UnKown Device " + device.address);
                         else list?.add(device.name + " " + device.address);
@@ -366,15 +406,23 @@ class MainActivity : AppCompatActivity() {
                 BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
-
+                    if (ConstVal.logEnable) Log.e(
+                        "bluetooth Receiverr",
+                        "ACTION_DISCOVERY_STARTED"
+                    );
 
 
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                     // Discovery has found a device. Get the BluetoothDevice
                     // object and its info from the Intent.
-                   // alertm("סיום חיפש ","סיום חיפוש יחידות קצה ")
-                  //  bluetoothAdapter?.cancelDiscovery();
+                    // alertm("סיום חיפש ","סיום חיפוש יחידות קצה ")
+                    //  bluetoothAdapter?.cancelDiscovery();
+                    if (ConstVal.logEnable) Log.e(
+                        "bluetooth Receiverr",
+                        "ACTION_DISCOVERY_FINISHED"
+                    );
+
                 }
             }
         }
@@ -386,9 +434,17 @@ class MainActivity : AppCompatActivity() {
             ,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
             PERMISSION_REQUEST_CODE
         )*/
-        ActivityCompat.requestPermissions(this,
-            arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH
-                ,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE),
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.BLUETOOTH_PRIVILEGED,
+                Manifest.permission.BLUETOOTH_ADMIN,
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             PERMISSION_REQUEST_CODE
         )
     }
@@ -401,13 +457,16 @@ class MainActivity : AppCompatActivity() {
         unregisterReceiver(receiver)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
         when (requestCode) {
             PERMISSION_REQUEST_CODE -> {
                 // If request is cancelled, the result arrays are empty.
                 if ((grantResults.isNotEmpty() &&
-                            grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                ) {
                     // Permission is granted. Continue the action or workflow
                     // in your app.
                 } else {
@@ -429,7 +488,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getLocation() {
-
+/*
         // alertm("GPS","latitude " + latitude.toString() + " longitude " + longitude.toString())
         locationManager=getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -504,8 +563,9 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-
+*/
     }
 
 
 }
+
