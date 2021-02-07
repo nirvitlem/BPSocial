@@ -2,6 +2,7 @@ package com.NV.bpsocial
 
 import android.Manifest
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
@@ -11,6 +12,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +24,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.NV.bpsocial.SVal.vibpnum
+import com.NV.bpsocial.SlaveVal.cnx
+import com.NV.bpsocial.SlaveVal.device
+import com.NV.bpsocial.SlaveVal.manager
 import com.NV.bpsocial.Slist.adapter
 import com.NV.bpsocial.Slist.list
 import com.google.android.gms.ads.AdRequest
@@ -38,6 +44,7 @@ public var BTGObject : BlueToothGeneralClass?=null;
 //public var adapter:ArrayAdapter<String>?=null;
 //public var list=mutableListOf("");
 lateinit var locationManager: LocationManager;
+private const val ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION"
 
 
 private val PERMISSION_REQUEST_CODE = 101;
@@ -74,7 +81,8 @@ class MainActivity : AppCompatActivity() {
         makeRequest();
 
         val SwitchB = findViewById(R.id.switch1) as Switch
-        val SwitchV = findViewById(R.id.switch2) as Switch
+        val SwitchVe= findViewById(R.id.switch2) as Switch
+        val SwitchVi = findViewById(R.id.switch3) as Switch
         val SButton = findViewById(R.id.SButton) as Button
         val GPSButton = findViewById(R.id.sendGPS) as Button
         val ConnectButton = findViewById(R.id.connectb) as Button
@@ -82,11 +90,15 @@ class MainActivity : AppCompatActivity() {
         btPBar = findViewById<ProgressBar>(R.id.progressBar2)
         btPBar?.isEnabled=false;
         btPBar?.visibility = View.GONE;
-
+        SwitchVi.isEnabled=false;
+        SwitchVe.isEnabled=false;
+        SlaveVal.iVib=false;
+        SlaveVal.eVib=false;
 
         //getLocation();//call GPS
         SwitchB.isChecked=true;
-        SwitchV.isChecked=false;
+        SwitchVe.isChecked=false;
+        SwitchVi.isChecked=false;
         ConnectButton.isEnabled=false;
         SButton.isEnabled = true;
         ConnectButton.isEnabled=true;
@@ -291,31 +303,66 @@ class MainActivity : AppCompatActivity() {
                 SwitchB.setText("מנהל");
                 SButton.setText("הפעל לגילוי");
                 ConnectButton.text="התחל";
+                SwitchVi.isEnabled=false;
+                SwitchVe.isEnabled=false;
 
             } else {
                 ConnectButton.isEnabled=false;
                 ConnectButton.text="התחבר";
                 SwitchB.setText("יחידת קצה");
                 SButton.setText("חפש מנהל");
+                SwitchVi.isEnabled=true;
+                SwitchVe.isEnabled=true;
+
             }
         }
-        SwitchV.setOnClickListener {
-            if (SwitchV.isChecked) {
+        SwitchVe.setOnClickListener {
+            if (SwitchVe.isChecked) {
                 // The switch is enabled/checked
-                if (ConstVal.logEnable) Log.e("SwitchV.isChecked", "SwitchV.isChecked");
-                SwitchV.setText("חיישן פנימי");
-                SlaveVal.eVib=false;
+                if (ConstVal.logEnable) Log.e("SwitchVe.isChecked", "SwitchVe.isChecked");
+                SlaveVal.eVib=true;
+                var filterusb = IntentFilter(ACTION_USB_PERMISSION);
+                filterusb.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
+                filterusb.addAction(Intent.ACTION_MEDIA_MOUNTED);
+                registerReceiver(usbReceiver, filterusb)
+                listUSBDevices();
 
             } else {
-                if (ConstVal.logEnable) Log.e("SwitchV.isnotChecked", "SwitchV.isnotChecked");
-                SwitchV.setText("חיישן חיצוני");
-                SlaveVal.eVib=true;
+                if (ConstVal.logEnable) Log.e("SwitchVe.isnotChecked", "SwitchVe.isnotChecked");
+                unregisterReceiver(usbReceiver)
+                SlaveVal.eVib=false;
+            }
+        }
+        SwitchVi.setOnClickListener {
+            if (SwitchVi.isChecked) {
+                // The switch is enabled/checked
+                if (ConstVal.logEnable) Log.e("SwitchVi.isChecked", "SwitchVi.isChecked");
+                SlaveVal.iVib=true;
 
+            } else {
+                if (ConstVal.logEnable) Log.e("SwitchVi.isnotChecked", "SwitchVi.isnotChecked");
+                SlaveVal.iVib=false;
+
+            }
+        }
+
+    }
+
+    private fun listUSBDevices() {
+        manager = getSystemService(USB_SERVICE) as UsbManager
+        val devices = manager?.deviceList
+        if (ConstVal.logEnable) Log.e("deviceList", "deviceList");
+        for (tdevice in devices?.values!!) {
+            Log.e("Device", tdevice.vendorId.toString());
+            if (tdevice.vendorId == DIGISPARK_VID && tdevice.productId == DIGISPARK_PID) {
+                if (ConstVal.logEnable) Log.e("Device", "DIGISPARK_VID");
+                var permissionIntent = PendingIntent.getBroadcast(this, 0, Intent(ACTION_USB_PERMISSION), 0)
+                device = tdevice;
+                manager?.requestPermission(device, permissionIntent)
+               // cnx = manager?.openDevice(device)
             }
         }
     }
-
-
     @Throws(Exception::class)
     fun removeBond(btDevice: BluetoothDevice?): Boolean {
         val btClass = Class.forName("android.bluetooth.BluetoothDevice")
@@ -347,6 +394,7 @@ class MainActivity : AppCompatActivity() {
         }
         builder.show();
     }
+
     private fun getBluetoothMacAddress(bluetoothAdapter: BluetoothAdapter): String? {
        return "";
 
@@ -435,6 +483,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val usbReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            if (ACTION_USB_PERMISSION == intent.action) {
+                synchronized(this) {
+                    val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        if (ConstVal.logEnable) Log.e("usbReceiver", "EXTRA_PERMISSION_GRANTED")
+                        device?.apply {
+                            cnx = manager?.openDevice(device)
+                            alertm(" הצלחה "," התחברת בהצלחה לחיישן חיצוני  " )
+                        }
+                    } else {
+                        Log.e("usbReceiver", "permission denied for device $device")
+                    }
+                }
+            }
+            if (UsbManager.ACTION_USB_DEVICE_ATTACHED == intent.action) {
+                if (ConstVal.logEnable) Log.e("usbReceiver", "ACTION_USB_DEVICE_ATTACHED")
+
+            }
+            if (Intent.ACTION_MEDIA_MOUNTED == intent.action) {
+                if (ConstVal.logEnable) Log.e("usbReceiver", "CTION_MEDIA_MOUNTED")
+            }
+        }
+    }
+
     private fun makeRequest() {
      /*   ActivityCompat.requestPermissions(this,
             arrayOf(Manifest.permission.BLUETOOTH_PRIVILEGED,Manifest.permission.BLUETOOTH_ADMIN,Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_WIFI_STATE
@@ -462,6 +538,7 @@ class MainActivity : AppCompatActivity() {
 
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver)
+        unregisterReceiver(usbReceiver);
     }
 
     override fun onRequestPermissionsResult(
