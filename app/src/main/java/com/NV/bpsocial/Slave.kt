@@ -48,6 +48,7 @@ object SlaveObjectlist {
     @JvmStatic public var cb: Button?=null;
     //...
 }
+//test
 private var sensorManager: SensorManager? = null;
 private var acceleration = 0f;
 private var currentAcceleration = 0f;
